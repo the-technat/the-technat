@@ -9,3 +9,5 @@ Hi I'm technat. Kubernetes Engineer, minimalist and perfectionist, loving to exp
 - ⚡ Fun fact: Seems like someone has already taken the username "technat", so it was necessary to mention that technat isn´t the same as **the**-technat ;)
 
 Sometimes I document my learnings and work in my [wiki](https://wiki.technat.ch). Feel free to see if anything might be helpful for you.
+
+Searching my [GPG key](https://gpg.technat.ch)?
