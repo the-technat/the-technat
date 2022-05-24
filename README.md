@@ -1,6 +1,6 @@
 ### the-technat
 
-Hi I' technat. Kubernetes Engineer, minimalist and perfectionist, loving to explore the world of IT more and more.
+Hi I'm technat. Kubernetes Engineer, minimalist and perfectionist, loving to explore the world of IT more and more.
 
 - 🔭 I’m currently working on writing a concept for my own homelab  
 - 🌱 I’m currently learning too many things to list here..
