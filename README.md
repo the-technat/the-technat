@@ -10,4 +10,4 @@ Hi I'm technat. Kubernetes Engineer, minimalist and perfectionist, loving to exp
 
 Sometimes I document my learnings and work in my [wiki](https://wiki.technat.ch). Feel free to see if anything might be helpful for you.
 
-Searching my [GPG key](https://gpg.technat.ch)?
+Searching my [GPG key](https://keys.openpgp.org/vks/v1/by-fingerprint/DC199950E4517F14CBB68A8D22391B207DAD6969)?
