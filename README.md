@@ -9,6 +9,8 @@ Hi I'm technat. Kubernetes Engineer, minimalist, perfectionist and enthusiast fo
 - 📫 You can reach me at technat@technat.ch (in case you need it: [GPG key](https://keys.openpgp.org/vks/v1/by-fingerprint/DC199950E4517F14CBB68A8D22391B207DAD6969))
 - ⚡ Fun fact: Seems like someone has already taken the username "technat", so it was necessary to mention that technat isn´t the same as **the**-technat ;)
 
+Merged @liechtinat into this account, to only maintain one GH account.
+
 ![My github stats](https://github-readme-stats.vercel.app/api?username=the-technat&show_icons=true)
 
 
