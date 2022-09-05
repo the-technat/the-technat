@@ -2,7 +2,7 @@
 
 Hi I'm technat. Kubernetes Engineer, minimalist, perfectionist and enthusiast for everything that looks like a container.
 
-- 🔭 I’m currently building my own K3s cluster on Hetzner, check it out [here](https://github.com/the-technat/k.technat.ch).
+- 🔭 I’m currently working on an IoT project called [weddingphone](https://github.com/the-technat/weddingphone).
 - 🌱 I’m always learning many things in parallel, I can't list them all...
 - 💞️ I’m looking to collaborate on Terraform Modules, Go applications and other K8s / CNCF projects around Kubernetes
 - 💬 Ask me about Go, Terraform, CI/CD and **Kubernetes** or take a look at my [Wiki](https://wiki.technat.ch)
