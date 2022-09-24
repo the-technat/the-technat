@@ -1,0 +1,386 @@
+<!doctype html><html lang=en-us><head><title>proxmox</title><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content><style>@import "https://fonts.googleapis.com/css2?family=Inconsolata&display=swap";:root{--cursor-visibility:hidden}html,body{width:100%;height:100%;overflow:auto;font-family:inconsolata,monospace;font-size:4vmin;line-height:4.1vmin;font-weight:400}body{margin:0;display:flex;flex-direction:row;justify-content:center;align-items:center}#content{min-width:82vmin;min-height:82vmin}::-webkit-scrollbar{width:10px}::-webkit-scrollbar-track{border-radius:10px;box-shadow:inset 0 0 1px white}::-webkit-scrollbar-thumb{border-radius:10px;box-shadow:0 0 0 1px white}.cursor,#activity-title:after,#activity-content:after,#cd:after,#whoami:after,#cat:after,#tree:after{visibility:var(--cursor-visibility);content:"|";overflow:hidden;color:#fff;animation:blink 500ms linear infinite alternate}@keyframes blink{0%{opacity:0}100%{opacity:1}}@media only screen and (min-width:768px){body{font-size:2.5vmin;line-height:2.6vmin}#content{min-width:60vmin}}:root{--cursor-visibility:hidden}body{align-items:unset;overflow-y:scroll}#content{max-width:80vmin}pre{overflow-x:scroll;white-space:pre}@keyframes blink{0%{opacity:0}100%{opacity:1}}body{background:#002b36}body #terminal{color:#839496}body #user{color:#859900}body #dir{color:#268bd2}body .Typewriter__cursor{color:#839496}a{color:#839496}.navFull{background-color:#353535;font-family:courier new;font-size:17px;display:inline;position:fixed;bottom:0;left:0;width:100%;padding-top:5px;padding:10px;padding-bottom:0}.navCredits{float:right;padding-right:18px;padding-bottom:10px;padding-top:5px}#content::after{content:"\a\a";white-space:pre}</style></head><body><div id=content><span id=activity-title></span><br><span id=activity-content></span><br><script type=text/javascript>async function typewriter(e,t,n){var s=0,o=!1;addText="";const i=document.getElementById(t),a=()=>new Promise(e=>setTimeout(e,n)),r=()=>new Promise(e=>e()),c=()=>i.innerHTML=e.slice(0,s+1)+addText,l=document.createElement("span");for(l.id="blink",i.style.setProperty("--cursor-visibility","visible");s<e.length;){if(e.charAt(s+1)==="<"&&(o=!0),e.charAt(s+1)===">"&&(o=!1),o){s++;continue}requestAnimationFrame(c),n===0?await r():await a(),s++}i.style.setProperty("--cursor-visibility","collapse")}function parseDelay(e){const t=parseInt(e,10);return isNaN(t)?0:t}const titleDelay=parseDelay("0"),contentDelay=parseDelay("0"),typeeffetct=async()=>{await typewriter("\u003cspan id=\u0027terminal\u0027\u003e\u003ch1 id=\u0027title\u0027\u003eproxmox\u003c/h1\u003e\u003c/span\u003e","activity-title",titleDelay),await typewriter(`\u003cspan id=\u0027terminal\u0027\u003e\u003cp\u003eThis page shows one of many approaches how Proxmox can be installed and configured on a Dedicated Root Server from Hetzner.\u003c/p\u003e
+\u003ch2 id=\u0022server\u0022\u003eServer\u003c/h2\u003e
+\u003cp\u003eThis doc was created using an \u003ca href=\u0022https://www.hetzner.com/dedicated-rootserver/ax41-nvme\u0022\u003eAX41-NVME\u003c/a\u003e server with the following specs:\u003c/p\u003e
+\u003cp\u003eCPU: AMD Ryzen 5 3600 6-Core Processor
+Memory: 64GB DDR4 Ram
+Disks: 2x 512GB NVME
+Data Disks: 2x 1TB SATA SSD
+NIC: 1 GBit/s Port\u003c/p\u003e
+\u003ch3 id=\u0022hetzner-firewall\u0022\u003eHetzner Firewall\u003c/h3\u003e
+\u003cp\u003eIn the Hetzner Robot you have the option to add firewall rules for your server on Hetzner\u0026rsquo;s Infrastructure. As proxmox has a built-in Firewall this is disabled.\u003c/p\u003e
+\u003ch3 id=\u0022hetzner-monitoring\u0022\u003eHetzner Monitoring\u003c/h3\u003e
+\u003cp\u003eIn the Hetzner Robot you can also add simple Up-state monitoring Rules for your server. The following ones could be helpful:\u003c/p\u003e
+\u003ctable\u003e
+\u003cthead\u003e
+\u003ctr\u003e
+\u003cth style=\u0022text-align:left\u0022\u003eCheck\u003c/th\u003e
+\u003cth style=\u0022text-align:left\u0022\u003eTarget\u003c/th\u003e
+\u003cth style=\u0022text-align:left\u0022\u003eProtocol\u003c/th\u003e
+\u003cth style=\u0022text-align:left\u0022\u003eOptions\u003c/th\u003e
+\u003cth style=\u0022text-align:left\u0022\u003eContact\u003c/th\u003e
+\u003c/tr\u003e
+\u003c/thead\u003e
+\u003ctbody\u003e
+\u003ctr\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eping\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003e135.181.162.151\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eicmp\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003e5,180\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003etechnat\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003ehttps\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003e135.181.162.151\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003ehttps\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003e5,180\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003etechnat\u003c/td\u003e
+\u003c/tr\u003e
+\u003c/tbody\u003e
+\u003c/table\u003e
+\u003ch2 id=\u0022proxmox-ve-os\u0022\u003eProxmox VE (OS)\u003c/h2\u003e
+\u003ch3 id=\u0022initial-installation\u0022\u003eInitial-Installation\u003c/h3\u003e
+\u003cp\u003eTo install proxmox the easiest way is to request a KVM console using the support form and add a commment that you would like a bootable usb stick with the latest Proxmox VE installer plugged into your server.
+During the inital installation over the KVM console the following values have been applied:\u003c/p\u003e
+\u003ctable\u003e
+\u003cthead\u003e
+\u003ctr\u003e
+\u003cth style=\u0022text-align:left\u0022\u003eOption\u003c/th\u003e
+\u003cth style=\u0022text-align:left\u0022\u003eValue\u003c/th\u003e
+\u003c/tr\u003e
+\u003c/thead\u003e
+\u003ctbody\u003e
+\u003ctr\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eOS-Disk\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eZFS (Raid1) with the NVME 512GB disks\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eZFS ashift\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003e12\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eZFS compress\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eon\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eZFS checksum\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eon\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eZFS copies\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003e1\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eZFS hdsize\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003e476g (depends on the age of the disks\u0026hellip;)\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eLocation\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eSwitzerland\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eTime Zone\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eEurope Zurich\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eKeyboard Layout\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eU.S English\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eAdmin Mail\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003e\u003ca href=\u0022mailto:technat@technat.ch\u0022\u003etechnat@technat.ch\u003c/a\u003e\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eIP\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003e135.181.162.151\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eGateway\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003e135.181.162.129\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eDNS\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003e185.12.64.1\u003c/td\u003e
+\u003c/tr\u003e
+\u003c/tbody\u003e
+\u003c/table\u003e
+\u003ch3 id=\u0022network-configuration\u0022\u003eNetwork Configuration\u003c/h3\u003e
+\u003cp\u003eIf proxmox is installed you can reach the Proxmox UI using the public ip addresse and the port \u003ccode\u003e8006\u003c/code\u003e. Login using \u003ccode\u003eroot\u003c/code\u003e.\u003c/p\u003e
+\u003cp\u003eOne of the first challenges we need to solve is how to do networking within proxmox for your VM\u0026rsquo;s. There are different approaches using routing, bridging and more. This guide used a bridging apporach where we let the default \u003ccode\u003evmbr0\u003c/code\u003e that was created during the installation as is.\u003c/p\u003e
+\u003cp\u003eIn debian terms that would mean the following:\u003c/p\u003e
+\u003cpre tabindex=\u00220\u0022\u003e\u003ccode\u003eauto lo
+iface lo inet loopback
+
+iface enp35s0 inet manual
+
+auto vmbr0
+iface vmbr0 inet static
+        address 135.181.162.151/26
+        gateway 135.181.162.129
+				pointopoint 135.181.162.129
+        bridge_ports enp35s0
+        bridge_stp off
+        bridge_fd 0
+\u003c/code\u003e\u003c/pre\u003e\u003cp\u003eThat means that if we add a VM to \u003ccode\u003evmbr0\u003c/code\u003e it would be in Hetzners network. This requires that you order an additional IP address and request a separate MAC address for your VM. In my case this will be a Firewall VM which will thus get a public IP and we can then use port-forwarding on that firewall VM to route to other VM\u0026rsquo;s.\u003c/p\u003e
+\u003cp\u003eMore details on Networking: \u003ca href=\u0022https://community.hetzner.com/tutorials/install-and-configure-proxmox_ve\u0022\u003ehttps://community.hetzner.com/tutorials/install-and-configure-proxmox_ve\u003c/a\u003e\u003c/p\u003e
+\u003ch3 id=\u0022dns-configuration\u0022\u003eDNS Configuration\u003c/h3\u003e
+\u003cp\u003eHetzner has \u003ca href=\u0022https://docs.hetzner.com/dns-console/dns/general/recursive-name-servers/\u0022\u003erecursive DNS servers\u003c/a\u003e that are rechable within their infrastructure:\u003c/p\u003e
+\u003cpre tabindex=\u00220\u0022\u003e\u003ccode\u003enameserver 185.12.64.1
+nameserver 185.12.64.2
+nameserver 2a01:4ff:ff00::add:1
+nameserver 2a01:4ff:ff00::add:2
+\u003c/code\u003e\u003c/pre\u003e\u003ch3 id=\u0022tls-certificate\u0022\u003eTLS Certificate\u003c/h3\u003e
+\u003cp\u003eBy default the Proxmox UI uses a self-signed certificate. To be a bit more secure I added a Job to obtain a Let\u0026rsquo;s Encrypt certificate on host-level in the Proxmox UI. This only works as long as you haven\u0026rsquo;t added any firewall rules.\u003c/p\u003e
+\u003cp\u003eYour only problem: If you later close Port 80, renewal won\u0026rsquo;t work automatically.\u003c/p\u003e
+\u003cp\u003eAnother solution would be to use Certbot directly and a cronjob to renew the cert. The benefit you have there is that you can dynamically open port 80 in your proxmox firewall to renew the cert.\u003c/p\u003e
+\u003cp\u003eIf you have initally requested your certificate using \u003ccode\u003ecertonly\u003c/code\u003e and \u003ccode\u003estandalone\u003c/code\u003e you can use the following example script in a cronjob to renew the cert:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#75715e\u0022\u003e#!/usr/bin/bash
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#75715e\u0022\u003e\u003c/span\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026lt;\u0026lt;Header
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003eScript:   ssl-renew.sh
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003eDate:     12.01.2021
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003eAuthor:   technat
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003eVersion:  1.0
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003eHistory   User    Date        Change
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e          technat 12.01.2021  initial version
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003eDescription: update ssl cert from Let\u0026#39;s Encrypt using certbot and copy certs for use with pveproxy
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003eCronjob: 0 5 1 * * /root/ssl-renew.sh
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003eDependency: certbot, pveproxy
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003eHeader\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#75715e\u0022\u003e#############################################################################\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#75715e\u0022\u003e################################# Variables #################################\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#75715e\u0022\u003e#############################################################################\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#75715e\u0022\u003e# general\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003edomain\u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#39;yourdomain.com\u0026#39;\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003elogfile\u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#39;/var/log/ssl-renew.log\u0026#39;\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003erule\u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#39;IN ACCEPT -i vmbr0 -dest 1.2.3.4 -p tcp -dport 80 -log nolog\u0026#39;\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#75715e\u0022\u003e#############################################################################\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#75715e\u0022\u003e############################### Preparations ################################\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#75715e\u0022\u003e#############################################################################\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#75715e\u0022\u003e# certbot is installed\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ewhich certbot
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#66d9ef\u0022\u003eif\u003c/span\u003e \u003cspan style=\u0022color:#f92672\u0022\u003e[[\u003c/span\u003e ! \$? -eq \u003cspan style=\u0022color:#ae81ff\u0022\u003e0\u003c/span\u003e \u003cspan style=\u0022color:#f92672\u0022\u003e]]\u003c/span\u003e; \u003cspan style=\u0022color:#66d9ef\u0022\u003ethen\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e    sudo apt install certbot -y
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#66d9ef\u0022\u003efi\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#75715e\u0022\u003e# open port 80 on proxmox firewall\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esed -i \u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#34;/\\[RULES\\]/a \u003c/span\u003e\$rule\u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#34;\u003c/span\u003e /etc/pve/firewall/cluster.fw
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo pve-firewall stop
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo pve-firewall start
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#75715e\u0022\u003e#############################################################################\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#75715e\u0022\u003e################################ Main Script ################################\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#75715e\u0022\u003e#############################################################################\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#75715e\u0022\u003e# renew cert\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e/usr/bin/certbot renew \u0026gt;\u0026gt; \$logfile
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#75715e\u0022\u003e# delete the old cert\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003erm -rf /etc/pve/local/pve-ssl.pem
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003erm -rf /etc/pve/local/pve-ssl.key
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003erm -rf /etc/pve/pve-root-ca.pem
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#75715e\u0022\u003e# copy the renewed one to the correct location\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ecp /etc/letsencrypt/live/\$domain/fullchain.pem /etc/pve/local/pve-ssl.pem
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ecp /etc/letsencrypt/live/\$domain/privkey.pem /etc/pve/local/pve-ssl.key
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ecp /etc/letsencrypt/live/\$domain/chain.pem /etc/pve/pve-root-ca.pem
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#75715e\u0022\u003e#############################################################################\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#75715e\u0022\u003e################################## Cleanup ##################################\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#75715e\u0022\u003e#############################################################################\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#75715e\u0022\u003e# close port 80 on proxmox firewall\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esed -i \u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#34;s/\u003c/span\u003e\$rule\u003cspan style=\u0022color:#e6db74\u0022\u003e//g\u0026#34;\u003c/span\u003e /etc/pve/firewall/cluster.fw
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo pve-firewall stop
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo pve-firewall start
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#75715e\u0022\u003e# postprocessing - restart pveproxy\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esystemctl restart pveproxy
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003ch3 id=\u0022ssh-configuration\u0022\u003eSSH Configuration\u003c/h3\u003e
+\u003cp\u003eFor security the following settings were applied in OpenSSH config:\u003c/p\u003e
+\u003ctable\u003e
+\u003cthead\u003e
+\u003ctr\u003e
+\u003cth style=\u0022text-align:left\u0022\u003eOption\u003c/th\u003e
+\u003cth style=\u0022text-align:left\u0022\u003eValue\u003c/th\u003e
+\u003c/tr\u003e
+\u003c/thead\u003e
+\u003ctbody\u003e
+\u003ctr\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003ePort\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003e59245\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003ePubkeyAuthentication\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eyes\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003ePasswordAuthentication\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eno\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003ePermitEmptyPasswords\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eno\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003ePermitRootLogin\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eno\u003c/td\u003e
+\u003c/tr\u003e
+\u003c/tbody\u003e
+\u003c/table\u003e
+\u003cp\u003eThis requires that you have an admin user other than \u003ccode\u003eroot\u003c/code\u003e which has an ssh-key configured.\u003c/p\u003e
+\u003ch3 id=\u0022user-management\u0022\u003eUser Management\u003c/h3\u003e
+\u003cp\u003eI recommend you disable Root Login to the Proxmox UI by disabling the Root user.\u003c/p\u003e
+\u003cp\u003eFor admin users it\u0026rsquo;s recommended to add some sort of 2FA (e.q using TOTP or Yubikeys)\u003c/p\u003e
+\u003cp\u003eMore documentation from Proxmox: \u003ca href=\u0022https://pve.proxmox.com/wiki/User_Management\u0022\u003ehttps://pve.proxmox.com/wiki/User_Management\u003c/a\u003e\u003c/p\u003e
+\u003ch3 id=\u0022hetzner-storagebox\u0022\u003eHetzner StorageBox\u003c/h3\u003e
+\u003cp\u003eIf you but a dedicated root server you get an additional 100GB Storagebox for free. I use this to store my ISOs and Container images. You can add the storage to your server at datacenter level in the UI.\u003c/p\u003e
+\u003cp\u003eUse the following options\u003c/p\u003e
+\u003ctable\u003e
+\u003cthead\u003e
+\u003ctr\u003e
+\u003cth style=\u0022text-align:left\u0022\u003eOption\u003c/th\u003e
+\u003cth style=\u0022text-align:left\u0022\u003eValue\u003c/th\u003e
+\u003c/tr\u003e
+\u003c/thead\u003e
+\u003ctbody\u003e
+\u003ctr\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eID\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eremote-cifs\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eServer\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eu253012.your-storagebox.de\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eUser\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eu253012\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003ePW\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003econcealed\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eContent\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eAll except containers and disk images\u003c/td\u003e
+\u003c/tr\u003e
+\u003c/tbody\u003e
+\u003c/table\u003e
+\u003ch3 id=\u0022local-data\u0022\u003elocal-data\u003c/h3\u003e
+\u003cp\u003eWhile ordering the server I added 2 additional 1TB SATA drives for data disks of VMs. In the ZFS tab on the host I created a data store out of them:\u003c/p\u003e
+\u003ctable\u003e
+\u003cthead\u003e
+\u003ctr\u003e
+\u003cth style=\u0022text-align:left\u0022\u003eOption\u003c/th\u003e
+\u003cth style=\u0022text-align:left\u0022\u003eValue\u003c/th\u003e
+\u003c/tr\u003e
+\u003c/thead\u003e
+\u003ctbody\u003e
+\u003ctr\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eName\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003elocal-data\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eZFS ashift\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003e12\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eType\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eMirror\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eZFS compress\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eon\u003c/td\u003e
+\u003c/tr\u003e
+\u003c/tbody\u003e
+\u003c/table\u003e
+\u003ch3 id=\u0022apt-repositories-configuration\u0022\u003eAPT Repositories Configuration\u003c/h3\u003e
+\u003cp\u003eIn most cases we don\u0026rsquo;t have a license for the Proxmox Enterprise Repositories. To avoid annoying Error messages when doing \u003ccode\u003esudo apt update\u003c/code\u003e we can disable the enterprise repo. Delete the single line within \u003ccode\u003e/etc/apt/sources.list.d/pve-enterprise.list\u003c/code\u003e.\u003c/p\u003e
+\u003cp\u003eIf we do that we need to add the non-enterprise proxmox repositories as well as the \u003ca href=\u0022https://docs.hetzner.com/robot/dedicated-server/operating-systems/hetzner-aptitude-mirror/\u0022\u003eHetzner APT mirrors\u003c/a\u003e.\u003c/p\u003e
+\u003cp\u003eMy \u003ccode\u003e/etc/apt/sources.list\u003c/code\u003e looks like that at the end:\u003c/p\u003e
+\u003cpre tabindex=\u00220\u0022\u003e\u003ccode\u003e# Packages and Security Updates from the Hetzner Debian Mirror
+deb https://mirror.hetzner.com/debian/packages  bullseye           main contrib non-free
+deb https://mirror.hetzner.com/debian/packages  bullseye-updates   main contrib non-free
+deb https://mirror.hetzner.com/debian/security  bullseye-security  main contrib non-free
+deb https://mirror.hetzner.com/debian/packages  bullseye-backports main contrib non-free
+
+# Offizial Debian Bullseye Repositories (fallback)
+deb http://deb.debian.org/debian               bullseye          main non-free contrib
+deb http://deb.debian.org/debian               bullseye-updates  main non-free contrib
+deb http://security.debian.org/debian-security bullseye-security main contrib non-free
+
+# proxmox updates
+deb http://download.proxmox.com/debian buster pve-no-subscription
+\u003c/code\u003e\u003c/pre\u003e\u003ch3 id=\u0022proxmox-firewall\u0022\u003eProxmox Firewall\u003c/h3\u003e
+\u003cp\u003eNow we can enable the Proxmox firewall. Default in-Policy is Drop and then I added the following rules at datacenter level:\u003c/p\u003e
+\u003ctable\u003e
+\u003cthead\u003e
+\u003ctr\u003e
+\u003cth style=\u0022text-align:left\u0022\u003eDirection\u003c/th\u003e
+\u003cth style=\u0022text-align:left\u0022\u003eAction\u003c/th\u003e
+\u003cth style=\u0022text-align:left\u0022\u003eInterface\u003c/th\u003e
+\u003cth style=\u0022text-align:left\u0022\u003eSource-IP\u003c/th\u003e
+\u003cth style=\u0022text-align:left\u0022\u003eDest-IP\u003c/th\u003e
+\u003cth style=\u0022text-align:left\u0022\u003eMacro\u003c/th\u003e
+\u003cth style=\u0022text-align:left\u0022\u003eProtocol\u003c/th\u003e
+\u003cth style=\u0022text-align:left\u0022\u003eSource-Port\u003c/th\u003e
+\u003cth style=\u0022text-align:left\u0022\u003eDest-Port\u003c/th\u003e
+\u003cth style=\u0022text-align:left\u0022\u003eLogLevel\u003c/th\u003e
+\u003c/tr\u003e
+\u003c/thead\u003e
+\u003ctbody\u003e
+\u003ctr\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003ein\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eACCEPT\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003evmbr0\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eany\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003e135.191.162.151\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003e-\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eicmp\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eany\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eany\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003enolog\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003ein\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eACCEPT\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003evmbr0\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eany\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003e135.181.162.151\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003e-\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003etcp\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eany\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003e8006\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003ecritical\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003ein\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eACCEPT\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003evmbr0\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eany\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003e135.181.162.151\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003e-\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003etcp\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003eany\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003e59245\u003c/td\u003e
+\u003ctd style=\u0022text-align:left\u0022\u003ecritical\u003c/td\u003e
+\u003c/tr\u003e
+\u003c/tbody\u003e
+\u003c/table\u003e
+\u003cp\u003eNo rules at host level.\u003c/p\u003e
+\u003ch3 id=\u0022fail2ban\u0022\u003eFail2ban\u003c/h3\u003e
+\u003cp\u003eI recommend you configure fail2ban for your server. The following article may help: \u003ca href=\u0022https://www.ukhost4u.com/securing-proxmox-and-ssh-using-fail2ban/\u0022\u003ehttps://www.ukhost4u.com/securing-proxmox-and-ssh-using-fail2ban/\u003c/a\u003e\u003c/p\u003e
+\u003ch2 id=\u0022further-reading\u0022\u003eFurther Reading\u003c/h2\u003e
+\u003cp\u003eNote: After a while your memory may be filled up without using it. This is because of disk caching. See \u003ca href=\u0022https://www.linuxatemyram.com/\u0022\u003ehttps://www.linuxatemyram.com/\u003c/a\u003e\u003c/p\u003e
+\u003cul\u003e
+\u003cli\u003e\u003ca href=\u0022https://docs.hetzner.com/robot/dedicated-server/ip/additional-ip-adresses/\u0022\u003eNetwork Configuration Hetzner\u003c/a\u003e\u003c/li\u003e
+\u003cli\u003e\u003ca href=\u0022https://community.hetzner.com/tutorials/install-and-configure-proxmox_ve\u0022\u003eOther Community Guide installing proxmox on hetzner dedicated\u003c/a\u003e\u003c/li\u003e
+\u003c/ul\u003e
+\u003c/span\u003e`,"activity-content",contentDelay)};typeeffetct()</script></div><span class=navFull><span><a href=/>Home</a>
+<span>&#8192;|&#8192;</span>
+<a href=./..>/linux/</a></span>
+<span class=navCredits>Hugo theme created by
+<a href=https://github.com/Yukuro/hugo-theme-shell target=_blank rel=noopener>Yukuro</a></span></span></body></html>

@@ -1,0 +1,147 @@
+<!doctype html><html lang=en-us><head><title>minecraft_server</title><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content><style>@import "https://fonts.googleapis.com/css2?family=Inconsolata&display=swap";:root{--cursor-visibility:hidden}html,body{width:100%;height:100%;overflow:auto;font-family:inconsolata,monospace;font-size:4vmin;line-height:4.1vmin;font-weight:400}body{margin:0;display:flex;flex-direction:row;justify-content:center;align-items:center}#content{min-width:82vmin;min-height:82vmin}::-webkit-scrollbar{width:10px}::-webkit-scrollbar-track{border-radius:10px;box-shadow:inset 0 0 1px white}::-webkit-scrollbar-thumb{border-radius:10px;box-shadow:0 0 0 1px white}.cursor,#activity-title:after,#activity-content:after,#cd:after,#whoami:after,#cat:after,#tree:after{visibility:var(--cursor-visibility);content:"|";overflow:hidden;color:#fff;animation:blink 500ms linear infinite alternate}@keyframes blink{0%{opacity:0}100%{opacity:1}}@media only screen and (min-width:768px){body{font-size:2.5vmin;line-height:2.6vmin}#content{min-width:60vmin}}:root{--cursor-visibility:hidden}body{align-items:unset;overflow-y:scroll}#content{max-width:80vmin}pre{overflow-x:scroll;white-space:pre}@keyframes blink{0%{opacity:0}100%{opacity:1}}body{background:#002b36}body #terminal{color:#839496}body #user{color:#859900}body #dir{color:#268bd2}body .Typewriter__cursor{color:#839496}a{color:#839496}.navFull{background-color:#353535;font-family:courier new;font-size:17px;display:inline;position:fixed;bottom:0;left:0;width:100%;padding-top:5px;padding:10px;padding-bottom:0}.navCredits{float:right;padding-right:18px;padding-bottom:10px;padding-top:5px}#content::after{content:"\a\a";white-space:pre}</style></head><body><div id=content><span id=activity-title></span><br><span id=activity-content></span><br><script type=text/javascript>async function typewriter(e,t,n){var s=0,o=!1;addText="";const i=document.getElementById(t),a=()=>new Promise(e=>setTimeout(e,n)),r=()=>new Promise(e=>e()),c=()=>i.innerHTML=e.slice(0,s+1)+addText,l=document.createElement("span");for(l.id="blink",i.style.setProperty("--cursor-visibility","visible");s<e.length;){if(e.charAt(s+1)==="<"&&(o=!0),e.charAt(s+1)===">"&&(o=!1),o){s++;continue}requestAnimationFrame(c),n===0?await r():await a(),s++}i.style.setProperty("--cursor-visibility","collapse")}function parseDelay(e){const t=parseInt(e,10);return isNaN(t)?0:t}const titleDelay=parseDelay("0"),contentDelay=parseDelay("0"),typeeffetct=async()=>{await typewriter("\u003cspan id=\u0027terminal\u0027\u003e\u003ch1 id=\u0027title\u0027\u003eminecraft_server\u003c/h1\u003e\u003c/span\u003e","activity-title",titleDelay),await typewriter(`\u003cspan id=\u0027terminal\u0027\u003e\u003ch2 id=\u0022einleitung\u0022\u003eEinleitung\u003c/h2\u003e
+\u003cp\u003eDiese Anleitung zeigt wie der offiziele Minecraft Server (Java-Edition) von Mojang sowohl auf Windows als auch auf Linux installiert wird.\u003c/p\u003e
+\u003ch2 id=\u0022vorbedingungen\u0022\u003eVorbedingungen\u003c/h2\u003e
+\u003cp\u003eDie folgenden Annahmen / Rahmenbedingungen werden getroffen / angenommen für diese Anleitung:\u003c/p\u003e
+\u003cul\u003e
+\u003cli\u003eEin Server (Windows/Linux) wurde bereits erstellt und man kann mittels SSH/RDP darauf verbinden\u003c/li\u003e
+\u003cli\u003eDer Server hat eine öffentliche IP Adresse oder Port 25565 TCP/UDP wurde mittels Port-Forwarding freigeschaltet\u003c/li\u003e
+\u003cli\u003eDer Server ist pingbar im Internet (ICMP traffic erlaubt)\u003c/li\u003e
+\u003cli\u003eDer Server ist aktualisiert und gepatched\u003c/li\u003e
+\u003c/ul\u003e
+\u003ch2 id=\u0022windows\u0022\u003eWindows\u003c/h2\u003e
+\u003ch3 id=\u0022java\u0022\u003eJava\u003c/h3\u003e
+\u003cp\u003eDer Minecraft Server ist in Java geschrieben. Das bedeutet das wir das Java Runtime Environment installieren müssen. Dieses kannst du \u003ca href=\u0022https://www.java.com/de/download/\u0022\u003ehier\u003c/a\u003e herunterladen, doppelklicken und installieren. \u003c/p\u003e
+\u003cp\u003eZusätzlich zum JRE benötigen die neueren Versionen des Minecraft Server neu auch das JDK (Java Development Kit). Siehe \u003ca href=\u0022https://www.sportskeeda.com/minecraft/how-fix-jni-error-java-edition-setting-minecraft-server\u0022\u003ehier\u003c/a\u003e für eine Erklärung wieso das so ist. Herunterladen kannst du das JDK \u003ca href=\u0022https://www.oracle.com/java/technologies/downloads/#jdk18-windows\u0022\u003ehier\u003c/a\u003e (x64 Installer). Mit einem doppelklick installierst du das JDK auf dem Server.\u003c/p\u003e
+\u003cp\u003eDanach solltest du den Server kurz neu starten.\u003c/p\u003e
+\u003cp\u003eSobald du wieder mit dem Server verbunden bist, öffne mittels Windows\u002bR ein \u003ccode\u003ecmd.exe\u003c/code\u003e und prüfe welche Java Version installiert ist:\u003c/p\u003e
+\u003cp\u003e\u003cimg src=\u0022/java-version.png\u0022 alt=\u0022\u0022\u003e\u003c/p\u003e
+\u003cp\u003eWenn du einen Output bekommst, weisst du das Java korrekt installiert wurde. Wenn es etwas heisst von \u0026ldquo;Java executable konnte nicht gefunden werden\u0026rdquo;, stimmt etwas mit der Java-Installation noch nicht und du musst nochmals über die Bücher.\u003c/p\u003e
+\u003ch3 id=\u0022minecraft-server-download\u0022\u003eMinecraft Server download\u003c/h3\u003e
+\u003cp\u003eSobald java installiert ist, können wir uns den Minecraft Server herunterladen. Doch zuerst erstelle dir einen Ordner im Pfad \u003ccode\u003eC:\\Program Files\\MinecraftServer\u003c/code\u003e. Danach gehst du auf \u003ca href=\u0022http://www.minecraft.net/de-de/download/server\u0022\u003ediese Website\u003c/a\u003e und lädst dir die \u003ccode\u003e.jar\u003c/code\u003e Datei herunter und verschiebst sie in den vorher erstellen Ordner.\u003c/p\u003e
+\u003cp\u003eBeachte: Du lädst hier eine \u003ccode\u003e.jar\u003c/code\u003e Datei direkt herunter, der Windows Defener oder dein Browser werden dir sehr wahrscheinlich melden das diese Datei potenziel schädlich ist für deinen Computer. Diese Warnung kannst du getrost ignorieren.\u003c/p\u003e
+\u003cp\u003eIm Anschluss sollte das ganze so aussehen:\u003c/p\u003e
+\u003cp\u003e\u003cimg src=\u0022/server_download.png\u0022 alt=\u0022\u0022\u003e\u003c/p\u003e
+\u003ch3 id=\u0022minecraft-server-eula\u0022\u003eMinecraft Server eula\u003c/h3\u003e
+\u003cp\u003eSobald die .jar Datei dort ist wo sie sein sollte, kannst du sie mit einem Doppelklick starten. Dabei werden verschiedene Dateien und Ordner im aktuellen Verzeichnis erstellt und der Server wieder beendet. Nachher sieht dein Minecraft Ordner so aus:\u003c/p\u003e
+\u003cp\u003e\u003cimg src=\u0022/server_initialisieren.png\u0022 alt=\u0022\u0022\u003e\u003c/p\u003e
+\u003cp\u003eDu solltest nun eine Datei namens \u003ccode\u003eeula.txt\u003c/code\u003e im aktuellen Verzeichnis finden. Diese musst du öffnen (am besten mit Notepad) und den Wert von \u003ccode\u003efalse\u003c/code\u003e auf \u003ccode\u003etrue\u003c/code\u003e setzten:\u003c/p\u003e
+\u003cp\u003e\u003cimg src=\u0022/eula.png\u0022 alt=\u0022\u0022\u003e\u003c/p\u003e
+\u003cp\u003eSpeichere das ganze wieder und schliesse Notepad.\u003c/p\u003e
+\u003ch3 id=\u0022minecraft-server-starten\u0022\u003eMinecraft Server starten\u003c/h3\u003e
+\u003cp\u003eNun ist mehr oder weniger alles soweit, dass der Minecraft Server gestartet werden kann. Damit wir beim Start des Servers gewisse Optionen mitgeben können, schreiben wir einen \u0026ldquo;Wrapper\u0026rdquo; für das \u003ccode\u003e.jar\u003c/code\u003e in Form einer \u003ccode\u003e.bat\u003c/code\u003e Datei.\u003c/p\u003e
+\u003cp\u003eÖffne Notepad, erstelle eine neue Datei und kopiere folgende Zeile hinein:\u003c/p\u003e
+\u003cp\u003e\u003cimg src=\u0022/start_bat.png\u0022 alt=\u0022\u0022\u003e\u003c/p\u003e
+\u003cp\u003eBeachte: Die 1024M in diesem Befehl sagen Java wie viel Memory Java haben darf. Je nachdem wie viel Memory dein Server hat kannst du Java mehr als \u003ccode\u003e1024M\u003c/code\u003e geben. Mein Server hat 16GB Memory und ich habe Java \u003ccode\u003e8192M\u003c/code\u003e Memory zugewiesen. Dies hilft, damit auch mehrere Spieler flüssig gleichzeitig spielen können.\u003c/p\u003e
+\u003cp\u003eDanach speichere die Datei ab: Gib ihr den namen \u003ccode\u003estart.bat\u003c/code\u003e. Unter dem Dateinamen gibst du als Typ \u0026ldquo;Alle Dateien\u0026rdquo; an und die Codierung sollte \u003ccode\u003eANSI\u003c/code\u003e sein:\u003c/p\u003e
+\u003cp\u003e\u003cimg src=\u0022/start_bat_save_as.png\u0022 alt=\u0022\u0022\u003e\u003c/p\u003e
+\u003cp\u003eDanach kannst du die Datei \u003ccode\u003estart.bat\u003c/code\u003e mit einem Doppelklick ausführen. Dadurch wird der Minecraft Server gestartet, es öffnet sich ein CMD fenster und der Server fängt an seine Welt aufzubauen:\u003c/p\u003e
+\u003cp\u003e\u003cimg src=\u0022/server_spawn_area.png\u0022 alt=\u0022\u0022\u003e\u003c/p\u003e
+\u003ch3 id=\u0022windows-firewall-öffnen\u0022\u003eWindows Firewall öffnen\u003c/h3\u003e
+\u003cp\u003eAls letztes müssen wir noch die Windows Firewall des Servers öffnen, damit Port 25565 TCP/UDP hineingelassen wird.\u003c/p\u003e
+\u003cp\u003eSuche in der Windows Suche nach \u0026ldquo;firewall with\u0026rdquo; und öffne den ersten Treffer:\u003c/p\u003e
+\u003cp\u003e\u003cimg src=\u0022/search_firewall.png\u0022 alt=\u0022\u0022\u003e\u003c/p\u003e
+\u003cp\u003e Links in der Spalte sollte es irgendwo ein Reiter \u0026ldquo;Inbound Rules\u0026rdquo; haben. Klicke darauf, damit sich die Übersicht mit allen Regeln öffnet:\u003c/p\u003e
+\u003cp\u003e\u003cimg src=\u0022/inbound_rules.png\u0022 alt=\u0022\u0022\u003e\u003c/p\u003e
+\u003cp\u003eWenn du da bist, machst du einen Rechtsklick auf “Inbound Rules” und wählst “New Rule …”. Im sich öffnenden Dialog gibst du dann die folgenden Werte ein:\u003c/p\u003e
+\u003cp\u003eRule Type: Port\u003c/p\u003e
+\u003cp\u003eProtocol and Ports: TCP, 25565
+Action: Allow the connection\u003c/p\u003e
+\u003cp\u003eProfile: Alles angekreuzt
+Name: \u0026ldquo;Minecraft Server (TCP)\u0026rdquo;\u003c/p\u003e
+\u003cp\u003eDie gleiche Rule erstellt du ein zweites mal, diesmal aber für UDP, 25565.\u003c/p\u003e
+\u003cp\u003eDie Rule sieht dann etwa so aus:\u003c/p\u003e
+\u003cp\u003e\u003cimg src=\u0022/minecraft_fw_rule.png\u0022 alt=\u0022\u0022\u003e\u003c/p\u003e
+\u003ch3 id=\u0022testen\u0022\u003eTesten\u003c/h3\u003e
+\u003cp\u003eNun ist es soweit! Öffne Minecraft auf deinem Laptop, wähle Multiplayer und füge den Server zu deiner Liste hinzu.\u003c/p\u003e
+\u003ch2 id=\u0022linux\u0022\u003eLinux\u003c/h2\u003e
+\u003cp\u003eDa du nun bereits den Minecraft Server auf Windows aufgesetzt hast, können wir einen Schritt weiter gehen. \u003c/p\u003e
+\u003cp\u003eLinux ist wie Windows ein Betriebssystem, welches man mit und auch ohne einer grafischen Benutzeroberfläche wählen kann. \u003c/p\u003e
+\u003cp\u003eWie du es bereits ahnen kannst, werden wir dies nun ohne Benutzeroberfläche tun. Wie das geht? Wirst du gleich sehen!\u003c/p\u003e
+\u003cp\u003e\u003cimg src=\u0022https://wikit.post.ch/s/mrdsxn/8703/51k4y0/_/images/icons/emoticons/smile.svg\u0022 alt=\u0022(smile)\u0022\u003e\u003c/p\u003e
+\u003ch3 id=\u0022vm-auf-den-neusten-stand-bringen\u0022\u003eVM auf den neusten Stand bringen\u003c/h3\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-plaintext\u0022 data-lang=\u0022plaintext\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo apt update \u0026amp;\u0026amp; sudo apt upgrade -y
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003e\u003cimg src=\u0022https://wikit.post.ch/download/attachments/919612584/image2022-6-18_9-31-56.png?version=1\u0026amp;modificationDate=1655537517000\u0026amp;api=v2\u0022 alt=\u0022\u0022\u003e\u003c/p\u003e
+\u003ch3 id=\u0022java-installieren\u0022\u003eJava installieren\u003c/h3\u003e
+\u003cp\u003eWie bei Windows mussen wir auch hier Java installieren:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-plaintext\u0022 data-lang=\u0022plaintext\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo apt install openjdk-17-jre-headless -y
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003e\u003cimg src=\u0022https://wikit.post.ch/download/attachments/919612584/image2022-6-18_9-38-25.png?version=1\u0026amp;modificationDate=1655537905000\u0026amp;api=v2\u0022 alt=\u0022\u0022\u003e\u003c/p\u003e
+\u003cp\u003eUm sicherzustellen, dass Java installier ist, kannst du versuchen die Version von Java herauszugeben:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-plaintext\u0022 data-lang=\u0022plaintext\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ejava -version
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eDies sollte in etwa so aussehen:\u003c/p\u003e
+\u003cp\u003e\u003cimg src=\u0022https://wikit.post.ch/download/attachments/919612584/image2022-6-18_9-39-56.png?version=1\u0026amp;modificationDate=1655537996000\u0026amp;api=v2\u0022 alt=\u0022\u0022\u003e\u003c/p\u003e
+\u003ch3 id=\u0022benutzer-minecraft-erstellen\u0022\u003eBenutzer “Minecraft” erstellen\u003c/h3\u003e
+\u003cp\u003eDamit wir einen eigenen Benutzer für unser spiel haben, erstellen wir doch gleich einen:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-plaintext\u0022 data-lang=\u0022plaintext\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo useradd -r -m -U -d /opt/minecraft -s /bin/bash minecraft
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eMerke dir, bei Linux heisst es: Keine Antwort ist eine gute Antwort\u003c/p\u003e
+\u003cp\u003e\u003cimg src=\u0022https://wikit.post.ch/download/attachments/919612584/image2022-6-18_9-50-34.png?version=1\u0026amp;modificationDate=1655538634000\u0026amp;api=v2\u0022 alt=\u0022\u0022\u003e\u003c/p\u003e
+\u003cp\u003eMelde dich nun mit dem Benutzer an:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-plaintext\u0022 data-lang=\u0022plaintext\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esu - minecraft
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eWie du siehst, hat sich nun den Benutzer gewechselt:\u003c/p\u003e
+\u003cp\u003e\u003cimg src=\u0022https://wikit.post.ch/download/attachments/919612584/image2022-6-18_9-52-0.png?version=1\u0026amp;modificationDate=1655538720000\u0026amp;api=v2\u0022 alt=\u0022\u0022\u003e\u003c/p\u003e
+\u003ch3 id=\u0022minecraft-server-herunterladen\u0022\u003eMinecraft Server herunterladen\u003c/h3\u003e
+\u003cp\u003eOrdner erstellen und diesen öffnen:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-plaintext\u0022 data-lang=\u0022plaintext\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003emkdir -p ~/server \u0026amp;\u0026amp; cd ~/server
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eNun laden wir uns den Minecraft Server herunter: \u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-plaintext\u0022 data-lang=\u0022plaintext\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ewget https://launcher.mojang.com/v1/objects/e00c4052dac1d59a1188b2aa9d5a87113aaf1122/server.jar
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003e\u003cimg src=\u0022https://wikit.post.ch/download/attachments/919612584/image2022-6-18_9-58-37.png?version=1\u0026amp;modificationDate=1655539117000\u0026amp;api=v2\u0022 alt=\u0022\u0022\u003e\u003c/p\u003e
+\u003cp\u003e→ Die neuste Version findest du für in Zukunft immer hier: \u003ca href=\u0022https://www.minecraft.net/en-us/download/server\u0022\u003ehttps://www.minecraft.net/en-us/download/server\u003c/a\u003e\u003c/p\u003e
+\u003cp\u003eVersuchen wir einmal den Server zu starten\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-plaintext\u0022 data-lang=\u0022plaintext\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ejava -Xmx1024M -Xms512M -jar server.jar nogui
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eWie du aber in der untersten Zeile siehst, müssen wir auch hier wieder die EULA aktzeptieren: Mehr Informationen dazu findest du hier: \u003ca href=\u0022https://de.wikipedia.org/wiki/Endbenutzer-Lizenzvertrag\u0022\u003ehttps://de.wikipedia.org/wiki/Endbenutzer-Lizenzvertrag\u003c/a\u003e\u003c/p\u003e
+\u003cp\u003e\u003cimg src=\u0022https://wikit.post.ch/download/attachments/919612584/image2022-6-18_10-4-42.png?version=1\u0026amp;modificationDate=1655539482000\u0026amp;api=v2\u0022 alt=\u0022\u0022\u003e\u003c/p\u003e
+\u003ch3 id=\u0022eula-akzeptieren\u0022\u003eEULA akzeptieren\u003c/h3\u003e
+\u003cp\u003eUm die EULA zu aktzeptieren, müssen wir folgenden Befehl ausführen: \u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-plaintext\u0022 data-lang=\u0022plaintext\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esed -i -e \u0026#39;s/false/true/g\u0026#39; eula.txt
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eDamit setzten wir in der Text Datei namens eula.txt den Wert \u0026ldquo;false\u0026rdquo; auf \u0026ldquo;true\u0026rdquo;\u003c/p\u003e
+\u003ch3 id=\u0022server-starten\u0022\u003eServer starten\u003c/h3\u003e
+\u003cp\u003eNun könne wir bereits den Server erneut starten und anfangen zu gamen:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-plaintext\u0022 data-lang=\u0022plaintext\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ejava -Xmx1024M -Xms512M -jar server.jar nogui
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eDoch leider müssen wir jedesmal wenn wir den Server neustarten diesen Befehl selbst ausführen. In der Informatik wollen wir alles automatisch haben, Somit werden wir dies automatisieren!\u003c/p\u003e
+\u003ch3 id=\u0022service-erstellen\u0022\u003eService erstellen\u003c/h3\u003e
+\u003cp\u003eNun erstellen wir eine neue Datei, welche automatisch beim Start ausgeführt wird. Doch dies darf unser neuer Benutzer nicht tun. Somit melden wir uns wieder mit dem Benutzer ab:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-plaintext\u0022 data-lang=\u0022plaintext\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eexit
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eNun erstellen wir die Datei:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-plaintext\u0022 data-lang=\u0022plaintext\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003enano /etc/systemd/system/minecraft.service
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eNun hat sich die neue Datei geöffnet und wir können folgendes hinein kopieren:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-plaintext\u0022 data-lang=\u0022plaintext\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e[Unit]
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eDescription=Minecraft Server
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eAfter=network.target
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e[Service]
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eUser=minecraft
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eNice=1
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eKillMode=none
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eSuccessExitStatus=0 1
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eProtectHome=true
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eProtectSystem=full
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ePrivateDevices=true
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eNoNewPrivileges=true
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eWorkingDirectory=/opt/minecraft/server
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eExecStart=/usr/bin/java -Xmx1024M -Xms512M -jar server.jar nogui
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e[Install]
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eWantedBy=multi-user.target
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eDies sollte nun so aussehen:\u003c/p\u003e
+\u003cp\u003e\u003cimg src=\u0022https://wikit.post.ch/download/attachments/919612584/image2022-6-18_10-13-49.png?version=1\u0026amp;modificationDate=1655540029000\u0026amp;api=v2\u0022 alt=\u0022\u0022\u003e\u003c/p\u003e
+\u003cp\u003eSpeichere die Datei mit: ctrl \u002b x → y → Entertaste\u003c/p\u003e
+\u003cp\u003eLassen den Server die Datei neu finden: \u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-plaintext\u0022 data-lang=\u0022plaintext\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo systemctl daemon-reload
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eLassen die Datei (service) automatisch starten: \u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-plaintext\u0022 data-lang=\u0022plaintext\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo systemctl enable minecraft
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eStarte die Datei (service) das letzte Mal manuell: \u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-plaintext\u0022 data-lang=\u0022plaintext\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo systemctl start minecraft
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eSchaue, ob der Service Minecraft läuft:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-plaintext\u0022 data-lang=\u0022plaintext\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo systemctl status minecraft
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003e\u003cimg src=\u0022https://wikit.post.ch/download/attachments/919612584/image2022-6-18_10-16-20.png?version=1\u0026amp;modificationDate=1655540180000\u0026amp;api=v2\u0022 alt=\u0022\u0022\u003e\u003c/p\u003e
+\u003cp\u003eWenn hier \u0026ldquo;active (running)\u0026rdquo; in grün steht, hast du es geschafft! Gratullation! \u003c/p\u003e
+\u003cp\u003eVerbinde dich nun mit dem Server und teste dein Server\u003c/p\u003e
+\u003ch2 id=\u0022further-reading\u0022\u003eFurther Reading\u003c/h2\u003e
+\u003cul\u003e
+\u003cli\u003e\u003ca href=\u0022https://www.pcwelt.de/a/so-setzen-sie-ihren-eigenen-minecraft-server-auf,3450161\u0022\u003ehttps://www.pcwelt.de/a/so-setzen-sie-ihren-eigenen-minecraft-server-auf,3450161\u003c/a\u003e\u003c/li\u003e
+\u003cli\u003e\u003ca href=\u0022https://minecraft.fandom.com/de/wiki/Anleitungen/Server_erstellen/Windows\u0022\u003ehttps://minecraft.fandom.com/de/wiki/Anleitungen/Server_erstellen/Windows\u003c/a\u003e\u003c/li\u003e
+\u003c/ul\u003e
+\u003c/span\u003e`,"activity-content",contentDelay)};typeeffetct()</script></div><span class=navFull><span><a href=/>Home</a>
+<span>&#8192;|&#8192;</span>
+<a href=./..>/linux/</a></span>
+<span class=navCredits>Hugo theme created by
+<a href=https://github.com/Yukuro/hugo-theme-shell target=_blank rel=noopener>Yukuro</a></span></span></body></html>

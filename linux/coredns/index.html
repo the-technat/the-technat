@@ -1,0 +1,503 @@
+<!doctype html><html lang=en-us><head><title>coredns</title><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content><style>@import "https://fonts.googleapis.com/css2?family=Inconsolata&display=swap";:root{--cursor-visibility:hidden}html,body{width:100%;height:100%;overflow:auto;font-family:inconsolata,monospace;font-size:4vmin;line-height:4.1vmin;font-weight:400}body{margin:0;display:flex;flex-direction:row;justify-content:center;align-items:center}#content{min-width:82vmin;min-height:82vmin}::-webkit-scrollbar{width:10px}::-webkit-scrollbar-track{border-radius:10px;box-shadow:inset 0 0 1px white}::-webkit-scrollbar-thumb{border-radius:10px;box-shadow:0 0 0 1px white}.cursor,#activity-title:after,#activity-content:after,#cd:after,#whoami:after,#cat:after,#tree:after{visibility:var(--cursor-visibility);content:"|";overflow:hidden;color:#fff;animation:blink 500ms linear infinite alternate}@keyframes blink{0%{opacity:0}100%{opacity:1}}@media only screen and (min-width:768px){body{font-size:2.5vmin;line-height:2.6vmin}#content{min-width:60vmin}}:root{--cursor-visibility:hidden}body{align-items:unset;overflow-y:scroll}#content{max-width:80vmin}pre{overflow-x:scroll;white-space:pre}@keyframes blink{0%{opacity:0}100%{opacity:1}}body{background:#002b36}body #terminal{color:#839496}body #user{color:#859900}body #dir{color:#268bd2}body .Typewriter__cursor{color:#839496}a{color:#839496}.navFull{background-color:#353535;font-family:courier new;font-size:17px;display:inline;position:fixed;bottom:0;left:0;width:100%;padding-top:5px;padding:10px;padding-bottom:0}.navCredits{float:right;padding-right:18px;padding-bottom:10px;padding-top:5px}#content::after{content:"\a\a";white-space:pre}</style></head><body><div id=content><span id=activity-title></span><br><span id=activity-content></span><br><script type=text/javascript>async function typewriter(e,t,n){var s=0,o=!1;addText="";const i=document.getElementById(t),a=()=>new Promise(e=>setTimeout(e,n)),r=()=>new Promise(e=>e()),c=()=>i.innerHTML=e.slice(0,s+1)+addText,l=document.createElement("span");for(l.id="blink",i.style.setProperty("--cursor-visibility","visible");s<e.length;){if(e.charAt(s+1)==="<"&&(o=!0),e.charAt(s+1)===">"&&(o=!1),o){s++;continue}requestAnimationFrame(c),n===0?await r():await a(),s++}i.style.setProperty("--cursor-visibility","collapse")}function parseDelay(e){const t=parseInt(e,10);return isNaN(t)?0:t}const titleDelay=parseDelay("0"),contentDelay=parseDelay("0"),typeeffetct=async()=>{await typewriter("\u003cspan id=\u0027terminal\u0027\u003e\u003ch1 id=\u0027title\u0027\u003ecoredns\u003c/h1\u003e\u003c/span\u003e","activity-title",titleDelay),await typewriter(`\u003cspan id=\u0027terminal\u0027\u003e\u003ch2 id=\u0022server-preparations\u0022\u003eServer preparations\u003c/h2\u003e
+\u003ch3 id=\u0022dnsutils\u0022\u003eDNSUtils\u003c/h3\u003e
+\u003cp\u003eAs it is a DNS Server we want some tools to debug:\u003c/p\u003e
+\u003cpre tabindex=\u00220\u0022\u003e\u003ccode\u003esudo apt install dnsutils -y
+\u003c/code\u003e\u003c/pre\u003e\u003ch3 id=\u0022service-account\u0022\u003eService Account\u003c/h3\u003e
+\u003cp\u003eFor the coredns Service to run we need a system user:\u003c/p\u003e
+\u003cpre tabindex=\u00220\u0022\u003e\u003ccode\u003ecat \u0026lt;\u0026lt;EOF \u0026gt;/usr/lib/sysusers.d/coredns-sysusers.conf
+u coredns - \u0026#34;CoreDNS is a DNS server that chains plugins\u0026#34; /var/lib/coredns
+EOF
+\u003c/code\u003e\u003c/pre\u003e\u003ch3 id=\u0022tmp-files\u0022\u003eTMP Files\u003c/h3\u003e
+\u003cp\u003eAnd add a directory:\u003c/p\u003e
+\u003cpre tabindex=\u00220\u0022\u003e\u003ccode\u003ecat \u0026lt;\u0026lt;EOF \u0026gt;/usr/lib/tmpfiles.d/coredns-tmpfiles.conf
+d /var/lib/coredns 0755 coredns coredns -
+EOF
+\u003c/code\u003e\u003c/pre\u003e\u003ch2 id=\u0022installation\u0022\u003eInstallation\u003c/h2\u003e
+\u003cp\u003ePenguins are running \u003ca href=\u0022https://coredns.io/\u0022\u003e\$CoreDNS\u003c/a\u003e.\u003c/p\u003e
+\u003ch3 id=\u0022binary\u0022\u003eBinary\u003c/h3\u003e
+\u003cp\u003eFirst we need to get the binary on the system.
+Head over \u003ca href=\u0022https://github.com/coredns/coredns/releases/\u0022\u003ehere\u003c/a\u003e and copy the link for the newest \u003ccode\u003eamd64\u003c/code\u003e binary.\u003c/p\u003e
+\u003cp\u003eDownload on system:\u003c/p\u003e
+\u003cpre tabindex=\u00220\u0022\u003e\u003ccode\u003ewget https://github.com/coredns/coredns/releases/download/v1.8.4/coredns_1.8.4_linux_amd64.tgz
+tar -xzvf coredns_1.8.4_linux_amd64.tgz
+rm coredns_1.8.4_linux_amd64.tgz
+sudo mv coredns /usr/bin/
+sudo chown coredns:coredns /usr/bin/coredns
+sudo chmod 0755 /usr/bin/coredns
+\u003c/code\u003e\u003c/pre\u003e\u003ch3 id=\u0022directories\u0022\u003eDirectories\u003c/h3\u003e
+\u003cp\u003eAll right now that the binary is there we need to create some directories for coredns to store configuration:\u003c/p\u003e
+\u003cpre tabindex=\u00220\u0022\u003e\u003ccode\u003esudo mkdir -p /etc/coredns/zones
+sudo chown coredns:coredns /etc/coredns
+sudo chown coredns:coredns /etc/coredns/zones
+sudo chmod 755 /etc/coredns
+sudo chmod 755 /etc/coredns/zones
+\u003c/code\u003e\u003c/pre\u003e\u003ch3 id=\u0022systemd-service\u0022\u003esystemd-service\u003c/h3\u003e
+\u003cp\u003eLast thing to do is to create a systemd-unit file to run coredns:\u003c/p\u003e
+\u003cp\u003e\u003ccode\u003e/etc/systemd/system/coredns.service\u003c/code\u003e:\u003c/p\u003e
+\u003cpre tabindex=\u00220\u0022\u003e\u003ccode\u003e[Unit]
+Description=CoreDNS DNS server
+Documentation=https://coredns.io
+After=network.target
+
+[Service]
+PermissionsStartOnly=true
+LimitNOFILE=1048576
+LimitNPROC=512
+CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+NoNewPrivileges=true
+User=coredns
+WorkingDirectory=~
+ExecStart=/usr/bin/coredns -conf=/etc/coredns/Corefile
+ExecReload=/bin/kill -SIGUSR1 \$MAINPID
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+\u003c/code\u003e\u003c/pre\u003e\u003cp\u003ePermissions and apply:\u003c/p\u003e
+\u003cpre tabindex=\u00220\u0022\u003e\u003ccode\u003esudo chmod 0644 /etc/systemd/system/coredns.service
+sudo systemctl daemon-reload
+sudo systemctl enable --now coredns
+\u003c/code\u003e\u003c/pre\u003e\u003cp\u003eSource:  \u003ca href=\u0022https://github.com/coredns/deployment/blob/master/systemd/coredns.service\u0022\u003ehttps://github.com/coredns/deployment/blob/master/systemd/coredns.service\u003c/a\u003e
+Example: \u003ca href=\u0022https://aur.archlinux.org/cgit/aur.git/tree/coredns.service?h=coredns-bin\u0022\u003ehttps://aur.archlinux.org/cgit/aur.git/tree/coredns.service?h=coredns-bin\u003c/a\u003e\u003c/p\u003e
+\u003ch2 id=\u0022configuration\u0022\u003eConfiguration\u003c/h2\u003e
+\u003cp\u003eNow that coredns is Running we need to make a config file for it so that it  keeps running.\u003c/p\u003e
+\u003cp\u003eHere\u0026rsquo;s my config:\u003c/p\u003e
+\u003cpre tabindex=\u00220\u0022\u003e\u003ccode\u003e.:53 {
+
+  ###### General Settings ######
+  # log queries
+  log
+  # log errors
+  errors
+  # provide prometheus metrics
+  prometheus .:1053
+  # automatically reload the configuration from time to time
+  reload
+
+  ###### Serving DNS from file ######
+  # Assume that zone files are placed relative to this path
+  root /etc/coredns/zones
+
+  ### technat.lab ###
+  file db.technat.lab technat.lab
+
+  ### core.technat.lab ###
+  file db.core.technat.lab core.technat.lab
+  file db.111.168.192 111.168.192.in-addr.arpa
+
+  ### tools.technat.lab ###
+  file db.tools.technat.lab tools.technat.lab
+  file db.112.168.192 112.168.192.in-addr.arpa
+
+  ### apps.technat.lab ###
+  file db.apps.technat.lab apps.technat.lab
+  file db.113.168.192 113.168.192.in-addr.arpa
+
+  ### zoo.technat.lab ###
+  file db.zoo.technat.lab zoo.technat.lab
+  file db.114.168.192 114.168.192.in-addr.arpa
+
+  # Forward all (.) to Hetzner Recursive DNS (v4 \u0026amp;\u0026amp; v6)
+  forward . 213.133.98.98 213.133.99.99 213.133.100.100 2a01:4f8:0:1::add:1010 2a01:4f8:0:1::add:9999 2a01:4f8:0:1::add:9898 {
+    policy random
+  }
+	  ###### Primary function ######
+  # allow transfer of all zones to penguin-02
+  transfer . {
+    to 192.168.111.12
+  }
+}
+\u003c/code\u003e\u003c/pre\u003e\u003ch3 id=\u0022zone-files\u0022\u003eZone files\u003c/h3\u003e
+\u003cp\u003eBecause the zone files are all more or less the same I\u0026rsquo;ll just list the root technat.lab zone, and one forward / reverse zone of the others.\u003c/p\u003e
+\u003ch4 id=\u0022technatlab-zone\u0022\u003etechnat.lab Zone\u003c/h4\u003e
+\u003cpre tabindex=\u00220\u0022\u003e\u003ccode\u003e\$TTL    3600
+\$ORIGIN technat.lab.
+@    IN    SOA    technat.lab. technat.technat.ch. (
+             1          ; Serial
+             7200       ; Refresh
+             3600       ; Retry
+             1209600    ; Expire
+             3600       ; Negative Cache TTL
+)
+
+; name servers - NS-Records
+@    IN    NS    penguin-01.core.technat.lab.
+@    IN    NS    penguin-02.core.technat.lab.
+\u003c/code\u003e\u003c/pre\u003e\u003ch4 id=\u0022coretechnatlab-zone\u0022\u003ecore.technat.lab Zone\u003c/h4\u003e
+\u003cpre tabindex=\u00220\u0022\u003e\u003ccode\u003e\$TTL    3600
+\$ORIGIN core.technat.lab.
+@    IN    SOA    penguin-01.core.technat.lab. technat.technat.ch. (
+             1         ; Serial
+             7200      ; Refresh
+             3600      ; Retry
+             1209600   ; Expire
+             3600      ; Negative Cache TTL
+)
+
+; name servers - NS records
+@    IN    NS    penguin-01
+@    IN    NS    penguin-02
+
+; name servers - A records
+penguin-01       IN    A    192.168.111.11
+penguin-02       IN    A    192.168.111.12
+coconut          IN    A    192.168.111.1
+\u003c/code\u003e\u003c/pre\u003e\u003ch4 id=\u0022111168192in-addrarpa\u0022\u003e111.168.192.in-addr.arpa\u003c/h4\u003e
+\u003cpre tabindex=\u00220\u0022\u003e\u003ccode\u003e\$TTL    3600
+@    IN    SOA    penguin-01.core.technat.lab. technat.technat.ch. (
+             1         ; Serial
+             7200      ; Refresh
+             3600      ; Retry
+             1209600   ; Expire
+             3600      ; Negative Cache TTL
+)
+
+; name servers - NS records
+@    IN    NS    penguin-01
+@    IN    NS    penguin-02
+
+; PTR records
+11   IN    PTR   penguin-01
+12   IN    PTR   penguin-02
+1    IN    PTR   coconut
+\u003c/code\u003e\u003c/pre\u003e\u003ch4 id=\u0022toolstechnatlab-zone\u0022\u003etools.technat.lab zone\u003c/h4\u003e
+\u003cpre tabindex=\u00220\u0022\u003e\u003ccode\u003e\$TTL    3600
+\$ORIGIN tools.technat.lab.
+@    IN    SOA    penguin-01.core.technat.lab. technat.technat.ch. (
+                  1      ; Serial
+             604800      ; Refresh
+              86400      ; Retry
+            2419200      ; Expire
+             604800 )    ; Negative Cache TTL
+;
+
+; name servers - NS records
+@    IN    NS    penguin-01.core.technat.lab.
+@    IN    NS    penguin-02.core.technat.lab.
+
+; name servers - A records
+coconut          IN    A    192.168.112.1
+\u003c/code\u003e\u003c/pre\u003e\u003ch3 id=\u0022secondary\u0022\u003eSecondary\u003c/h3\u003e
+\u003cp\u003eThe penguin-02 is also configured with the systemd-service and coredns user but has a different Corefile:\u003c/p\u003e
+\u003cpre tabindex=\u00220\u0022\u003e\u003ccode\u003e.:53 {
+
+  ###### General Settings ######
+  # log queries
+  log
+  # log errors
+  errors
+  # provide prometheus metrics
+  prometheus .:1053
+  # automatically reload the configuration from time to time
+  reload
+
+  ###### Serving DNS from master ######
+  secondary technat.lab core.technat.lab tools.technat.lab apps.technat.lab zoo.technat.lab 111.168.192.in-addr.arpa 112.168.192.in-addr.arpa 113.168.192.in-addr.arpa 114.168.192.in-addr.arpa {
+    transfer from 192.168.111.11
+  }
+
+  # Forward all (.) to Hetzner Recursive DNS (v4 \u0026amp;\u0026amp; v6)
+  forward . 213.133.98.98 213.133.99.99 213.133.100.100 2a01:4f8:0:1::add:1010 2a01:4f8:0:1::add:9999 2a01:4f8:0:1::add:9898 {
+    policy random
+  }
+}
+\u003c/code\u003e\u003c/pre\u003e\u003cp\u003eZones are transfered from primary so no zones have to be defined.\u003c/p\u003e
+\u003ch3 id=\u0022further-reading\u0022\u003eFurther reading\u003c/h3\u003e
+\u003cul\u003e
+\u003cli\u003e[very good blog article[(https://blog.idempotent.ca/2018/04/18/run-your-own-home-dns-on-coredns/)\u003c/li\u003e
+\u003cli\u003e\u003c/li\u003e
+\u003c/ul\u003e
+\u003chr\u003e
+\u003ch2 id=\u0022old\u0022\u003eold\u003c/h2\u003e
+\u003cp\u003epenguin-01 and penguin-02 are DNS Servers on Debian LXC images. they are working in a primary / secondary mode where penguin-01 is  the primary.\u003c/p\u003e
+\u003ch2 id=\u0022installation-1\u0022\u003eInstallation\u003c/h2\u003e
+\u003cp\u003eBIND:\u003c/p\u003e
+\u003cpre tabindex=\u00220\u0022\u003e\u003ccode\u003esudo apt install bind9 bind9utils bind9-doc -y
+\u003c/code\u003e\u003c/pre\u003e\u003ch2 id=\u0022bind-config\u0022\u003eBIND-Config\u003c/h2\u003e
+\u003cp\u003eFor both DNS servers there are two config files that have to be configured.\u003c/p\u003e
+\u003ch3 id=\u0022penguin-01\u0022\u003epenguin-01\u003c/h3\u003e
+\u003cp\u003eConfigured as primary DNS Server\u003c/p\u003e
+\u003ch4 id=\u0022namedconfoptions\u0022\u003enamed.conf.options\u003c/h4\u003e
+\u003cp\u003eBasically just replace the entire file (\u003ccode\u003e/etc/bind/named.conf.options\u003c/code\u003e) with the following:\u003c/p\u003e
+\u003cpre tabindex=\u00220\u0022\u003e\u003ccode\u003eoptions {
+
+        // --------- General Settings ---------------
+
+				// DNS-Cache directory
+        directory \u0026#34;/var/cache/bind\u0026#34;;
+
+				 // In general we want dnssec validation, but we don\u0026#39;t care about details
+				 // More informations: https://kb.isc.org/docs/aa-01182
+        dnssec-validation auto;
+
+        // Open your ears and hear for traffic!
+        listen-on port 53 {
+                192.168.111.11;
+								127.0.0.1;
+        };
+
+				// disable zone-transfer per default (security feature)
+				allow-transfer {
+				  none;
+		    };
+
+				// ---------- Primary Settings ---------------
+
+        // -------- DNS Resolver (Recursive Requests) -----------
+        //Allow Queries in general
+        allow-query {
+                technat.lab;
+        };
+        //Allow Queries to cache
+        allow-query-cache {
+                technat.lab;
+        };
+        //Allow recursive queries
+        allow-recursion {
+                technat.lab;
+        };
+				// Forward unknown things to Hetzner DNS
+        forwarders {
+                213.133.98.98;
+                213.133.99.99;
+                213.133.100.100;
+        };
+
+
+};
+
+// Subnets of technat.lab defined, just to prevent malicous requests
+acl \u0026#34;technat.lab\u0026#34; {
+        192.168.111.0/24;
+        192.168.112.0/24;
+        192.168.113.0/24;
+        192.168.62.0/24;
+				192.168.63.0/24;
+        localhost;
+        localnets;
+};
+\u003c/code\u003e\u003c/pre\u003e\u003ch4 id=\u0022namedconflocal\u0022\u003enamed.conf.local\u003c/h4\u003e
+\u003cp\u003eBasically just replace the entire file (\u003ccode\u003e/etc/bind/named.conf.local\u003c/code\u003e) with the following:\u003c/p\u003e
+\u003cpre tabindex=\u00220\u0022\u003e\u003ccode\u003ezone \u0026#34;technat.lab\u0026#34; {
+        type master;
+				file \u0026#34;/etc/bind/zones/db.lab.technat\u0026#34;;
+        allow-transfer { 192.168.111.12; };
+};
+
+zone \u0026#34;111.168.192.in-addr.arpa\u0026#34; {
+				type master;
+				file \u0026#34;/etc/bind/zones/db.111.168.192.in-addr.arpa\u0026#34;;
+				allow-transfer { 192.168.111.12; };
+};
+
+	zone \u0026#34;112.168.192.in-addr.arpa\u0026#34; {
+				type master;
+				file \u0026#34;/etc/bind/zones/db.112.168.192.in-addr.arpa\u0026#34;;
+				allow-transfer { 192.168.111.12; };
+	};
+
+	zone \u0026#34;113.168.192.in-addr.arpa\u0026#34; {
+				type master;
+				file \u0026#34;/etc/bind/zones/db.113.168.192.in-addr.arpa\u0026#34;;
+				allow-transfer { 192.168.111.12; };
+	};
+\u003c/code\u003e\u003c/pre\u003e\u003ch4 id=\u0022dblabtechnat\u0022\u003edb.lab.technat\u003c/h4\u003e
+\u003cp\u003eBasically just replace the entire file (\u003ccode\u003e/etc/bind/zones/db.lab.technat\u003c/code\u003e) with the following:\u003c/p\u003e
+\u003cpre tabindex=\u00220\u0022\u003e\u003ccode\u003e;
+; BIND data file for technat.lab
+;
+\$TTL    604800
+@       IN      SOA     technat.lab. root.technat.lab. (
+                              3         ; Serial
+                             604800         ; Refresh
+                             86400         ; Retry
+                             2419200         ; Expire
+                             604800 )       ; Negative Cache TTL
+;
+; name servers - NS records
+IN NS penguin-01.technat.lab.
+IN NS penguin-02.technat.lab.
+
+; name servers A records
+penguin-01.technat.lab. IN A 192.168.111.11
+penguin-02.technat.lab. IN A 192.168.111.12
+
+; technat.lab A records CoreInfrastructure
+coconut         IN      A       192.168.111.1
+
+
+jellyfish       IN      A       192.168.112.3
+git             IN      A       192.168.112.3
+kuriosigans     IN      A       192.168.112.253
+kuriosiente     IN      A       192.168.112.254
+
+leopard-01      IN      A       192.168.111.6
+registry        IN      A       192.168.112.3
+wolt            IN      A       192.168.112.100
+
+; technat.lab A records Infrastructure
+
+
+; technat.lab A records zoo.technat.lab
+
+; technat.lab A records children-zoo.technat.lab
+\u003c/code\u003e\u003c/pre\u003e\u003ch4 id=\u0022db111168192in-addrarpa\u0022\u003edb.111.168.192.in-addr.arpa\u003c/h4\u003e
+\u003cpre tabindex=\u00220\u0022\u003e\u003ccode\u003e\$TTL    604800
+@       IN      SOA     technat.lab. root.technat.lab. (
+                              3         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+; name servers
+      IN      NS      penguin-01.technat.lab.
+      IN      NS      penguin-02.technat.lab.
+
+; name servers PTR records
+11 IN PTR penguin-01.technat.lab.
+12 IN PTR penguin-02.technat.lab.
+
+
+; technat.lab PTR records CoreInfrastructure
+1 IN PTR coconut
+
+
+3 IN PTR jellyfish
+
+6 IN PTR leopard-01
+
+; technat.lab PTR records Infrastructure
+\u003c/code\u003e\u003c/pre\u003e\u003ch4 id=\u0022db112168192in-addrarpa\u0022\u003edb.112.168.192.in-addr.arpa\u003c/h4\u003e
+\u003cpre tabindex=\u00220\u0022\u003e\u003ccode\u003e\$TTL    604800
+@       IN      SOA     technat.lab. root.technat.lab. (
+                              3         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+; name servers
+      IN      NS      penguin-01.technat.lab.
+      IN      NS      penguin-02.technat.lab.
+
+; technat.lab PTR records CoreInfrastructure
+1 IN PTR coconut
+
+; technat.lab PTR records Infrastructure
+
+3 IN PTR jellyfish
+3 IN PTR git
+253 IN PTR kuriosigans
+254 IN PTR kuriosiente
+
+3 IN PTR registry
+100 IN PTR wolt
+\u003c/code\u003e\u003c/pre\u003e\u003ch4 id=\u0022db113168192in-addrarpa\u0022\u003edb.113.168.192.in-addr.arpa\u003c/h4\u003e
+\u003cpre tabindex=\u00220\u0022\u003e\u003ccode\u003e\$TTL    604800
+@       IN      SOA     technat.lab. root.technat.lab. (
+                              3         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+; name servers
+      IN      NS      penguin-01.technat.lab.
+      IN      NS      penguin-02.technat.lab.
+
+; technat.lab PTR records CoreInfrastructure
+1 IN PTR coconut
+
+; technat.lab PTR records Infrastructure
+
+; technat.lab PTR records zoo.technat.lab
+
+; technat.lab PTR records children-zoo.technat.lab
+\u003c/code\u003e\u003c/pre\u003e\u003ch3 id=\u0022penguin-02\u0022\u003epenguin-02\u003c/h3\u003e
+\u003cp\u003eConfigured as secondary DNS server\u003c/p\u003e
+\u003ch4 id=\u0022namedconfoptions-1\u0022\u003enamed.conf.options\u003c/h4\u003e
+\u003cp\u003eBasically just replace the entire file (\u003ccode\u003e/etc/bind/named.conf.options\u003c/code\u003e) with the following:\u003c/p\u003e
+\u003cpre tabindex=\u00220\u0022\u003e\u003ccode\u003eoptions {
+
+        // --------- General Settings ---------------
+
+				// DNS-Cache directory
+        directory \u0026#34;/var/cache/bind\u0026#34;;
+
+				 // In general we want dnssec validation, but we don\u0026#39;t care about details
+				 // More informations: https://kb.isc.org/docs/aa-01182
+        dnssec-validation auto;
+
+        // Open your ears and hear for traffic!
+        listen-on port 53 {
+                any;
+        };
+
+				// ---------- Secondary Settings ---------------
+
+        // -------- DNS Resolver (Recursive Requests) -----------
+        //Allow Queries in general
+        allow-query {
+                technat.lab;
+        };
+        //Allow Queries to cache
+        allow-query-cache {
+                technat.lab;
+        };
+        //Allow recursive queries
+        allow-recursion {
+                technat.lab;
+        };
+				// Forward unknown things to Hetzner DNS
+        forwarders {
+                213.133.98.98;
+                213.133.99.99;
+                213.133.100.100;
+        };
+
+
+};
+
+// Subnets of technat.lab defined, just to prevent malicous requests
+acl \u0026#34;technat.lab\u0026#34; {
+        192.168.111.0/24;
+        192.168.112.0/24;
+        192.168.113.0/24;
+        192.168.62.0/24;
+				192.168.63.0/24;
+        localhost;
+        localnets;
+};
+\u003c/code\u003e\u003c/pre\u003e\u003ch4 id=\u0022namedconflocal-1\u0022\u003enamed.conf.local\u003c/h4\u003e
+\u003cp\u003eBasically just replace the entire file (\u003ccode\u003e/etc/bind/named.conf.local\u003c/code\u003e) with the following:\u003c/p\u003e
+\u003cpre tabindex=\u00220\u0022\u003e\u003ccode\u003ezone \u0026#34;technat.lab\u0026#34; {
+        type slave;
+				file \u0026#34;db.lab.technat\u0026#34;;
+				masters { 192.168.111.11; };
+};
+
+zone \u0026#34;111.168.192.in-addr.arpa\u0026#34; {
+				type slave;
+				file \u0026#34;db.111.168.192.in-addr.arpa\u0026#34;;
+				masters { 192.168.111.11; };
+};
+
+	zone \u0026#34;112.168.192.in-addr.arpa\u0026#34; {
+				type slave;
+				file \u0026#34;db.112.168.192.in-addr.arpa\u0026#34;;
+				masters { 192.168.111.11; };
+	};
+
+	zone \u0026#34;113.168.192.in-addr.arpa\u0026#34; {
+				type slave;
+				file \u0026#34;db.113.168.192.in-addr.arpa\u0026#34;;
+				masters { 192.168.111.11; };
+	};
+\u003c/code\u003e\u003c/pre\u003e\u003ch2 id=\u0022sources\u0022\u003eSources\u003c/h2\u003e
+\u003cul\u003e
+\u003cli\u003e\u003ca href=\u0022https://www.digitalocean.com/community/tutorials/how-to-configure-bind-as-a-private-network-dns-server-on-ubuntu-18-04\u0022\u003ehttps://www.digitalocean.com/community/tutorials/how-to-configure-bind-as-a-private-network-dns-server-on-ubuntu-18-04\u003c/a\u003e\u003c/li\u003e
+\u003c/ul\u003e
+\u003c/span\u003e`,"activity-content",contentDelay)};typeeffetct()</script></div><span class=navFull><span><a href=/>Home</a>
+<span>&#8192;|&#8192;</span>
+<a href=./..>/linux/</a></span>
+<span class=navCredits>Hugo theme created by
+<a href=https://github.com/Yukuro/hugo-theme-shell target=_blank rel=noopener>Yukuro</a></span></span></body></html>

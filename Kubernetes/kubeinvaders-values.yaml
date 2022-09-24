@@ -1,0 +1,29 @@
+# Default namespace target
+target_namespace: "hello-kubernetes"
+
+replicaCount: 3
+
+ingress:
+  enabled: true
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-production
+    kubernetes.io/ingress.class: nginx
+  hostName: "space.technat.dev"
+  secretName: "space-technat-dev"
+
+resources:
+  requests:
+    cpu: 10m
+    memory: 20Mi
+  limits:
+    cpu: 100m
+    memory: 200Mi
+
+extraEnv:
+  - name: ALIENPROXIMITY
+    value: "10"
+  - name: HITSLIMIT
+    value: "1"
+  - name: UPDATETIME
+    value: "0.5"

@@ -1,0 +1,153 @@
+<!doctype html><html lang=en-us><head><title>gitea</title><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content><style>@import "https://fonts.googleapis.com/css2?family=Inconsolata&display=swap";:root{--cursor-visibility:hidden}html,body{width:100%;height:100%;overflow:auto;font-family:inconsolata,monospace;font-size:4vmin;line-height:4.1vmin;font-weight:400}body{margin:0;display:flex;flex-direction:row;justify-content:center;align-items:center}#content{min-width:82vmin;min-height:82vmin}::-webkit-scrollbar{width:10px}::-webkit-scrollbar-track{border-radius:10px;box-shadow:inset 0 0 1px white}::-webkit-scrollbar-thumb{border-radius:10px;box-shadow:0 0 0 1px white}.cursor,#activity-title:after,#activity-content:after,#cd:after,#whoami:after,#cat:after,#tree:after{visibility:var(--cursor-visibility);content:"|";overflow:hidden;color:#fff;animation:blink 500ms linear infinite alternate}@keyframes blink{0%{opacity:0}100%{opacity:1}}@media only screen and (min-width:768px){body{font-size:2.5vmin;line-height:2.6vmin}#content{min-width:60vmin}}:root{--cursor-visibility:hidden}body{align-items:unset;overflow-y:scroll}#content{max-width:80vmin}pre{overflow-x:scroll;white-space:pre}@keyframes blink{0%{opacity:0}100%{opacity:1}}body{background:#002b36}body #terminal{color:#839496}body #user{color:#859900}body #dir{color:#268bd2}body .Typewriter__cursor{color:#839496}a{color:#839496}.navFull{background-color:#353535;font-family:courier new;font-size:17px;display:inline;position:fixed;bottom:0;left:0;width:100%;padding-top:5px;padding:10px;padding-bottom:0}.navCredits{float:right;padding-right:18px;padding-bottom:10px;padding-top:5px}#content::after{content:"\a\a";white-space:pre}</style></head><body><div id=content><span id=activity-title></span><br><span id=activity-content></span><br><script type=text/javascript>async function typewriter(e,t,n){var s=0,o=!1;addText="";const i=document.getElementById(t),a=()=>new Promise(e=>setTimeout(e,n)),r=()=>new Promise(e=>e()),c=()=>i.innerHTML=e.slice(0,s+1)+addText,l=document.createElement("span");for(l.id="blink",i.style.setProperty("--cursor-visibility","visible");s<e.length;){if(e.charAt(s+1)==="<"&&(o=!0),e.charAt(s+1)===">"&&(o=!1),o){s++;continue}requestAnimationFrame(c),n===0?await r():await a(),s++}i.style.setProperty("--cursor-visibility","collapse")}function parseDelay(e){const t=parseInt(e,10);return isNaN(t)?0:t}const titleDelay=parseDelay("0"),contentDelay=parseDelay("0"),typeeffetct=async()=>{await typewriter("\u003cspan id=\u0027terminal\u0027\u003e\u003ch1 id=\u0027title\u0027\u003egitea\u003c/h1\u003e\u003c/span\u003e","activity-title",titleDelay),await typewriter(`\u003cspan id=\u0027terminal\u0027\u003e\u003cp\u003eSetup a private Git on a Debian 11 machine.\u003c/p\u003e
+\u003ch2 id=\u0022preparation-data-disk\u0022\u003ePreparation: Data Disk\u003c/h2\u003e
+\u003cp\u003eGitea needs a place to store it´s repositories and files. This will be under \u003ccode\u003e/var/lib/gitea\u003c/code\u003e.  In order to have the data separated from the operating system a second disk \u003ccode\u003e/dev/sdb\u003c/code\u003e will be used for that. Also the database will have it´s data stored a \u003ccode\u003e/var/lib/mysql\u003c/code\u003e so this should also be on the second disk.\u003c/p\u003e
+\u003cp\u003eHere is how I did it with LVM:\u003c/p\u003e
+\u003cpre tabindex=\u00220\u0022\u003e\u003ccode\u003esudo fdisk /dev/sdb
+: g
+: n (all defaults)
+: T
+: 31
+: w
+pvcreate /dev/sdb1
+vgcreate git-data /dev/sdb1
+lvcreate -L 10G git-data -n db
+lvcreate -l 100%FREE git-data -n gitea
+mkfs.ext4 /dev/git-data/db
+mkfs.ext4 /dev/git-data/gitea
+mkdir /var/lib/gitea
+mkdir /var/lib/mysql
+echo /dev/git-data/db /var/lib/mysql ext4 defaults 0 0 | tee -a /etc/fstab
+echo /dev/git-data/gitea /var/lib/gitea ext4 defaults 0 0 | tee -a /etc/fstab
+reboot
+\u003c/code\u003e\u003c/pre\u003e\u003ch2 id=\u0022preparation-mysql\u0022\u003ePreparation: MySQL\u003c/h2\u003e
+\u003cp\u003eGitea needs a database. Gitea supports \u003ca href=\u0022https://docs.gitea.io/en-us/database-prep/\u0022\u003edifferent databases\u003c/a\u003e. It´s initial setup is done like described here.\u003c/p\u003e
+\u003ch3 id=\u0022installation\u0022\u003eInstallation\u003c/h3\u003e
+\u003cp\u003eDone as described here: \u003ca href=\u0022https://www.digitalocean.com/community/tutorials/how-to-install-the-latest-mysql-on-debian-10\u0022\u003ehttps://www.digitalocean.com/community/tutorials/how-to-install-the-latest-mysql-on-debian-10\u003c/a\u003e\u003c/p\u003e
+\u003cp\u003eNote: As the data dir is already installed the mysql systemd service will fail to start as the permissions to the data dir may not be correct. I fixed this with the following permissions:\u003c/p\u003e
+\u003cpre tabindex=\u00220\u0022\u003e\u003ccode\u003esudo chown -R mysql:mysql /var/lib/mysql
+sudo chmod 750 /var/lib/mysql
+sudo rm -rf /var/lib/mysql/*
+sudo systemctl stop mysql
+sudo systemctl start mysql
+\u003c/code\u003e\u003c/pre\u003e\u003ch3 id=\u0022gitea-preparations\u0022\u003eGitea Preparations\u003c/h3\u003e
+\u003cp\u003eNow its time to setup a user and database for gitea as descibed in \u003ca href=\u0022https://docs.gitea.io/en-us/database-prep/\u0022\u003etheir documentation\u003c/a\u003e.\u003c/p\u003e
+\u003ch2 id=\u0022installation-1\u0022\u003eInstallation\u003c/h2\u003e
+\u003cp\u003eThe installation of gitea is done \u003ca href=\u0022https://docs.gitea.io/en-us/install-from-binary/\u0022\u003efrom binary\u003c/a\u003e as there is no official package for debian.\u003c/p\u003e
+\u003ch2 id=\u0022initial-configuration\u0022\u003eInitial Configuration\u003c/h2\u003e
+\u003ctable\u003e
+\u003cthead\u003e
+\u003ctr\u003e
+\u003cth\u003eOption\u003c/th\u003e
+\u003cth\u003eValue\u003c/th\u003e
+\u003c/tr\u003e
+\u003c/thead\u003e
+\u003ctbody\u003e
+\u003ctr\u003e
+\u003ctd\u003eDB-Backend\u003c/td\u003e
+\u003ctd\u003eMySQL\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eHost\u003c/td\u003e
+\u003ctd\u003e127.0.0.1:3306\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eUsername\u003c/td\u003e
+\u003ctd\u003egitea\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003ePassword\u003c/td\u003e
+\u003ctd\u003esee vault\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eDatabase Name\u003c/td\u003e
+\u003ctd\u003egiteadb\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eCharset\u003c/td\u003e
+\u003ctd\u003eutf8mb4\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eSite Title\u003c/td\u003e
+\u003ctd\u003eTechnat\u0026rsquo;s Gitea\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eRepository Root Path\u003c/td\u003e
+\u003ctd\u003e/home/git/gitea-repositoris\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eGit LFS Root Path\u003c/td\u003e
+\u003ctd\u003e/var/lib/gitea/data/lfs\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eRun as Username\u003c/td\u003e
+\u003ctd\u003egit\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eSSH Server Domain\u003c/td\u003e
+\u003ctd\u003egit.technat.ch\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eSSH Server Port\u003c/td\u003e
+\u003ctd\u003e9999\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eGitea HTTP Listen Port\u003c/td\u003e
+\u003ctd\u003e3000\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eGitea Base URL\u003c/td\u003e
+\u003ctd\u003e\u003ca href=\u0022http://git.technat.ch/\u0022\u003ehttp://git.technat.ch/\u003c/a\u003e\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eLog Path\u003c/td\u003e
+\u003ctd\u003e/var/log/gitea/\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eSMTP Host\u003c/td\u003e
+\u003ctd\u003email.cyon.ch\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eSend Mail as\u003c/td\u003e
+\u003ctd\u003e\u003ca href=\u0022mailto:git@technat.ch\u0022\u003egit@technat.ch\u003c/a\u003e\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eSMTP Username\u003c/td\u003e
+\u003ctd\u003e\u003ca href=\u0022mailto:regenwurm@technat.ch\u0022\u003eregenwurm@technat.ch\u003c/a\u003e\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eSMTP Password\u003c/td\u003e
+\u003ctd\u003esee vault\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eOptions\u003c/td\u003e
+\u003ctd\u003eDisable Self-Registration\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eHidden Email Domain\u003c/td\u003e
+\u003ctd\u003egit.technat.ch\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eAdministrator Username\u003c/td\u003e
+\u003ctd\u003ewurm\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003ePassword\u003c/td\u003e
+\u003ctd\u003esee vault\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eEmail Address\u003c/td\u003e
+\u003ctd\u003e\u003ca href=\u0022mailto:technat@technat.ch\u0022\u003etechnat@technat.ch\u003c/a\u003e\u003c/td\u003e
+\u003c/tr\u003e
+\u003c/tbody\u003e
+\u003c/table\u003e
+\u003cp\u003eThe log path needs to be created before installing:\u003c/p\u003e
+\u003cpre tabindex=\u00220\u0022\u003e\u003ccode\u003esudo mkdir /var/log/gitea/
+chown git:git /var/log/gitea
+chmod -R 750 /var/log/gitea
+\u003c/code\u003e\u003c/pre\u003e\u003ch2 id=\u0022fail2ban\u0022\u003eFail2ban\u003c/h2\u003e
+\u003cp\u003eAccording to the docs fail2ban is setup on the tea server: \u003ca href=\u0022https://docs.gitea.io/en-us/fail2ban-setup/\u0022\u003ehttps://docs.gitea.io/en-us/fail2ban-setup/\u003c/a\u003e\u003c/p\u003e
+\u003c/span\u003e`,"activity-content",contentDelay)};typeeffetct()</script></div><span class=navFull><span><a href=/>Home</a>
+<span>&#8192;|&#8192;</span>
+<a href=./..>/linux/</a></span>
+<span class=navCredits>Hugo theme created by
+<a href=https://github.com/Yukuro/hugo-theme-shell target=_blank rel=noopener>Yukuro</a></span></span></body></html>

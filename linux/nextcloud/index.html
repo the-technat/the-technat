@@ -1,0 +1,632 @@
+<!doctype html><html lang=en-us><head><title>nextcloud</title><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content><style>@import "https://fonts.googleapis.com/css2?family=Inconsolata&display=swap";:root{--cursor-visibility:hidden}html,body{width:100%;height:100%;overflow:auto;font-family:inconsolata,monospace;font-size:4vmin;line-height:4.1vmin;font-weight:400}body{margin:0;display:flex;flex-direction:row;justify-content:center;align-items:center}#content{min-width:82vmin;min-height:82vmin}::-webkit-scrollbar{width:10px}::-webkit-scrollbar-track{border-radius:10px;box-shadow:inset 0 0 1px white}::-webkit-scrollbar-thumb{border-radius:10px;box-shadow:0 0 0 1px white}.cursor,#activity-title:after,#activity-content:after,#cd:after,#whoami:after,#cat:after,#tree:after{visibility:var(--cursor-visibility);content:"|";overflow:hidden;color:#fff;animation:blink 500ms linear infinite alternate}@keyframes blink{0%{opacity:0}100%{opacity:1}}@media only screen and (min-width:768px){body{font-size:2.5vmin;line-height:2.6vmin}#content{min-width:60vmin}}:root{--cursor-visibility:hidden}body{align-items:unset;overflow-y:scroll}#content{max-width:80vmin}pre{overflow-x:scroll;white-space:pre}@keyframes blink{0%{opacity:0}100%{opacity:1}}body{background:#002b36}body #terminal{color:#839496}body #user{color:#859900}body #dir{color:#268bd2}body .Typewriter__cursor{color:#839496}a{color:#839496}.navFull{background-color:#353535;font-family:courier new;font-size:17px;display:inline;position:fixed;bottom:0;left:0;width:100%;padding-top:5px;padding:10px;padding-bottom:0}.navCredits{float:right;padding-right:18px;padding-bottom:10px;padding-top:5px}#content::after{content:"\a\a";white-space:pre}</style></head><body><div id=content><span id=activity-title></span><br><span id=activity-content></span><br><script type=text/javascript>async function typewriter(e,t,n){var s=0,o=!1;addText="";const i=document.getElementById(t),a=()=>new Promise(e=>setTimeout(e,n)),r=()=>new Promise(e=>e()),c=()=>i.innerHTML=e.slice(0,s+1)+addText,l=document.createElement("span");for(l.id="blink",i.style.setProperty("--cursor-visibility","visible");s<e.length;){if(e.charAt(s+1)==="<"&&(o=!0),e.charAt(s+1)===">"&&(o=!1),o){s++;continue}requestAnimationFrame(c),n===0?await r():await a(),s++}i.style.setProperty("--cursor-visibility","collapse")}function parseDelay(e){const t=parseInt(e,10);return isNaN(t)?0:t}const titleDelay=parseDelay("0"),contentDelay=parseDelay("0"),typeeffetct=async()=>{await typewriter("\u003cspan id=\u0027terminal\u0027\u003e\u003ch1 id=\u0027title\u0027\u003enextcloud\u003c/h1\u003e\u003c/span\u003e","activity-title",titleDelay),await typewriter(`\u003cspan id=\u0027terminal\u0027\u003e\u003cp\u003eMy personal nextcloud on hcloud.\u003c/p\u003e
+\u003ch2 id=\u0022infrastructure\u0022\u003eInfrastructure\u003c/h2\u003e
+\u003cp\u003eManaged by terraform, see \u003ca href=\u0022https://code.immerda.ch/technat/technat_cloud/-/blob/master/terraform/nextcloud.tf\u0022\u003ethis file\u003c/a\u003e.\u003c/p\u003e
+\u003ch2 id=\u0022dns\u0022\u003eDNS\u003c/h2\u003e
+\u003cp\u003eManaged by terraform, see \u003ca href=\u0022https://code.immerda.ch/technat/technat_cloud/-/blob/master/terraform/dns.tf#L20\u0022\u003ehere\u003c/a\u003e.\u003c/p\u003e
+\u003ch2 id=\u0022os-preparations\u0022\u003eOS Preparations\u003c/h2\u003e
+\u003ch3 id=\u0022shell-tipps\u0022\u003eShell tipps\u003c/h3\u003e
+\u003cul\u003e
+\u003cli\u003eEdit the \u003ccode\u003eENV_PATH\u003c/code\u003e variable in \u003ccode\u003e/etc/login.defs\u003c/code\u003e to contain \u003ccode\u003e/sbin:/usr/sbin\u003c/code\u003e\u003c/li\u003e
+\u003cli\u003eAdd the file \u003ccode\u003e~/.bash_aliases\u003c/code\u003e with the following content:\u003c/li\u003e
+\u003c/ul\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ealias off\u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#34;sudo -u www-data php /var/www/cloud.technat.ch/occ maintenance:mode --off\u0026#34;\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ealias on\u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#34;sudo -u www-data php /var/www/cloud.technat.ch/occ maintenance:mode --on\u0026#34;\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ealias occ\u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#34;sudo -u www-data php /var/www/cloud.technat.ch/occ\u0026#34;\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ealias l\u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#34;ls -lahF\u0026#34;\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003ch3 id=\u0022external-os-disk\u0022\u003eExternal OS Disk\u003c/h3\u003e
+\u003cp\u003e\u003ccode\u003e/dev/sdb\u003c/code\u003e is configured as our storage disk using LVM.\u003c/p\u003e
+\u003cp\u003eStart with partitioning:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003etechnat@cloud:~\$ sudo fdisk /dev/sdb
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eWelcome to fdisk \u003cspan style=\u0022color:#f92672\u0022\u003e(\u003c/span\u003eutil-linux 2.36.1\u003cspan style=\u0022color:#f92672\u0022\u003e)\u003c/span\u003e.
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eChanges will remain in memory only, \u003cspan style=\u0022color:#66d9ef\u0022\u003euntil\u003c/span\u003e you decide to write them.
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eBe careful before using the write command.
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eDevice does not contain a recognized partition table.
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eCreated a new DOS disklabel with disk identifier 0x5795d6a5.
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eCommand \u003cspan style=\u0022color:#f92672\u0022\u003e(\u003c/span\u003em \u003cspan style=\u0022color:#66d9ef\u0022\u003efor\u003c/span\u003e help\u003cspan style=\u0022color:#f92672\u0022\u003e)\u003c/span\u003e: g
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eCreated a new GPT disklabel \u003cspan style=\u0022color:#f92672\u0022\u003e(\u003c/span\u003eGUID: EC377253-3EF3-3A4E-B3BA-3D1C12093F4F\u003cspan style=\u0022color:#f92672\u0022\u003e)\u003c/span\u003e.
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eCommand \u003cspan style=\u0022color:#f92672\u0022\u003e(\u003c/span\u003em \u003cspan style=\u0022color:#66d9ef\u0022\u003efor\u003c/span\u003e help\u003cspan style=\u0022color:#f92672\u0022\u003e)\u003c/span\u003e: p
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eDisk /dev/sdb: \u003cspan style=\u0022color:#ae81ff\u0022\u003e150\u003c/span\u003e GiB, \u003cspan style=\u0022color:#ae81ff\u0022\u003e161061273600\u003c/span\u003e bytes, \u003cspan style=\u0022color:#ae81ff\u0022\u003e314572800\u003c/span\u003e sectors
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eDisk model: QEMU HARDDISK
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eUnits: sectors of \u003cspan style=\u0022color:#ae81ff\u0022\u003e1\u003c/span\u003e * 512 \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e \u003cspan style=\u0022color:#ae81ff\u0022\u003e512\u003c/span\u003e bytes
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eSector size \u003cspan style=\u0022color:#f92672\u0022\u003e(\u003c/span\u003elogical/physical\u003cspan style=\u0022color:#f92672\u0022\u003e)\u003c/span\u003e: \u003cspan style=\u0022color:#ae81ff\u0022\u003e512\u003c/span\u003e bytes / \u003cspan style=\u0022color:#ae81ff\u0022\u003e512\u003c/span\u003e bytes
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eI/O size \u003cspan style=\u0022color:#f92672\u0022\u003e(\u003c/span\u003eminimum/optimal\u003cspan style=\u0022color:#f92672\u0022\u003e)\u003c/span\u003e: \u003cspan style=\u0022color:#ae81ff\u0022\u003e512\u003c/span\u003e bytes / \u003cspan style=\u0022color:#ae81ff\u0022\u003e512\u003c/span\u003e bytes
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eDisklabel type: gpt
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eDisk identifier: EC377253-3EF3-3A4E-B3BA-3D1C12093F4F
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eCommand \u003cspan style=\u0022color:#f92672\u0022\u003e(\u003c/span\u003em \u003cspan style=\u0022color:#66d9ef\u0022\u003efor\u003c/span\u003e help\u003cspan style=\u0022color:#f92672\u0022\u003e)\u003c/span\u003e: n
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ePartition number \u003cspan style=\u0022color:#f92672\u0022\u003e(\u003c/span\u003e1-128, default 1\u003cspan style=\u0022color:#f92672\u0022\u003e)\u003c/span\u003e:
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eFirst sector \u003cspan style=\u0022color:#f92672\u0022\u003e(\u003c/span\u003e2048-314572766, default 2048\u003cspan style=\u0022color:#f92672\u0022\u003e)\u003c/span\u003e:
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eLast sector, \u002b/-sectors or \u002b/-size\u003cspan style=\u0022color:#f92672\u0022\u003e{\u003c/span\u003eK,M,G,T,P\u003cspan style=\u0022color:#f92672\u0022\u003e}\u003c/span\u003e \u003cspan style=\u0022color:#f92672\u0022\u003e(\u003c/span\u003e2048-314572766, default 314572766\u003cspan style=\u0022color:#f92672\u0022\u003e)\u003c/span\u003e:
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eCreated a new partition \u003cspan style=\u0022color:#ae81ff\u0022\u003e1\u003c/span\u003e of type \u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#39;Linux filesystem\u0026#39;\u003c/span\u003e and of size \u003cspan style=\u0022color:#ae81ff\u0022\u003e150\u003c/span\u003e GiB.
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eCommand \u003cspan style=\u0022color:#f92672\u0022\u003e(\u003c/span\u003em \u003cspan style=\u0022color:#66d9ef\u0022\u003efor\u003c/span\u003e help\u003cspan style=\u0022color:#f92672\u0022\u003e)\u003c/span\u003e: t
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eSelected partition \u003cspan style=\u0022color:#ae81ff\u0022\u003e1\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ePartition type or alias \u003cspan style=\u0022color:#f92672\u0022\u003e(\u003c/span\u003etype L to list all\u003cspan style=\u0022color:#f92672\u0022\u003e)\u003c/span\u003e: \u003cspan style=\u0022color:#ae81ff\u0022\u003e30\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eChanged type of partition \u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#39;Linux filesystem\u0026#39;\u003c/span\u003e to \u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#39;Linux LVM\u0026#39;\u003c/span\u003e.
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eCommand \u003cspan style=\u0022color:#f92672\u0022\u003e(\u003c/span\u003em \u003cspan style=\u0022color:#66d9ef\u0022\u003efor\u003c/span\u003e help\u003cspan style=\u0022color:#f92672\u0022\u003e)\u003c/span\u003e: w
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eThe partition table has been altered.
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eCalling ioctl\u003cspan style=\u0022color:#f92672\u0022\u003e()\u003c/span\u003e to re-read partition table.
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eSyncing disks.
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eNext we encrypt the disk using \u003ccode\u003eluks\u003c/code\u003e to make sure our data is encrypted at rest:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003etechnat@nc:~\$ sudo cryptsetup luksFormat -v /dev/sdb1
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eWARNING!
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#f92672\u0022\u003e========\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eThis will overwrite data on /dev/sdb1 irrevocably.
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eAre you sure? \u003cspan style=\u0022color:#f92672\u0022\u003e(\u003c/span\u003eType \u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#39;yes\u0026#39;\u003c/span\u003e in capital letters\u003cspan style=\u0022color:#f92672\u0022\u003e)\u003c/span\u003e: YES
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eEnter passphrase \u003cspan style=\u0022color:#66d9ef\u0022\u003efor\u003c/span\u003e /dev/sdb1:
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eVerify passphrase:
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ePassphrases \u003cspan style=\u0022color:#66d9ef\u0022\u003edo\u003c/span\u003e not match.
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eCommand failed with code -2 \u003cspan style=\u0022color:#f92672\u0022\u003e(\u003c/span\u003eno permission or bad passphrase\u003cspan style=\u0022color:#f92672\u0022\u003e)\u003c/span\u003e.
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eroot@nc:~# cryptsetup luksFormat -v /dev/sdb1
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eWARNING!
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#f92672\u0022\u003e========\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eThis will overwrite data on /dev/sdb1 irrevocably.
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eAre you sure? \u003cspan style=\u0022color:#f92672\u0022\u003e(\u003c/span\u003eType \u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#39;yes\u0026#39;\u003c/span\u003e in capital letters\u003cspan style=\u0022color:#f92672\u0022\u003e)\u003c/span\u003e: YES
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eEnter passphrase \u003cspan style=\u0022color:#66d9ef\u0022\u003efor\u003c/span\u003e /dev/sdb1:
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eVerify passphrase:
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eKey slot \u003cspan style=\u0022color:#ae81ff\u0022\u003e0\u003c/span\u003e created.
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eCommand successful.
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eAnd open it again to work with it:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003etechnat@nc:~\$ sudo cryptsetup luksOpen /dec/sdb1 cryptlvm
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eEnter passphrase \u003cspan style=\u0022color:#66d9ef\u0022\u003efor\u003c/span\u003e /dev/sdb1:
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003etechnat@nc:~\$ lsblk
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eNAME     MAJ:MIN RM  SIZE RO TYPE  MOUNTPOINT
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esda        8:0    \u003cspan style=\u0022color:#ae81ff\u0022\u003e0\u003c/span\u003e 38.1G  \u003cspan style=\u0022color:#ae81ff\u0022\u003e0\u003c/span\u003e disk
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e├─sda1     8:1    \u003cspan style=\u0022color:#ae81ff\u0022\u003e0\u003c/span\u003e   38G  \u003cspan style=\u0022color:#ae81ff\u0022\u003e0\u003c/span\u003e part  /
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e├─sda14    8:14   \u003cspan style=\u0022color:#ae81ff\u0022\u003e0\u003c/span\u003e    1M  \u003cspan style=\u0022color:#ae81ff\u0022\u003e0\u003c/span\u003e part
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e└─sda15    8:15   \u003cspan style=\u0022color:#ae81ff\u0022\u003e0\u003c/span\u003e  122M  \u003cspan style=\u0022color:#ae81ff\u0022\u003e0\u003c/span\u003e part  /boot/efi
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esdb        8:16   \u003cspan style=\u0022color:#ae81ff\u0022\u003e0\u003c/span\u003e   10G  \u003cspan style=\u0022color:#ae81ff\u0022\u003e0\u003c/span\u003e disk
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e└─sdb1     8:17   \u003cspan style=\u0022color:#ae81ff\u0022\u003e0\u003c/span\u003e   10G  \u003cspan style=\u0022color:#ae81ff\u0022\u003e0\u003c/span\u003e part
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e  └─data 253:0    \u003cspan style=\u0022color:#ae81ff\u0022\u003e0\u003c/span\u003e   10G  \u003cspan style=\u0022color:#ae81ff\u0022\u003e0\u003c/span\u003e crypt
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esr0       11:0    \u003cspan style=\u0022color:#ae81ff\u0022\u003e1\u003c/span\u003e 1024M  \u003cspan style=\u0022color:#ae81ff\u0022\u003e0\u003c/span\u003e rom
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eA password is okay but we don\u0026rsquo;t want to enter our password on every boot, so let\u0026rsquo;s generate a keyfile and add this as authentication method:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003etechnat@nc:~\$ sudo dd bs\u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e\u003cspan style=\u0022color:#ae81ff\u0022\u003e512\u003c/span\u003e count\u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e\u003cspan style=\u0022color:#ae81ff\u0022\u003e4\u003c/span\u003e \u003cspan style=\u0022color:#66d9ef\u0022\u003eif\u003c/span\u003e\u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e/dev/random of\u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e/keyfile iflag\u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003efullblock
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e4\u002b0 records in
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e4\u002b0 records out
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#ae81ff\u0022\u003e2048\u003c/span\u003e bytes \u003cspan style=\u0022color:#f92672\u0022\u003e(\u003c/span\u003e2.0 kB, 2.0 KiB\u003cspan style=\u0022color:#f92672\u0022\u003e)\u003c/span\u003e copied, 0.000119724 s, 17.1 MB/s
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003etechnat@nc:~\$ sudo chmod \u003cspan style=\u0022color:#ae81ff\u0022\u003e400\u003c/span\u003e /keyfile
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003etechnat@nc:~\$ sudo cryptsetup luksAddKey /dev/sdb1 /keyfile
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eEnter any existing passphrase:
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003etechnat@nc:~\$ sudo cryptsetup status cryptlvm
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e/dev/mapper/data is active.
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e  type:    LUKS2
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e  cipher:  aes-xts-plain64
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e  keysize: \u003cspan style=\u0022color:#ae81ff\u0022\u003e512\u003c/span\u003e bits
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e  key location: keyring
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e  device:  /dev/sdb1
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e  sector size:  \u003cspan style=\u0022color:#ae81ff\u0022\u003e512\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e  offset:  \u003cspan style=\u0022color:#ae81ff\u0022\u003e32768\u003c/span\u003e sectors
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e  size:    \u003cspan style=\u0022color:#ae81ff\u0022\u003e20936671\u003c/span\u003e sectors
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e  mode:    read/write
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eNow we can configure LVM:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo pvcreate /dev/mapper/cryptlvm
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo vgcreate data /dev/mapper/cryptlvm
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo lvcreate data -n nc -l 100%FREE
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eecho \u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#39;/dev/data/nc /data ext4 defaults 0 1\u0026#39;\u003c/span\u003e | sudo tee -a /etc/fstab
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo mkfs.ext4 /dev/data/nc
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo mkdir /data
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eWith a file-system in place we can mount the disk. Note that we also need to specify which keyfile to use when decrypting it. Otherwise the server hangs at boot prompting for our password:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003etechnat@nc:~\$ echo \u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#34;cryptlvm /dev/sdb1 /keyfile\u0026#34;\u003c/span\u003e |sudo tee -a /etc/crypttab
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eNote: Now is a good time to reboot the server and check if the disk can be mounted properly.\u003c/p\u003e
+\u003ch3 id=\u0022fail2ban\u0022\u003eFail2Ban\u003c/h3\u003e
+\u003cp\u003eOne last thing before we start, what do you do when someones tries to DDOS you? You use fail2ban to prevent it!\u003c/p\u003e
+\u003cp\u003eNote: Nextcloud also has a built-in brute-froce protection, you can also use this one.\u003c/p\u003e
+\u003cp\u003e\u003ca href=\u0022https://marsown.com/wordpress/fail2ban-protection-nextcloud/\u0022\u003eReference Guide\u003c/a\u003e\u003c/p\u003e
+\u003cp\u003eYou install fail2ban like so:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo apt install fail2ban -y
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eThe following config files are needed to create a simple default config:\u003c/p\u003e
+\u003cul\u003e
+\u003cli\u003e
+\u003cp\u003e\u003ccode\u003e/etc/fail2ban/filter.d/nextcloud.conf\u003c/code\u003e:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#f92672\u0022\u003e[\u003c/span\u003eDefinition\u003cspan style=\u0022color:#f92672\u0022\u003e]\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003efailregex \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e ^\u003cspan style=\u0022color:#f92672\u0022\u003e{\u003c/span\u003e.*\u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#34;message\u0026#34;\u003c/span\u003e:\u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#34;Login failed: .* \\(Remote IP: \u0026lt;HOST\u0026gt;\\)\u0026#34;\u003c/span\u003e.*\u003cspan style=\u0022color:#f92672\u0022\u003e}\u003c/span\u003e\$
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e            ^\u003cspan style=\u0022color:#f92672\u0022\u003e{\u003c/span\u003e.*\u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#34;message\u0026#34;\u003c/span\u003e:\u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#34;Login failed: \u0026#39;.*\u0026#39; \\(Remote IP: \u0026#39;\u0026lt;HOST\u0026gt;\u0026#39;\\)\u0026#34;\u003c/span\u003e.*\u003cspan style=\u0022color:#f92672\u0022\u003e}\u003c/span\u003e\$
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eignoreregex \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003c/li\u003e
+\u003cli\u003e
+\u003cp\u003e\u003ccode\u003e/etc/fail2ban/jail.d/nextcloud.local\u003c/code\u003e:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#f92672\u0022\u003e[\u003c/span\u003eDEFAULT\u003cspan style=\u0022color:#f92672\u0022\u003e]\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#75715e\u0022\u003e# Destination email address used solely for the interpolations in\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#75715e\u0022\u003e# jail.{conf,local,d/*} configuration files.\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003edestemail \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e root@technat.ch
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#75715e\u0022\u003e# Sender email address used solely for some actions\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esender \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e root@technat.ch
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#75715e\u0022\u003e# E-mail action. Since 0.8.1 Fail2Ban uses sendmail MTA for the\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#75715e\u0022\u003e# mailing. Change mta configuration parameter to mail if you want to\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#75715e\u0022\u003e# revert to conventional \u0026#39;mail\u0026#39;.\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003emta \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e mail
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eaction \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e %\u003cspan style=\u0022color:#f92672\u0022\u003e(\u003c/span\u003eaction_mwl\u003cspan style=\u0022color:#f92672\u0022\u003e)\u003c/span\u003es
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#f92672\u0022\u003e[\u003c/span\u003enextcloud\u003cspan style=\u0022color:#f92672\u0022\u003e]\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ebackend \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e auto
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eenabled \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e true
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eport \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e 80, \u003cspan style=\u0022color:#ae81ff\u0022\u003e443\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eprotocol \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e tcp
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003efilter \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e nextcloud
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003emaxretry \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e \u003cspan style=\u0022color:#ae81ff\u0022\u003e10\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ebantime \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e \u003cspan style=\u0022color:#ae81ff\u0022\u003e36000\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003efindtime \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e \u003cspan style=\u0022color:#ae81ff\u0022\u003e36000\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003elogpath \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e /data/nextcloud.log
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003c/li\u003e
+\u003c/ul\u003e
+\u003cp\u003eThen just restart the service:\u003c/p\u003e
+\u003cpre tabindex=\u00220\u0022\u003e\u003ccode\u003esudo systemctl restart fail2ban
+\u003c/code\u003e\u003c/pre\u003e\u003cp\u003eNote: For remote mails to be sent when something happens, you need to configure a mail client as described \u003ca href=\u0022https://wiki.technat.ch/en/Linux/Cronjobs#send-mails-from-cronjobs\u0022\u003ehere\u003c/a\u003e.\u003c/p\u003e
+\u003ch2 id=\u0022postgresql\u0022\u003ePostgresql\u003c/h2\u003e
+\u003cp\u003eThe first thing on our main nextcloud installation is the database. I\u0026rsquo;m using postgresql here, but mariadb or mysql are also \u003ca href=\u0022https://doc.nextcloud.com/server/20/admin_manual/configuration_database/linux_database_configuration.html\u0022\u003esupported\u003c/a\u003e.\u003c/p\u003e
+\u003cp\u003eInstall the package:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo apt-get install postgresql -y
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eThe systemd-service can be managed using those commands:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo systemctl start postgresql
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo systemctl stop postgresql
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo systemctl restart postgresql
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003ch3 id=\u0022new-nextcloud-database\u0022\u003eNew Nextcloud Database\u003c/h3\u003e
+\u003cp\u003eNow we will create a database and user for nextcloud. Postgresql uses peer authentication by default, that means we can use a socket and don\u0026rsquo;t have to communicate over localhost. In addition, the user that is allowed to connect must by a local system user. So in our setup only \u003ccode\u003ewww-data\u003c/code\u003e will be allowed to connect to our database.\u003c/p\u003e
+\u003cp\u003eFor more information see the \u003ca href=\u0022https://doc.nextcloud.com/server/stable/admin_manual/configuration_database/linux_database_configuration.html#postgresql-database\u0022\u003eReference Docs\u003c/a\u003e.\u003c/p\u003e
+\u003cp\u003eSo we create our database and user in a new sql-prompt: \u003ccode\u003esudo -u postgres psql -d template1\u003c/code\u003e\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-sql\u0022 data-lang=\u0022sql\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#66d9ef\u0022\u003eCREATE\u003c/span\u003e \u003cspan style=\u0022color:#66d9ef\u0022\u003eUSER\u003c/span\u003e \u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#34;www-data\u0026#34;\u003c/span\u003e \u003cspan style=\u0022color:#66d9ef\u0022\u003eCREATEDB\u003c/span\u003e;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#66d9ef\u0022\u003eCREATE\u003c/span\u003e \u003cspan style=\u0022color:#66d9ef\u0022\u003eDATABASE\u003c/span\u003e ncdb \u003cspan style=\u0022color:#66d9ef\u0022\u003eOWNER\u003c/span\u003e \u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#34;www-data\u0026#34;\u003c/span\u003e;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#960050;background-color:#1e0010\u0022\u003e\\\u003c/span\u003eq
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003ch2 id=\u0022php-fpm\u0022\u003ePHP-FPM\u003c/h2\u003e
+\u003cp\u003eNext after the database is PHP. Most guides start with the webserver first, but as PHP in my view is a depenency for the webserver we make sure PHP is up and running before the webserver tries to connect to PHP.\u003c/p\u003e
+\u003cp\u003eFirst configure the PPA Repository where the current PHP versions are located:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo apt install apt-transport-https lsb-release ca-certificates wget -y
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eecho \u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#34;deb https://packages.sury.org/php/ \u003c/span\u003e\u003cspan style=\u0022color:#66d9ef\u0022\u003e\$(\u003c/span\u003elsb_release -sc\u003cspan style=\u0022color:#66d9ef\u0022\u003e)\u003c/span\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e main\u0026#34;\u003c/span\u003e |sudo tee /etc/apt/sources.list.d/php.list
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo apt update
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eThen install the PHP-FPM package and the required PHP-modules for nextcloud:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo apt install php8.0-fpm -y
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo apt install php8.0-curl php8.0-gd php8.0-mbstring php8.0-xml php8.0-zip php8.0-opcache php8.0-pdo php8.0-intl php8.0-gmp php8.0-imagick php8.0-bcmath php8.0-bz2 php8.0-pgsql -y
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo apt install libmagickcore-6.q16-6-extra -y \u003cspan style=\u0022color:#75715e\u0022\u003e# if warning Module php-imagick in this instance has no SVG support. For better compatibility it is recommended to install it.\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eSee the \u003ca href=\u0022https://doc.nextcloud.com/server/stable/adminmanual/installation/sourceinstallation.html#prerequisites-for-manual-installation\u0022\u003eRequired Modules\u003c/a\u003e page in the nextcloud documentation for a list of all modules used.\u003c/p\u003e
+\u003cp\u003eWhen we have the packages installed, we edit the configuration for the postgresql extension in \u003ccode\u003e/etc/php/8.0/mods-available/pgsql.ini\u003c/code\u003e, to match with this sample config:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#75715e\u0022\u003e# configuration for PHP PostgreSQL module\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#75715e\u0022\u003e#extension=pdo_pgsql.so\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eextension\u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003epgsql.so
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#f92672\u0022\u003e[\u003c/span\u003ePostgresSQL\u003cspan style=\u0022color:#f92672\u0022\u003e]\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003epgsql.allow_persistent \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e On
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003epgsql.auto_reset_persistent \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e Off
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003epgsql.max_persistent \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e -1
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003epgsql.max_links \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e -1
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003epgsql.ignore_notice \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e \u003cspan style=\u0022color:#ae81ff\u0022\u003e0\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003epgsql.log_notice \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e \u003cspan style=\u0022color:#ae81ff\u0022\u003e0\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eWe also need to allow the \u003ccode\u003ewww-data\u003c/code\u003e user to access the postgresql socket:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo usermod -aG postgres www-data
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003ch3 id=\u0022fpm-pool\u0022\u003eFPM-Pool\u003c/h3\u003e
+\u003cp\u003ePHP-FPM knows pools which is a logic abstraction for PHP. For nextcloud we create our own pool so that we can configure PHP settings only for nextcloud and use a custom socket.\u003c/p\u003e
+\u003cp\u003eThe config file for our pool is \u003ccode\u003e/etc/php/8.0/fpm/pool.d/nextcloud.conf\u003c/code\u003e with the following content:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#f92672\u0022\u003e[\u003c/span\u003enextcloud\u003cspan style=\u0022color:#f92672\u0022\u003e]\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003elisten \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e /var/run/php8.0-fpm-nextcloud.sock
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003euser \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e www-data
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003egroup \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e www-data
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003elisten.owner \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e www-data
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003elisten.group \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e www-data
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e; php.ini overrides
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ephp_admin_value\u003cspan style=\u0022color:#f92672\u0022\u003e[\u003c/span\u003edisable_functions\u003cspan style=\u0022color:#f92672\u0022\u003e]\u003c/span\u003e \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e passthru,system
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ephp_admin_value\u003cspan style=\u0022color:#f92672\u0022\u003e[\u003c/span\u003ememory_limit\u003cspan style=\u0022color:#f92672\u0022\u003e]\u003c/span\u003e \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e 512M
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ephp_admin_value\u003cspan style=\u0022color:#f92672\u0022\u003e[\u003c/span\u003eupload_max_filesize\u003cspan style=\u0022color:#f92672\u0022\u003e]\u003c/span\u003e \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e 32G
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ephp_admin_value\u003cspan style=\u0022color:#f92672\u0022\u003e[\u003c/span\u003epost_max_size\u003cspan style=\u0022color:#f92672\u0022\u003e]\u003c/span\u003e \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e 32G
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ephp_admin_value\u003cspan style=\u0022color:#f92672\u0022\u003e[\u003c/span\u003edate.timezone\u003cspan style=\u0022color:#f92672\u0022\u003e]\u003c/span\u003e \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e Europe/Zurich
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ephp_admin_flag\u003cspan style=\u0022color:#f92672\u0022\u003e[\u003c/span\u003eallow_url_fopen\u003cspan style=\u0022color:#f92672\u0022\u003e]\u003c/span\u003e \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e off
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ephp_admin_value\u003cspan style=\u0022color:#f92672\u0022\u003e[\u003c/span\u003eredis.session.locking_enabled\u003cspan style=\u0022color:#f92672\u0022\u003e]\u003c/span\u003e \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e \u003cspan style=\u0022color:#ae81ff\u0022\u003e1\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ephp_admin_value\u003cspan style=\u0022color:#f92672\u0022\u003e[\u003c/span\u003eredis.session.lock_retries\u003cspan style=\u0022color:#f92672\u0022\u003e]\u003c/span\u003e \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e -1
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ephp_admin_value\u003cspan style=\u0022color:#f92672\u0022\u003e[\u003c/span\u003eredis.session.lock_wait_time\u003cspan style=\u0022color:#f92672\u0022\u003e]\u003c/span\u003e \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e \u003cspan style=\u0022color:#ae81ff\u0022\u003e10000\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ephp_admin_value\u003cspan style=\u0022color:#f92672\u0022\u003e[\u003c/span\u003esession.save_handler\u003cspan style=\u0022color:#f92672\u0022\u003e]\u003c/span\u003e \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e redis
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ephp_admin_value\u003cspan style=\u0022color:#f92672\u0022\u003e[\u003c/span\u003esession.save_path\u003cspan style=\u0022color:#f92672\u0022\u003e]\u003c/span\u003e \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e \u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#34;unix:///var/run/redis/redis-server.sock\u0026#34;\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ephp_admin_value\u003cspan style=\u0022color:#f92672\u0022\u003e[\u003c/span\u003eopcache.interned_strings_buffer\u003cspan style=\u0022color:#f92672\u0022\u003e]\u003c/span\u003e \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e \u003cspan style=\u0022color:#ae81ff\u0022\u003e128\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e; Choose how the process manager will control the number of child processes.
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003epm \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e dynamic
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003epm.max_children \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e \u003cspan style=\u0022color:#ae81ff\u0022\u003e200\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003epm.start_servers \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e \u003cspan style=\u0022color:#ae81ff\u0022\u003e16\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003epm.min_spare_servers \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e \u003cspan style=\u0022color:#ae81ff\u0022\u003e15\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003epm.max_spare_servers \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e \u003cspan style=\u0022color:#ae81ff\u0022\u003e30\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003epm.process_idle_timeout \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e 10s
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e; some environment variables
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eenv\u003cspan style=\u0022color:#f92672\u0022\u003e[\u003c/span\u003eHOSTNAME\u003cspan style=\u0022color:#f92672\u0022\u003e]\u003c/span\u003e \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e \$HOSTNAME
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eenv\u003cspan style=\u0022color:#f92672\u0022\u003e[\u003c/span\u003ePATH\u003cspan style=\u0022color:#f92672\u0022\u003e]\u003c/span\u003e \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e /usr/local/bin:/usr/bin:/bin
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eenv\u003cspan style=\u0022color:#f92672\u0022\u003e[\u003c/span\u003eTMP\u003cspan style=\u0022color:#f92672\u0022\u003e]\u003c/span\u003e \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e /tmp
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eenv\u003cspan style=\u0022color:#f92672\u0022\u003e[\u003c/span\u003eTMPDIR\u003cspan style=\u0022color:#f92672\u0022\u003e]\u003c/span\u003e \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e /tmp
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eenv\u003cspan style=\u0022color:#f92672\u0022\u003e[\u003c/span\u003eTEMP\u003cspan style=\u0022color:#f92672\u0022\u003e]\u003c/span\u003e \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e /tmp
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eNote: the \u003ccode\u003ephp_admin_value\u003c/code\u003e lines what basically override the php.ini configuration. As the php.ini file is so big and it\u0026rsquo;s very hard to keep track of what has changed in there, I decided to leave it as default and only override specific keys through the fpm pool.\u003c/p\u003e
+\u003cp\u003e\u003ca href=\u0022https://doc.nextcloud.com/server/stable/adminmanual/installation/sourceinstallation.html#php-fpm-configuration-notes\u0022\u003eReference Docs\u003c/a\u003e\u003c/p\u003e
+\u003cp\u003eThen restart the service:\u003c/p\u003e
+\u003cpre tabindex=\u00220\u0022\u003e\u003ccode\u003esudo rm /etc/php/8.0/fpm/pool.d/www.conf # Delete the default pool
+sudo systemctl restart php8.0-fpm.service
+\u003c/code\u003e\u003c/pre\u003e\u003ch2 id=\u0022nginx\u0022\u003eNGINX\u003c/h2\u003e
+\u003cp\u003eNow that PHP is running we can configure the webserver. Although Nextcloud doesn\u0026rsquo;t officially support nginx I still want to use nginx as it is a very performant webserver and integrates well with PHP-FPM.\u003c/p\u003e
+\u003cp\u003eStart by installing the package with systemd service:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo apt install nginx -y
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003ch3 id=\u0022https\u0022\u003eHTTPS\u003c/h3\u003e
+\u003cp\u003eBefore continuing to configure a virtualhost let\u0026rsquo;s take a second and get a TLS certificate (which is used in the next step). Obtaining a TLS certificate was a nightmare until Let\u0026rsquo;s Encrypt came to be. Now it\u0026rsquo;s fairly simple with their \u003ccode\u003ecertbot\u003c/code\u003e:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo apt install certbot python3-certbot-nginx -y
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo certbot certonly --nginx -d cloud.technat.ch --agree-tos -m root@technat.ch
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eThis obtains a certificate for our domain using the http-01 challenge and saves the certificate in \u003ccode\u003e/etc/letsencrypt/live/cloud.technat.ch/fullchain.pem\u003c/code\u003e\u003c/p\u003e
+\u003cp\u003eBefore continuing something to note: Let\u0026rsquo;s Encrypt certificates are only valid for 90 days. To avoid an expired certificate we can automate the renewal similar to the way we obtained the cert:\u003c/p\u003e
+\u003cp\u003eAdd the following cronjob to root using \u003ccode\u003esudo crontab -e \u003c/code\u003e:\u003c/p\u003e
+\u003cpre tabindex=\u00220\u0022\u003e\u003ccode\u003e0 */12 * * * /usr/bin/certbot renew \u0026gt; /var/log/letsencrypt/certbot-renew.log
+\u003c/code\u003e\u003c/pre\u003e\u003cp\u003eWith this we can now continue to setup nginx.\u003c/p\u003e
+\u003ch3 id=\u0022virtualhost\u0022\u003eVirtualhost\u003c/h3\u003e
+\u003cp\u003eVirtually any webserver uses virtualhosts for configuring multiple websites on one webserver. This isn\u0026rsquo;t different for nextcloud. We place a virtualhost in \u003ccode\u003e/etc/nginx/sites-available/cloud.technat.ch\u003c/code\u003e.\u003c/p\u003e
+\u003cp\u003eThe following one is based on a config found in the docs:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#75715e\u0022\u003e# Ref: https://doc.nextcloud.com/server/latest/admin_manual/installation/nginx.html\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eupstream php-handler \u003cspan style=\u0022color:#f92672\u0022\u003e{\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e    server unix:/var/run/php8.0-fpm-nextcloud.sock;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#f92672\u0022\u003e}\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eserver \u003cspan style=\u0022color:#f92672\u0022\u003e{\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e    listen 80;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e    listen \u003cspan style=\u0022color:#f92672\u0022\u003e[\u003c/span\u003e::\u003cspan style=\u0022color:#f92672\u0022\u003e]\u003c/span\u003e:80;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e    server_name cloud.technat.ch;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e    server_tokens off;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e    \u003cspan style=\u0022color:#75715e\u0022\u003e# Enforce HTTPS\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e    \u003cspan style=\u0022color:#66d9ef\u0022\u003ereturn\u003c/span\u003e \u003cspan style=\u0022color:#ae81ff\u0022\u003e301\u003c/span\u003e https://\$server_name\$request_uri;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#f92672\u0022\u003e}\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eserver \u003cspan style=\u0022color:#f92672\u0022\u003e{\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e    listen \u003cspan style=\u0022color:#ae81ff\u0022\u003e443\u003c/span\u003e      ssl http2;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e    listen \u003cspan style=\u0022color:#f92672\u0022\u003e[\u003c/span\u003e::\u003cspan style=\u0022color:#f92672\u0022\u003e]\u003c/span\u003e:443 ssl http2;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e    server_name technat.ch;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e    server_tokens off;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e    \u003cspan style=\u0022color:#75715e\u0022\u003e# Use Mozilla\u0026#39;s guidelines for SSL/TLS settings\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e    \u003cspan style=\u0022color:#75715e\u0022\u003e# https://mozilla.github.io/server-side-tls/ssl-config-generator/\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e    ssl_certificate     /etc/letsencrypt/live/cloud.technat.ch/fullchain.pem;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e    ssl_certificate_key /etc/letsencrypt/live/cloud.technat.ch/privkey.pem;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e    \u003cspan style=\u0022color:#75715e\u0022\u003e# TLS settings\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e    ssl_protocols TLSv1.2 TLSv1.3;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e    ssl_prefer_server_ciphers off;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e    ssl_ciphers ECDH\u002bAESGCM:ECDH\u002bCHACHA20:ECDH\u002bAES256:ECDH\u002bAES128:!aNULL:!SHA1:!AESCCM;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e    \u003cspan style=\u0022color:#75715e\u0022\u003e# HSTS settings\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e    add_header Strict-Transport-Security \u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#34;max-age=15768000; includeSubDomains; preload;\u0026#34;\u003c/span\u003e always;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e    \u003cspan style=\u0022color:#75715e\u0022\u003e# set max upload size and increase upload timeout:\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		client_max_body_size 32G;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e    client_body_timeout 300s;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		fastcgi_buffers \u003cspan style=\u0022color:#ae81ff\u0022\u003e64\u003c/span\u003e 4K;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e    \u003cspan style=\u0022color:#75715e\u0022\u003e# Enable gzip but do not remove ETag headers\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e    gzip on;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e    gzip_vary on;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e    gzip_comp_level 4;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e    gzip_min_length 256;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e    gzip_proxied expired no-cache no-store private no_last_modified no_etag auth;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e    gzip_types application/atom\u002bxml application/javascript application/json application/ld\u002bjson application/manifest\u002bjson application/rss\u002bxml application/vnd.geo\u002bjson application/vnd.ms-fontobject application/wasm application/x-font-ttf application/x-web-app-manifest\u002bjson application/xhtml\u002bxml application/xml font/opentype image/bmp image/svg\u002bxml image/x-icon text/cache-manifest text/css text/plain text/vcard text/vnd.rim.location.xloc text/vtt text/x-component text/x-cross-domain-policy;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		\u003cspan style=\u0022color:#75715e\u0022\u003e# Pagespeed is not supported by Nextcloud, so if your server is built\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		\u003cspan style=\u0022color:#75715e\u0022\u003e# with the \`ngx_pagespeed\` module, uncomment this line to disable it.\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		\u003cspan style=\u0022color:#75715e\u0022\u003e#pagespeed off;\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		\u003cspan style=\u0022color:#75715e\u0022\u003e# HTTP response headers borrowed from Nextcloud \`.htaccess\`\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		add_header Referrer-Policy                      \u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#34;no-referrer\u0026#34;\u003c/span\u003e   always;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		add_header X-Content-Type-Options               \u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#34;nosniff\u0026#34;\u003c/span\u003e       always;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		add_header X-Download-Options                   \u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#34;noopen\u0026#34;\u003c/span\u003e        always;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		add_header X-Frame-Options                      \u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#34;SAMEORIGIN\u0026#34;\u003c/span\u003e    always;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		add_header X-Permitted-Cross-Domain-Policies    \u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#34;none\u0026#34;\u003c/span\u003e          always;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		add_header X-Robots-Tag                         \u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#34;none\u0026#34;\u003c/span\u003e          always;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		add_header X-XSS-Protection                     \u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#34;1; mode=block\u0026#34;\u003c/span\u003e always;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		\u003cspan style=\u0022color:#75715e\u0022\u003e# Remove X-Powered-By, which is an information leak\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		fastcgi_hide_header X-Powered-By;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		\u003cspan style=\u0022color:#75715e\u0022\u003e# Path to the root of your installation\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		root /var/www/cloud.technat.ch;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		\u003cspan style=\u0022color:#75715e\u0022\u003e# Specify how to handle directories -- specifying \`/index.php\$request_uri\`\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		\u003cspan style=\u0022color:#75715e\u0022\u003e# here as the fallback means that Nginx always exhibits the desired behaviour\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		\u003cspan style=\u0022color:#75715e\u0022\u003e# when a client requests a path that corresponds to a directory that exists\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		\u003cspan style=\u0022color:#75715e\u0022\u003e# on the server. In particular, if that directory contains an index.php file,\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		\u003cspan style=\u0022color:#75715e\u0022\u003e# that file is correctly served; if it doesn\u0026#39;t, then the request is passed to\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		\u003cspan style=\u0022color:#75715e\u0022\u003e# the front-end controller. This consistent behaviour means that we don\u0026#39;t need\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		\u003cspan style=\u0022color:#75715e\u0022\u003e# to specify custom rules for certain paths (e.g. images and other assets,\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		\u003cspan style=\u0022color:#75715e\u0022\u003e# \`/updater\`, \`/ocm-provider\`, \`/ocs-provider\`), and thus\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		\u003cspan style=\u0022color:#75715e\u0022\u003e# \`try_files \$uri \$uri/ /index.php\$request_uri\`\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		\u003cspan style=\u0022color:#75715e\u0022\u003e# always provides the desired behaviour.\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		index index.php index.html /index.php\$request_uri;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		\u003cspan style=\u0022color:#75715e\u0022\u003e# Rule borrowed from \`.htaccess\` to handle Microsoft DAV clients\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		location \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e / \u003cspan style=\u0022color:#f92672\u0022\u003e{\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e				\u003cspan style=\u0022color:#66d9ef\u0022\u003eif\u003c/span\u003e \u003cspan style=\u0022color:#f92672\u0022\u003e(\u003c/span\u003e \$http_user_agent ~ ^DavClnt \u003cspan style=\u0022color:#f92672\u0022\u003e)\u003c/span\u003e \u003cspan style=\u0022color:#f92672\u0022\u003e{\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e						\u003cspan style=\u0022color:#66d9ef\u0022\u003ereturn\u003c/span\u003e \u003cspan style=\u0022color:#ae81ff\u0022\u003e302\u003c/span\u003e /remote.php/webdav/\$is_args\$args;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e				\u003cspan style=\u0022color:#f92672\u0022\u003e}\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		\u003cspan style=\u0022color:#f92672\u0022\u003e}\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		location \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e /robots.txt \u003cspan style=\u0022color:#f92672\u0022\u003e{\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e				allow all;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e				log_not_found off;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e				access_log off;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		\u003cspan style=\u0022color:#f92672\u0022\u003e}\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		\u003cspan style=\u0022color:#75715e\u0022\u003e# Make a regex exception for \`/.well-known\` so that clients can still\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		\u003cspan style=\u0022color:#75715e\u0022\u003e# access it despite the existence of the regex rule\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		\u003cspan style=\u0022color:#75715e\u0022\u003e# \`location ~ /(\\.|autotest|...)\` which would otherwise handle requests\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		\u003cspan style=\u0022color:#75715e\u0022\u003e# for \`/.well-known\`.\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		location ^~ /.well-known \u003cspan style=\u0022color:#f92672\u0022\u003e{\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e				\u003cspan style=\u0022color:#75715e\u0022\u003e# The rules in this block are an adaptation of the rules\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e				\u003cspan style=\u0022color:#75715e\u0022\u003e# in \`.htaccess\` that concern \`/.well-known\`.\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e				location \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e /.well-known/carddav \u003cspan style=\u0022color:#f92672\u0022\u003e{\u003c/span\u003e \u003cspan style=\u0022color:#66d9ef\u0022\u003ereturn\u003c/span\u003e \u003cspan style=\u0022color:#ae81ff\u0022\u003e301\u003c/span\u003e /remote.php/dav/; \u003cspan style=\u0022color:#f92672\u0022\u003e}\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e				location \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e /.well-known/caldav  \u003cspan style=\u0022color:#f92672\u0022\u003e{\u003c/span\u003e \u003cspan style=\u0022color:#66d9ef\u0022\u003ereturn\u003c/span\u003e \u003cspan style=\u0022color:#ae81ff\u0022\u003e301\u003c/span\u003e /remote.php/dav/; \u003cspan style=\u0022color:#f92672\u0022\u003e}\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e				location /.well-known/acme-challenge    \u003cspan style=\u0022color:#f92672\u0022\u003e{\u003c/span\u003e try_files \$uri \$uri/ \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e404; \u003cspan style=\u0022color:#f92672\u0022\u003e}\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e				location /.well-known/pki-validation    \u003cspan style=\u0022color:#f92672\u0022\u003e{\u003c/span\u003e try_files \$uri \$uri/ \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e404; \u003cspan style=\u0022color:#f92672\u0022\u003e}\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e				\u003cspan style=\u0022color:#75715e\u0022\u003e# Let Nextcloud\u0026#39;s API for \`/.well-known\` URIs handle all other\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e				\u003cspan style=\u0022color:#75715e\u0022\u003e# requests by passing them to the front-end controller.\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e				\u003cspan style=\u0022color:#66d9ef\u0022\u003ereturn\u003c/span\u003e \u003cspan style=\u0022color:#ae81ff\u0022\u003e301\u003c/span\u003e /index.php\$request_uri;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		\u003cspan style=\u0022color:#f92672\u0022\u003e}\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		\u003cspan style=\u0022color:#75715e\u0022\u003e# Rules borrowed from \`.htaccess\` to hide certain paths from clients\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		location ~ ^/\u003cspan style=\u0022color:#f92672\u0022\u003e(\u003c/span\u003e?:build|tests|config|lib|3rdparty|templates|data\u003cspan style=\u0022color:#f92672\u0022\u003e)(\u003c/span\u003e?:\$|/\u003cspan style=\u0022color:#f92672\u0022\u003e)\u003c/span\u003e  \u003cspan style=\u0022color:#f92672\u0022\u003e{\u003c/span\u003e \u003cspan style=\u0022color:#66d9ef\u0022\u003ereturn\u003c/span\u003e 404; \u003cspan style=\u0022color:#f92672\u0022\u003e}\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		location ~ ^/\u003cspan style=\u0022color:#f92672\u0022\u003e(\u003c/span\u003e?:\u003cspan style=\u0022color:#ae81ff\u0022\u003e\\.\u003c/span\u003e|autotest|occ|issue|indie|db_|console\u003cspan style=\u0022color:#f92672\u0022\u003e)\u003c/span\u003e                \u003cspan style=\u0022color:#f92672\u0022\u003e{\u003c/span\u003e \u003cspan style=\u0022color:#66d9ef\u0022\u003ereturn\u003c/span\u003e 404; \u003cspan style=\u0022color:#f92672\u0022\u003e}\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		\u003cspan style=\u0022color:#75715e\u0022\u003e# Ensure this block, which passes PHP files to the PHP process, is above the blocks\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		\u003cspan style=\u0022color:#75715e\u0022\u003e# which handle static assets (as seen below). If this block is not declared first,\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		\u003cspan style=\u0022color:#75715e\u0022\u003e# then Nginx will encounter an infinite rewriting loop when it prepends \`/index.php\`\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		\u003cspan style=\u0022color:#75715e\u0022\u003e# to the URI, resulting in a HTTP 500 error response.\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		location ~ \u003cspan style=\u0022color:#ae81ff\u0022\u003e\\.\u003c/span\u003ephp\u003cspan style=\u0022color:#f92672\u0022\u003e(\u003c/span\u003e?:\$|/\u003cspan style=\u0022color:#f92672\u0022\u003e)\u003c/span\u003e \u003cspan style=\u0022color:#f92672\u0022\u003e{\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e        \u003cspan style=\u0022color:#75715e\u0022\u003e# Required for legacy support\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e        rewrite ^/\u003cspan style=\u0022color:#f92672\u0022\u003e(\u003c/span\u003e?!index|remote|public|cron|core\u003cspan style=\u0022color:#ae81ff\u0022\u003e\\/\u003c/span\u003eajax\u003cspan style=\u0022color:#ae81ff\u0022\u003e\\/\u003c/span\u003eupdate|status|ocs\u003cspan style=\u0022color:#ae81ff\u0022\u003e\\/\u003c/span\u003ev\u003cspan style=\u0022color:#f92672\u0022\u003e[\u003c/span\u003e12\u003cspan style=\u0022color:#f92672\u0022\u003e]\u003c/span\u003e|updater\u003cspan style=\u0022color:#ae81ff\u0022\u003e\\/\u003c/span\u003e.\u002b|oc\u003cspan style=\u0022color:#f92672\u0022\u003e[\u003c/span\u003ems\u003cspan style=\u0022color:#f92672\u0022\u003e]\u003c/span\u003e-provider\u003cspan style=\u0022color:#ae81ff\u0022\u003e\\/\u003c/span\u003e.\u002b|.\u002b\u003cspan style=\u0022color:#ae81ff\u0022\u003e\\/\u003c/span\u003erichdocumentscode\u003cspan style=\u0022color:#ae81ff\u0022\u003e\\/\u003c/span\u003eproxy\u003cspan style=\u0022color:#f92672\u0022\u003e)\u003c/span\u003e /index.php\$request_uri;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e				fastcgi_split_path_info ^\u003cspan style=\u0022color:#f92672\u0022\u003e(\u003c/span\u003e.\u002b?\u003cspan style=\u0022color:#ae81ff\u0022\u003e\\.\u003c/span\u003ephp\u003cspan style=\u0022color:#f92672\u0022\u003e)(\u003c/span\u003e/.*\u003cspan style=\u0022color:#f92672\u0022\u003e)\u003c/span\u003e\$;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e				set \$path_info \$fastcgi_path_info;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e				try_files \$fastcgi_script_name \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e404;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e				include fastcgi_params;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e				fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e				fastcgi_param PATH_INFO \$path_info;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e				fastcgi_param HTTPS on;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e				fastcgi_param modHeadersAvailable true;         \u003cspan style=\u0022color:#75715e\u0022\u003e# Avoid sending the security headers twice\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e				fastcgi_param front_controller_active true;     \u003cspan style=\u0022color:#75715e\u0022\u003e# Enable pretty urls\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e				fastcgi_pass php-handler;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e				fastcgi_intercept_errors on;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e				fastcgi_request_buffering off;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		\u003cspan style=\u0022color:#f92672\u0022\u003e}\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		location ~ \u003cspan style=\u0022color:#ae81ff\u0022\u003e\\.\u003c/span\u003e\u003cspan style=\u0022color:#f92672\u0022\u003e(\u003c/span\u003e?:css|js|svg|gif|png|jpg|ico\u003cspan style=\u0022color:#f92672\u0022\u003e)\u003c/span\u003e\$ \u003cspan style=\u0022color:#f92672\u0022\u003e{\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e				try_files \$uri /index.php\$request_uri;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e				expires 6M;         \u003cspan style=\u0022color:#75715e\u0022\u003e# Cache-Control policy borrowed from \`.htaccess\`\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e				access_log off;     \u003cspan style=\u0022color:#75715e\u0022\u003e# Optional: Don\u0026#39;t log access to assets\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e        location ~ \u003cspan style=\u0022color:#ae81ff\u0022\u003e\\.\u003c/span\u003ewasm\$ \u003cspan style=\u0022color:#f92672\u0022\u003e{\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e            default_type application/wasm;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e        \u003cspan style=\u0022color:#f92672\u0022\u003e}\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		\u003cspan style=\u0022color:#f92672\u0022\u003e}\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		location ~ \u003cspan style=\u0022color:#ae81ff\u0022\u003e\\.\u003c/span\u003ewoff2?\$ \u003cspan style=\u0022color:#f92672\u0022\u003e{\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e				try_files \$uri /index.php\$request_uri;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e				expires 7d;         \u003cspan style=\u0022color:#75715e\u0022\u003e# Cache-Control policy borrowed from \`.htaccess\`\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e				access_log off;     \u003cspan style=\u0022color:#75715e\u0022\u003e# Optional: Don\u0026#39;t log access to assets\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		\u003cspan style=\u0022color:#f92672\u0022\u003e}\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		\u003cspan style=\u0022color:#75715e\u0022\u003e# Rule borrowed from \`.htaccess\`\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		location /remote \u003cspan style=\u0022color:#f92672\u0022\u003e{\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e				\u003cspan style=\u0022color:#66d9ef\u0022\u003ereturn\u003c/span\u003e \u003cspan style=\u0022color:#ae81ff\u0022\u003e301\u003c/span\u003e /remote.php\$request_uri;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		\u003cspan style=\u0022color:#f92672\u0022\u003e}\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		location / \u003cspan style=\u0022color:#f92672\u0022\u003e{\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e				try_files \$uri \$uri/ /index.php\$request_uri;
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e		\u003cspan style=\u0022color:#f92672\u0022\u003e}\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#f92672\u0022\u003e}\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eActivate the virtualhost lile so:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo ln -s /etc/nginx/sites-available/cloud.technat.ch /etc/nginx/sites-enabled/cloud.technat.ch
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo rm /etc/nginx/sites-enabled/default
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo systemctl restart nginx
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003ch2 id=\u0022redis\u0022\u003eRedis\u003c/h2\u003e
+\u003cp\u003eTo improve Nextcloud Performance it\u0026rsquo;s recommended to add a \u003ca href=\u0022https://doc.nextcloud.com/server/22/adminmanual/configurationserver/caching_configuration.html\u0022\u003ememcache\u003c/a\u003e.\u003c/p\u003e
+\u003cp\u003eSo here is how to install and configure redis as memcache for nextcloud:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo apt install redis-server php8.0-redis -y
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eWe want redis to listen on a unix socket instead of a port. Update (comment, uncomment) the following lines in \u003ccode\u003e/etc/redis/redis.conf\u003c/code\u003e:\u003c/p\u003e
+\u003cpre tabindex=\u00220\u0022\u003e\u003ccode\u003eunixsocket /var/run/redis/redis-server.sock
+unixsocketperm 770
+port 0
+# bind 127.0.0.1 ::1
+\u003c/code\u003e\u003c/pre\u003e\u003cp\u003eNGINX needs access to that socket:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo usermod -a -G redis www-data
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo systemctl restart redis
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003ch2 id=\u0022initial-nextcloud-setup\u0022\u003eInitial Nextcloud setup\u003c/h2\u003e
+\u003cp\u003eNow we are ready to setup nextcloud. Get the latest application into the specifed webroot, fix permissions and grant the nextcloud permissions to our data folder:\u003c/p\u003e
+\u003cpre tabindex=\u00220\u0022\u003e\u003ccode\u003ecd /tmp
+wget https://download.nextcloud.com/server/releases/nextcloud-23.0.0.zip
+sudo apt install unzip -y
+unzip nextcloud-23.0.0.zip
+sudo mv nextcloud /var/www/cloud.technat.ch
+sudo chown -R www-data:www-data /var/www/cloud.technat.ch
+sudo chmod -R 770 /var/www/cloud.technat.ch
+sudo mkdir /data/nc
+sudo chown -R www-data:www-data /data/nc
+sudo chmod -R 740 /data/nc
+\u003c/code\u003e\u003c/pre\u003e\u003cp\u003eNow you can open your domain in a browser and configure the last settings:\u003c/p\u003e
+\u003cp\u003eAdmin Username: everything but not admin\u003c/p\u003e
+\u003cp\u003eAdmin Password: Long but not necessarily complex\u003c/p\u003e
+\u003cp\u003eData Folder: /data/nc
+DB User: www-data
+DB: ncdb
+DB Host: /var/run/postgresql\u003c/p\u003e
+\u003cp\u003eCongratulations! Your nextcloud is now ready to use!\u003c/p\u003e
+\u003cp\u003eOr when migrating the webroot from another server start by ziping the webroot there and copying it to the new host:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo zip -r cloud.technat.ch.zip /var/www/cloud.technat.ch/
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eAnyway the permissions must be correct:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo chown -R www-data:www-data /var/www/cloud.technat.ch
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo chmod -R \u003cspan style=\u0022color:#ae81ff\u0022\u003e770\u003c/span\u003e /var/www/cloud.technat.ch
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eAnd then adjust the \u003ccode\u003econfig.php\u003c/code\u003e of nextcloud:\u003c/p\u003e
+\u003cul\u003e
+\u003cli\u003eonly \u003ccode\u003ecloud.technat.ch\u003c/code\u003e should be added to the trusted domains\u003c/li\u003e
+\u003cli\u003eadjust the data path to \u003ccode\u003e/data\u003c/code\u003e\u003c/li\u003e
+\u003cli\u003eadjust overwrite.cli.url to \u003ccode\u003ehttps://cloud.technat.ch\u003c/code\u003e\u003c/li\u003e
+\u003cli\u003eensure db connections are correct\u003c/li\u003e
+\u003c/ul\u003e
+\u003cp\u003eWhen the webroot is correct also zip the data dir on the old server, copy it to the new server and unpack it.\u003c/p\u003e
+\u003cp\u003eMake sure the permissions are correct:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo chown -R www-data:www-data /data/nc
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo chmod -R \u003cspan style=\u0022color:#ae81ff\u0022\u003e770\u003c/span\u003e /data/nc
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003ch2 id=\u0022post-setup\u0022\u003ePost Setup\u003c/h2\u003e
+\u003cp\u003eAlthough you are done now, it\u0026rsquo;s highly recommended to configure some additional settings inside the Nextcloud UI and the config file.\u003c/p\u003e
+\u003ch3 id=\u0022config-file\u0022\u003eConfig file\u003c/h3\u003e
+\u003cp\u003eAdd the following config values to your \u003ccode\u003econfig.php\u003c/code\u003e:\u003c/p\u003e
+\u003cpre tabindex=\u00220\u0022\u003e\u003ccode\u003e\u0026#39;memcache.locking\u0026#39; =\u0026gt; \u0026#39;\\OC\\Memcache\\Redis\u0026#39;,
+\u0026#39;memcache.local\u0026#39; =\u0026gt; \u0026#39;\\OC\\Memcache\\Redis\u0026#39;,
+\u0026#39;memcache.distributed\u0026#39; =\u0026gt; \u0026#39;\\OC\\Memcache\\Redis\u0026#39;,
+\u0026#39;redis\u0026#39; =\u0026gt; [
+     \u0026#39;host\u0026#39;     =\u0026gt; \u0026#39;/var/run/redis/redis-server.sock\u0026#39;,
+     \u0026#39;port\u0026#39;     =\u0026gt; 0,
+     \u0026#39;dbindex\u0026#39;  =\u0026gt; 0,
+     \u0026#39;password\u0026#39; =\u0026gt; \u0026#39;\u0026#39;,
+     \u0026#39;timeout\u0026#39;  =\u0026gt; 1.5,
+],
+\u003c/code\u003e\u003c/pre\u003e\u003cp\u003eThis is because redis.\u003c/p\u003e
+\u003ch3 id=\u0022security--setup-warnings\u0022\u003eSecurity \u0026amp; setup warnings\u003c/h3\u003e
+\u003cp\u003eIn the admin settings overview page Nextcloud has a list of warnings and errors it checks for you. Fix what the suggest.\u003c/p\u003e
+\u003cp\u003eSome cases are listed in the sub chapters here.\u003c/p\u003e
+\u003cp\u003eDefault Phone Region missing\u003c/p\u003e
+\u003cp\u003eHead over to the Nextcloud config file at /var/www/cloud.technat.ch/config.php and add the following directive:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-json\u0022 data-lang=\u0022json\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#960050;background-color:#1e0010\u0022\u003e\u0026#39;default_phone_region\u0026#39;\u003c/span\u003e \u003cspan style=\u0022color:#960050;background-color:#1e0010\u0022\u003e=\u0026gt;\u003c/span\u003e \u003cspan style=\u0022color:#960050;background-color:#1e0010\u0022\u003e\u0026#39;CH\u0026#39;,\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eIf you want to remove the \u0026ldquo;Get your own free account\u0026rdquo; link on the signin page add this to your config as well:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-json\u0022 data-lang=\u0022json\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#960050;background-color:#1e0010\u0022\u003e\u0026#39;simpleSignUpLink.shown\u0026#39;\u003c/span\u003e \u003cspan style=\u0022color:#960050;background-color:#1e0010\u0022\u003e=\u0026gt;\u003c/span\u003e \u003cspan style=\u0022color:#66d9ef\u0022\u003efalse\u003c/span\u003e\u003cspan style=\u0022color:#960050;background-color:#1e0010\u0022\u003e,\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003ch3 id=\u0022nextcloud-jobs-using-cron\u0022\u003eNextcloud jobs using cron\u003c/h3\u003e
+\u003cp\u003e\u003ca href=\u0022https://doc.nextcloud.com/server/stable/adminmanual/configurationserver/backgroundjobsconfiguration.html\u0022\u003eReference Docs\u003c/a\u003e\u003c/p\u003e
+\u003cp\u003eNextclouds runs some peridoc tasks. The most reliable way to run them is via cron.\u003c/p\u003e
+\u003cp\u003eTo set this up add the following cron job with the command \u003ccode\u003esudo crontab -u www-data -e\u003c/code\u003e:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e*/5  *  *  *  * php -f /var/www/cloud.technat.ch/cron.php
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eNote: The php-cli has it\u0026rsquo;s own php.ini in /etc/php/8.0/cli/php.ini so you might want to add keys like date.timezone there as well according to the php-fpm config.\u003c/p\u003e
+\u003ch2 id=\u0022nextcloud-admin-ui-settings\u0022\u003eNextcloud Admin UI Settings\u003c/h2\u003e
+\u003ch3 id=\u00222fa\u0022\u003e2FA\u003c/h3\u003e
+\u003cp\u003eInstall from app store: Two-Factor Mail Provider, Two-Factor TOTP Provider\u003c/p\u003e
+\u003cp\u003eEnfore 2FA: true Enforced for groups: admin Not enforced for groups: none\u003c/p\u003e
+\u003ch3 id=\u0022password-policies\u0022\u003ePassword Policies\u003c/h3\u003e
+\u003cul\u003e
+\u003cli\u003eMin Password lenght: 14\u003c/li\u003e
+\u003cli\u003eUser password history: 24\u003c/li\u003e
+\u003cli\u003eNumber of days until user password expires: 90\u003c/li\u003e
+\u003cli\u003eNumber of login attemps before the user account is blocked: 10\u003c/li\u003e
+\u003cli\u003eforbid common passwords: true\u003c/li\u003e
+\u003cli\u003eenfore upper and lower case characters: false\u003c/li\u003e
+\u003cli\u003eenfore numeric characters: false\u003c/li\u003e
+\u003cli\u003eenfore special characters: false\u003c/li\u003e
+\u003cli\u003echeck passwords against\u0026hellip; : true\u003c/li\u003e
+\u003c/ul\u003e
+\u003ch2 id=\u0022onlyoffice-docs\u0022\u003eOnlyOffice Docs\u003c/h2\u003e
+\u003cp\u003eIf you want to edit documents it\u0026rsquo;s recommended to use something like onlyoffice doc. The community server is garbage, you will need the real server. For now we install the onlyoffice docs server on the same machine as the nextcloud. This requires some tweaks and special config.\u003c/p\u003e
+\u003cp\u003eThe following docs are all helpful:\u003c/p\u003e
+\u003cul\u003e
+\u003cli\u003e\u003ca href=\u0022https://helpcenter.onlyoffice.com/installation/docs-community-install-ubuntu.aspx?_ga=2.121380878.782359554.1594636128-1157782750.1587541027\u0022\u003eDocs\u003c/a\u003e\u003c/li\u003e
+\u003cli\u003e\u003ca href=\u0022https://gist.github.com/tavinus/4cd108fa6a76c2a11da81a0e5c552bd0\u0022\u003eGithub Gist\u003c/a\u003e\u003c/li\u003e
+\u003cli\u003e\u003ca href=\u0022https://tweenpath.net/install-onlyoffice-document-server-nginx-debian-10/\u0022\u003ecustom nginx tutorial\u003c/a\u003e\u003c/li\u003e
+\u003c/ul\u003e
+\u003ch3 id=\u0022postgresql-1\u0022\u003ePostgresql\u003c/h3\u003e
+\u003cp\u003eOnlyoffice needs a database, we intentionally installed nextcloud using postgresql so that we can now just create another DB:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo -i -u postgres psql -c \u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#34;CREATE DATABASE onlyoffice;\u0026#34;\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo -i -u postgres psql -c \u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#34;CREATE USER onlyoffice WITH password \u0026#39;password_here\u0026#39;;\u0026#34;\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo -i -u postgres psql -c \u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#34;GRANT ALL privileges ON DATABASE onlyoffice TO onlyoffice;\u0026#34;\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003ch3 id=\u0022rabittmq\u0022\u003eRabittmq\u003c/h3\u003e
+\u003cp\u003eRabittmq is a dependency of onlyoffice docs too:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo apt-get install rabbitmq-server -y
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003ch3 id=\u0022onlyoffice\u0022\u003eOnlyoffice\u003c/h3\u003e
+\u003cp\u003eNow we can install onlyoffice doc. But before we do this, we prepare a second domain, ssl cert and dhparam so that we can run onlyoffice docs on a separate nginx virtualhost. If we would run it in default it would listen on 80,443 without any virtualhost which doesn\u0026rsquo;t work. There would be an https example in the docs but I don\u0026rsquo;t trust it that it still doesn\u0026rsquo;t use virtualhosts.\u003c/p\u003e
+\u003cp\u003eSo let\u0026rsquo;s get a second cert for \u003ccode\u003edoc.technat.ch\u003c/code\u003e:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo certbot certonly --nginx -d doc.technat.ch --agree-tos -m root@technat.ch
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eOnce this is saved create a dhparam:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ecd /etc/ssl/certs/
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eopenssl dhparam -out dhparam.pem \u003cspan style=\u0022color:#ae81ff\u0022\u003e4096\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eThen we can install onlyoffice from their repository:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo apt install gnupg2
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys CB2DE8E5
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eecho \u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#34;deb https://download.onlyoffice.com/repo/debian squeeze main\u0026#34;\u003c/span\u003e | sudo tee /etc/apt/sources.list.d/onlyoffice.list
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo apt-get update
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo apt-get install onlyoffice-documentserver -y
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eNote: You have to enter the database password while installing the service.\u003c/p\u003e
+\u003cp\u003eAnd now for the custom domain, we need to adjust the virtualhost.\u003c/p\u003e
+\u003cp\u003eBut first let\u0026rsquo;s use their template:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ecd /etc/onlyoffice/documentserver/nginx/
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo cp ds-ssl.conf.tmpl ds.conf
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eAnd now edit the \u003ccode\u003eds.conf\u003c/code\u003e file. There are three servers in there, one is only localhost, we don\u0026rsquo;t touch this one. But the others that listen on all interfaces need adjustments:\u003c/p\u003e
+\u003cul\u003e
+\u003cli\u003e\u003ccode\u003eserver_name doc.technat.ch;\u003c/code\u003e for both\u003c/li\u003e
+\u003cli\u003e\u003ccode\u003elisten 0.0.0.0:80;\u003c/code\u003e needs to be replaced with \u003ccode\u003elisten 80;\u003c/code\u003e\u003c/li\u003e
+\u003cli\u003e\u003ccode\u003elisten [::]:80 default_server;\u003c/code\u003e needs to be replaced with \u003ccode\u003elisten [::]:80;\u003c/code\u003e\u003c/li\u003e
+\u003cli\u003e\u003ccode\u003elisten 0.0.0.0:443 ssl;\u003c/code\u003e needs to be replaced with \u003ccode\u003elisten 443      ssl http2;\u003c/code\u003e\u003c/li\u003e
+\u003cli\u003e\u003ccode\u003elisten [::]:443;\u003c/code\u003e needs to be replaced with \u003ccode\u003elisten [::]:443 ssl http2;\u003c/code\u003e\u003c/li\u003e
+\u003cli\u003e\u003ccode\u003essl_certificate /etc/letsencrypt/live/doc.technat.ch/fullchain.pem;\u003c/code\u003e\u003c/li\u003e
+\u003cli\u003e\u003ccode\u003essl_certificate_key /etc/letsencrypt/live/doc.technat.ch/privkey.pem\u003c/code\u003e\u003c/li\u003e
+\u003cli\u003eEnable the \u003ccode\u003essl_dhparam\u003c/code\u003e option by removing the comment\u003c/li\u003e
+\u003c/ul\u003e
+\u003cp\u003eThen restart the nginx.\u003c/p\u003e
+\u003ch3 id=\u0022docs-config\u0022\u003eDocs config\u003c/h3\u003e
+\u003cp\u003eAnd finally configure a secret to use the server. Use your password generator to create one and then change the following (without removing what is already there) in \u003ccode\u003e/etc/onlyoffice/documentserver/local.json\u003c/code\u003e:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-json\u0022 data-lang=\u0022json\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e{
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e  \u003cspan style=\u0022color:#f92672\u0022\u003e\u0026#34;services\u0026#34;\u003c/span\u003e: {
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e    \u003cspan style=\u0022color:#f92672\u0022\u003e\u0026#34;CoAuthoring\u0026#34;\u003c/span\u003e: {
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e      \u003cspan style=\u0022color:#f92672\u0022\u003e\u0026#34;token\u0026#34;\u003c/span\u003e: {
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e        \u003cspan style=\u0022color:#f92672\u0022\u003e\u0026#34;enable\u0026#34;\u003c/span\u003e: {
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e          \u003cspan style=\u0022color:#f92672\u0022\u003e\u0026#34;request\u0026#34;\u003c/span\u003e: {
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e            \u003cspan style=\u0022color:#f92672\u0022\u003e\u0026#34;inbox\u0026#34;\u003c/span\u003e: \u003cspan style=\u0022color:#66d9ef\u0022\u003etrue\u003c/span\u003e,
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e            \u003cspan style=\u0022color:#f92672\u0022\u003e\u0026#34;outbox\u0026#34;\u003c/span\u003e: \u003cspan style=\u0022color:#66d9ef\u0022\u003etrue\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e          },
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e          \u003cspan style=\u0022color:#f92672\u0022\u003e\u0026#34;browser\u0026#34;\u003c/span\u003e: \u003cspan style=\u0022color:#66d9ef\u0022\u003etrue\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e        }
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e      },
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e      \u003cspan style=\u0022color:#f92672\u0022\u003e\u0026#34;secret\u0026#34;\u003c/span\u003e: {
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e        \u003cspan style=\u0022color:#f92672\u0022\u003e\u0026#34;inbox\u0026#34;\u003c/span\u003e: {
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e          \u003cspan style=\u0022color:#f92672\u0022\u003e\u0026#34;string\u0026#34;\u003c/span\u003e: \u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#34;secret_key\u0026#34;\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e        },
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e        \u003cspan style=\u0022color:#f92672\u0022\u003e\u0026#34;outbox\u0026#34;\u003c/span\u003e: {
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e          \u003cspan style=\u0022color:#f92672\u0022\u003e\u0026#34;string\u0026#34;\u003c/span\u003e: \u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#34;secret_key\u0026#34;\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e        },
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e        \u003cspan style=\u0022color:#f92672\u0022\u003e\u0026#34;session\u0026#34;\u003c/span\u003e: {
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e          \u003cspan style=\u0022color:#f92672\u0022\u003e\u0026#34;string\u0026#34;\u003c/span\u003e: \u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#34;secret_key\u0026#34;\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e        }
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e      }
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e    }
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e  }
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e}
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eSave the secret somewhere as your nextcloud instance needs to know it when you configure onlyoffice in the settings.\u003c/p\u003e
+\u003cp\u003eAnd then restart the service using \u003ccode\u003esudo supervisorctl restart all\u003c/code\u003e.\u003c/p\u003e
+\u003ch3 id=\u0022fonts\u0022\u003eFonts\u003c/h3\u003e
+\u003cp\u003eAs a last thing get some fonts onto the server.\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo apt-get install ttf-mscorefonts-installer
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo apt install wget cabextract fontforge
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ewget https://gist.githubusercontent.com/tavinus/1a92c79d790657d5b66546996dd006b9/raw/ttf-vista-fonts-installer.sh -q -O - | sudo bash
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo /usr/bin/documentserver-generate-allfonts.sh
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003ch4 id=\u0022custom-fonts\u0022\u003eCustom fonts\u003c/h4\u003e
+\u003col\u003e
+\u003cli\u003eDownload them and put them in \u003ccode\u003e/usr/share/fonts\u003c/code\u003e\u003c/li\u003e
+\u003cli\u003eRun \u003ccode\u003esudo /usr/bin/documentserver-generate-allfonts.sh\u003c/code\u003e\u003c/li\u003e
+\u003c/ol\u003e
+\u003ch2 id=\u0022troubleshooting\u0022\u003eTroubleshooting\u003c/h2\u003e
+\u003ch3 id=\u0022troubleshoot-onlyoffice-issues\u0022\u003eTroubleshoot onlyoffice issues\u003c/h3\u003e
+\u003cul\u003e
+\u003cli\u003e\u003ccode\u003esudo supervisorctl restart all\u003c/code\u003e also starts the example service, you want to this to be disabled: \u003ccode\u003esudo supervisorctl stop ds:example\u003c/code\u003e\u003c/li\u003e
+\u003cli\u003eLogs can be found in /var/log/onlyoffice/documentserver/\u003c/li\u003e
+\u003cli\u003e\u003ccode\u003esudo supervisorctl status\u003c/code\u003e shows you if the documentservices are running\u003c/li\u003e
+\u003c/ul\u003e
+\u003ch3 id=\u0022general-troubleshooting\u0022\u003eGeneral troubleshooting\u003c/h3\u003e
+\u003cul\u003e
+\u003cli\u003e/var/www should be owned by root:root (using 771)\u003c/li\u003e
+\u003c/ul\u003e
+\u003c/span\u003e`,"activity-content",contentDelay)};typeeffetct()</script></div><span class=navFull><span><a href=/>Home</a>
+<span>&#8192;|&#8192;</span>
+<a href=./..>/linux/</a></span>
+<span class=navCredits>Hugo theme created by
+<a href=https://github.com/Yukuro/hugo-theme-shell target=_blank rel=noopener>Yukuro</a></span></span></body></html>

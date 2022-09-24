@@ -1,0 +1,14 @@
+env:
+  # -- Set the container timezone
+  TZ: "Europe/Zurich"
+
+ingress:
+  # -- Enable and configure ingress settings for the chart under this key.
+  # @default -- See values.yaml
+  main:
+    enabled: false
+
+persistence:
+  config:
+    enabled: true
+

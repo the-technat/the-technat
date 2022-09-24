@@ -1,0 +1,189 @@
+<!doctype html><html lang=en-us><head><title>faultier</title><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content><style>@import "https://fonts.googleapis.com/css2?family=Inconsolata&display=swap";:root{--cursor-visibility:hidden}html,body{width:100%;height:100%;overflow:auto;font-family:inconsolata,monospace;font-size:4vmin;line-height:4.1vmin;font-weight:400}body{margin:0;display:flex;flex-direction:row;justify-content:center;align-items:center}#content{min-width:82vmin;min-height:82vmin}::-webkit-scrollbar{width:10px}::-webkit-scrollbar-track{border-radius:10px;box-shadow:inset 0 0 1px white}::-webkit-scrollbar-thumb{border-radius:10px;box-shadow:0 0 0 1px white}.cursor,#activity-title:after,#activity-content:after,#cd:after,#whoami:after,#cat:after,#tree:after{visibility:var(--cursor-visibility);content:"|";overflow:hidden;color:#fff;animation:blink 500ms linear infinite alternate}@keyframes blink{0%{opacity:0}100%{opacity:1}}@media only screen and (min-width:768px){body{font-size:2.5vmin;line-height:2.6vmin}#content{min-width:60vmin}}:root{--cursor-visibility:hidden}body{align-items:unset;overflow-y:scroll}#content{max-width:80vmin}pre{overflow-x:scroll;white-space:pre}@keyframes blink{0%{opacity:0}100%{opacity:1}}body{background:#002b36}body #terminal{color:#839496}body #user{color:#859900}body #dir{color:#268bd2}body .Typewriter__cursor{color:#839496}a{color:#839496}.navFull{background-color:#353535;font-family:courier new;font-size:17px;display:inline;position:fixed;bottom:0;left:0;width:100%;padding-top:5px;padding:10px;padding-bottom:0}.navCredits{float:right;padding-right:18px;padding-bottom:10px;padding-top:5px}#content::after{content:"\a\a";white-space:pre}</style></head><body><div id=content><span id=activity-title></span><br><span id=activity-content></span><br><script type=text/javascript>async function typewriter(e,t,n){var s=0,o=!1;addText="";const i=document.getElementById(t),a=()=>new Promise(e=>setTimeout(e,n)),r=()=>new Promise(e=>e()),c=()=>i.innerHTML=e.slice(0,s+1)+addText,l=document.createElement("span");for(l.id="blink",i.style.setProperty("--cursor-visibility","visible");s<e.length;){if(e.charAt(s+1)==="<"&&(o=!0),e.charAt(s+1)===">"&&(o=!1),o){s++;continue}requestAnimationFrame(c),n===0?await r():await a(),s++}i.style.setProperty("--cursor-visibility","collapse")}function parseDelay(e){const t=parseInt(e,10);return isNaN(t)?0:t}const titleDelay=parseDelay("0"),contentDelay=parseDelay("0"),typeeffetct=async()=>{await typewriter("\u003cspan id=\u0027terminal\u0027\u003e\u003ch1 id=\u0027title\u0027\u003efaultier\u003c/h1\u003e\u003c/span\u003e","activity-title",titleDelay),await typewriter(`\u003cspan id=\u0027terminal\u0027\u003e\u003cp\u003eThe faultier is the answer to the Chicken and the Egg. If you have desinged anything in IT, you know that there is always at least one Chicken and Egg situation where you have to choose what depends on what. This is exactly what the faultier solves. It\u0026rsquo;s a VM created by Terraform, but configured manually. Why? Because there are some services that just need to exist if you want to setup an automated environment.\u003c/p\u003e
+\u003ch2 id=\u0022infrastructure\u0022\u003eInfrastructure\u003c/h2\u003e
+\u003cp\u003eJust a plain simple VPS docker host.\u003c/p\u003e
+\u003ch2 id=\u0022dns\u0022\u003eDNS\u003c/h2\u003e
+\u003cp\u003eFor now, we have set \u003ccode\u003efaultier.technat.ch\u003c/code\u003e to point to the public IP of faultier.\u003c/p\u003e
+\u003ch2 id=\u0022os-configuration\u0022\u003eOS Configuration\u003c/h2\u003e
+\u003cp\u003eThe hornochse is setup with Debian Bullseye. The cloud_init file already created our Admin user and setup the SSH config.\u003c/p\u003e
+\u003ch3 id=\u0022updates\u0022\u003eUpdates\u003c/h3\u003e
+\u003cp\u003eFirst of all doing updates:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eapt update
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eapt dist-upgrade -y
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003ch3 id=\u0022base-packages\u0022\u003eBase packages\u003c/h3\u003e
+\u003cp\u003eInstall some important packages:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eapt install vim sudo bash-completion git wget curl stow restic git -y
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003ch3 id=\u0022firewall\u0022\u003eFirewall\u003c/h3\u003e
+\u003cp\u003eCloud Provider\u0026rsquo;s Firewall service is used. Closed all ports, except SSH, ICMP and 80/443 for websites.\u003c/p\u003e
+\u003ch3 id=\u0022shell-customizing\u0022\u003eShell customizing\u003c/h3\u003e
+\u003cp\u003eNot necessary but makes your life easier.\u003c/p\u003e
+\u003ch4 id=\u0022bash-aliases\u0022\u003eBash aliases\u003c/h4\u003e
+\u003cp\u003eCreate the file \u003ccode\u003e~/.bash_aliases\u003c/code\u003e and add the following lines:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ealias ll\u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#39;ls -lahF --color=auto\u0026#39;\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ealias dir\u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#39;dir --color=auto\u0026#39;\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ealias vdir\u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#39;vdir --color=auto\u0026#39;\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ealias grep\u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#39;grep --color=auto\u0026#39;\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ealias fgrep\u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#39;fgrep --color=auto\u0026#39;\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ealias egrep\u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#39;egrep --color=auto\u0026#39;\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ealias d\u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#39;docker\u0026#39;\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ealias db\u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#39;docker build\u0026#39;\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ealias drrmti\u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#39;docker run --rm -ti\u0026#39;\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003ch4 id=\u0022vim\u0022\u003eVim\u003c/h4\u003e
+\u003cp\u003eTo edit files on the server directly we have installed vim. To have some Syntax highlithing and the ability to save the file using Sudo (when forgot to open it as sudo). I add the \u003ca href=\u0022https://code.immerda.ch/technat/wall-e/-/blob/master/server-vim/.vimrc\u0022\u003eserver-vimrc\u003c/a\u003e file in \u003ccode\u003e~/.vimrc\u003c/code\u003e and \u003ccode\u003e/root/.vimrc\u003c/code\u003e.\u003c/p\u003e
+\u003ch3 id=\u0022git\u0022\u003eGit\u003c/h3\u003e
+\u003cp\u003eYou need git everywhere. To interact with private repositories we add an ssh-key and some configs.\u003c/p\u003e
+\u003cp\u003eFirst create a new ssh-key:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003essh-keygen -t ed25519 -C \u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#34;service_faultier\u0026#34;\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eThen adjust the permissions:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003echmod \u003cspan style=\u0022color:#ae81ff\u0022\u003e700\u003c/span\u003e ~/.ssh
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003echmod \u003cspan style=\u0022color:#ae81ff\u0022\u003e400\u003c/span\u003e ~/.ssh/id_ed25519
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003echmod \u003cspan style=\u0022color:#ae81ff\u0022\u003e600\u003c/span\u003e ~/.ssh/id_ed25519.pub
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eAdd the public key to your git account.\u003c/p\u003e
+\u003cp\u003eLastly we need to add the following ssh config in \u003ccode\u003e~/.ssh/config\u003c/code\u003e:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eHost code-ssh.immerda.ch
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e  IdentityFile ~/.ssh/id_ed25519
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e  IdentitiesOnly yes
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eAnd lastly configure git by adding the following to \u003ccode\u003e~/.gitconfig\u003c/code\u003e:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#f92672\u0022\u003e[\u003c/span\u003euser\u003cspan style=\u0022color:#f92672\u0022\u003e]\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e	email \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e technat@technat.ch
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e	name \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e technat
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#f92672\u0022\u003e[\u003c/span\u003epull\u003cspan style=\u0022color:#f92672\u0022\u003e]\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e	rebase \u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e true
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003ch3 id=\u0022environment-variables\u0022\u003eEnvironment Variables\u003c/h3\u003e
+\u003cp\u003eA system always needs some environment variables to be configured.\u003c/p\u003e
+\u003cp\u003eAdd them to \u003ccode\u003e/etc/environment\u003c/code\u003e:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eEDITOR\u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003evim
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ePATH\u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e/usr/local/bin:/usr/bin:/bin:/sbin
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003ch3 id=\u0022mail-relay\u0022\u003eMail relay\u003c/h3\u003e
+\u003cp\u003ePostfix is setup and configured to send mails using the guide on the \u003ca href=\u0022https://wiki.technat.cloud/en/Linux/Cronjobs\u0022\u003ecronjob page\u003c/a\u003e.\u003c/p\u003e
+\u003ch2 id=\u0022docker\u0022\u003eDocker\u003c/h2\u003e
+\u003cp\u003eAll the services that need to run on faultier are run with docker. This because it\u0026rsquo;s super easy to spin up the services, minimizes the time to deploy them and brings an abstraction.\u003c/p\u003e
+\u003ch3 id=\u0022installation\u0022\u003eInstallation\u003c/h3\u003e
+\u003cp\u003eSee \u003ca href=\u0022https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-debian-10\u0022\u003eInstall Docker\u003c/a\u003e and \u003ca href=\u0022https://www.digitalocean.com/community/tutorials/how-to-install-docker-compose-on-debian-10\u0022\u003eInstall docker-compose\u003c/a\u003e.\u003c/p\u003e
+\u003ch3 id=\u0022docker-basic-config\u0022\u003eDocker Basic Config\u003c/h3\u003e
+\u003cp\u003eThe admin user should be able to interact with docker without using sudo:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo usermod -aG docker technat
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003ch3 id=\u0022docker-networking\u0022\u003eDocker Networking\u003c/h3\u003e
+\u003cp\u003eWe have a very simple networking concept. All services should be connected to the default \u003ccode\u003efaultier\u003c/code\u003e bridge network. If you must expose something to the internet, add port-mappings, otherwise only add the \u003ccode\u003eEXPOSE\u003c/code\u003e directive to the Dockerfile and the ports are accessable within the \u003ccode\u003efaultier\u003c/code\u003e network.\u003c/p\u003e
+\u003cp\u003eCreate the \u003ccode\u003efaultier\u003c/code\u003e network like so:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003edocker network create faultier --ipv6 --subnet\u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#34;2a01:4f9:c011:8f4::/64\u0026#34;\u003c/span\u003e --gateway\u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#34;2a01:4f9:c011:8f4::1\u0026#34;\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eThis will give all containers within the \u003ccode\u003efaultier\u003c/code\u003e network a public IPv6 address.\u003c/p\u003e
+\u003cp\u003eNote: docker-compose by default creates custom bridge networks for services. Add the following directive to a service definition to add them to the \u003ccode\u003efaultier\u003c/code\u003e network:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-yaml\u0022 data-lang=\u0022yaml\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#f92672\u0022\u003enetworks\u003c/span\u003e:
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e - \u003cspan style=\u0022color:#ae81ff\u0022\u003efaultier\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eAnd tell docker-compose at the bottom how the file is named:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003enetworks:
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e  faultier:
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e    external: true
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003ch3 id=\u0022docker-maintenance\u0022\u003eDocker maintenance\u003c/h3\u003e
+\u003cp\u003eTo make sure we don\u0026rsquo;t have containers and images lying around and not beeing use we run the following cronjob as \u003ccode\u003eroot\u003c/code\u003e:\u003c/p\u003e
+\u003cpre tabindex=\u00220\u0022\u003e\u003ccode\u003e@weekly /usr/bin/docker system prune -f
+\u003c/code\u003e\u003c/pre\u003e\u003ch3 id=\u0022docker-volumes\u0022\u003eDocker volumes\u003c/h3\u003e
+\u003cp\u003eWe don´t use docker volumes but map everything that requires data to an external folder below \u003ccode\u003e/volumes\u003c/code\u003e.\u003c/p\u003e
+\u003cp\u003eSo we need to create \u003ccode\u003e/volumes\u003c/code\u003e:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo mkdir /volumes
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo chown -R technat:technat /volumes
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo chmod -R \u003cspan style=\u0022color:#ae81ff\u0022\u003e744\u003c/span\u003e /volumes
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003ch3 id=\u0022docker-configs\u0022\u003eDocker configs\u003c/h3\u003e
+\u003cp\u003eAll docker configs for the different services are saved within \u003ca href=\u0022https://code.immerda.ch/technat/faultier\u0022\u003ethis repo\u003c/a\u003e.\u003c/p\u003e
+\u003cp\u003eNote: secrets must be excluded by using \u003ccode\u003e.env\u003c/code\u003e files or docker secrets.\u003c/p\u003e
+\u003cp\u003eIf containers have a config file, put this into the git repository and map it into the container using relative path. If a container has data (like an sqlite file), map it using absolute path to \u003ccode\u003e/volumes/yourcontainer/...\u003c/code\u003e.\u003c/p\u003e
+\u003ch3 id=\u0022docker-backups\u0022\u003eDocker backups\u003c/h3\u003e
+\u003cp\u003eConfigs should all be in the git repository, so no need to backup them. The \u003ccode\u003e/volumes\u003c/code\u003e folder is backed up using \u003ca href=\u0022https://wiki.technat.cloud/en/Linux/Backups\u0022\u003erestic\u003c/a\u003e.\u003c/p\u003e
+\u003cp\u003eThe script we are using:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#75715e\u0022\u003e#!/usr/bin/bash
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#75715e\u0022\u003e\u003c/span\u003esource /home/technat/.restic-env
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003erestic backup /volumes
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eand the cronjob (run as root):\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eMAILTO\u003cspan style=\u0022color:#f92672\u0022\u003e=\u003c/span\u003eroot@technat.ch
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e@daily /home/technat/restic-backup.sh
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eMake sure you have created the \u003ccode\u003e/home/technat/.restic-env\u003c/code\u003e file as explained in the backup guide for the credentials.\u003c/p\u003e
+\u003ch2 id=\u0022docker-services\u0022\u003eDocker Services\u003c/h2\u003e
+\u003cp\u003eThis chapter lists all the docker services we have. Every service has at least a section about the initial deployment and how to restore the data, recreate the service later.\u003c/p\u003e
+\u003ch3 id=\u0022nginx-proxy\u0022\u003eNginx-Proxy\u003c/h3\u003e
+\u003cp\u003eWe need a proxy to expose services to the internet. I\u0026rsquo;m using \u003ca href=\u0022https://github.com/nginx-proxy/nginx-proxy\u0022\u003enginx-proxy\u003c/a\u003e for this.\u003c/p\u003e
+\u003ch4 id=\u0022initial-configuration\u0022\u003eInitial configuration\u003c/h4\u003e
+\u003cp\u003eOnce the config files are written you can just do \u003ccode\u003edocker-compose up -d\u003c/code\u003e in the directory. The missing config volumes will be created.\u003c/p\u003e
+\u003ch4 id=\u0022restore\u0022\u003eRestore\u003c/h4\u003e
+\u003cp\u003eThe certificates are mounted from \u003ccode\u003e/volumes/nginx-proxy/certs\u003c/code\u003e and the acme account settings in \u003ccode\u003e/volumes/nginx-proxy/acme\u003c/code\u003e. You could recreate them, but they are not that important as they will otherwise be recrated. Just spin the service up using all the configs in the git repo.\u003c/p\u003e
+\u003ch3 id=\u0022wikitechnatcloud\u0022\u003ewiki.technat.cloud\u003c/h3\u003e
+\u003ch4 id=\u0022initial-configuration-1\u0022\u003eInitial configuration\u003c/h4\u003e
+\u003cp\u003eCreate the volume: \u003ccode\u003emkdir /volumes/jswiki/\u003c/code\u003e.\u003c/p\u003e
+\u003cp\u003eThen spin it up, wait some seconds for the certificate to be there and then finish the installation in the browser.\u003c/p\u003e
+\u003ch4 id=\u0022restore-1\u0022\u003eRestore\u003c/h4\u003e
+\u003cp\u003eRestore the \u003ccode\u003e/volumes/jswiki/\u003c/code\u003e volume with the \u003ccode\u003ewiki.sqlite\u003c/code\u003e file. Then just spin up the service.\u003c/p\u003e
+\u003ch3 id=\u0022minio\u0022\u003eMinIO\u003c/h3\u003e
+\u003ch4 id=\u0022initial-configuration-2\u0022\u003eInitial configuration\u003c/h4\u003e
+\u003cp\u003eDownload \u003ca href=\u0022https://raw.githubusercontent.com/minio/minio/master/docs/orchestration/docker-compose/docker-compose.yaml\u0022\u003edocker-compose.yml\u003c/a\u003e and \u003ca href=\u0022https://raw.githubusercontent.com/minio/minio/master/docs/orchestration/docker-compose/nginx.conf\u0022\u003enginx.conf\u003c/a\u003e.\u003c/p\u003e
+\u003cp\u003eThe docker-compose file was edited a bit:\u003c/p\u003e
+\u003cul\u003e
+\u003cli\u003ethe user and password are sourced from a \u003ccode\u003e.env\u003c/code\u003e file\u003c/li\u003e
+\u003cli\u003eall the volumes were mounted unter \u003ccode\u003e/volumes\u003c/code\u003e.\u003c/li\u003e
+\u003cli\u003eOf couse all containers are running in the \u003ccode\u003efaultier\u003c/code\u003e network.\u003c/li\u003e
+\u003cli\u003ethe minio servers have the environment variable MINIO_BROWSER_REDIRECT_URL: \u003ca href=\u0022https://object-console.technat.cloud\u0022\u003ehttps://object-console.technat.cloud\u003c/a\u003e set to properly redirect to the console when accessed in a browser\u003c/li\u003e
+\u003cli\u003eThe \u003ccode\u003eclient_max_body_size 2M;\u003c/code\u003e directive was added to the \u003ccode\u003evhosts/object.technat.cloud\u003c/code\u003e file.\u003c/li\u003e
+\u003c/ul\u003e
+\u003ch4 id=\u0022how-it-works\u0022\u003eHow it works\u003c/h4\u003e
+\u003cp\u003eThe nginx-proxy sends requests for object.technat.cloud and object-console.technat.cloud to the minio-nginx proxy. He listens on port 9000 for both domains. The console is redirect to the minio servers on port 9001 and the api to port 9000 on the minio servers. If you intentionally access object.technat.cloud using a browser instead of an s3 client, the minio servers have an environment variable telling them which url the console would be and redirect you there.\u003c/p\u003e
+\u003ch4 id=\u0022restore-2\u0022\u003eRestore\u003c/h4\u003e
+\u003cp\u003eThe data is all stored in \u003ccode\u003e/volumes\u003c/code\u003e folder, so you need to put them back before you pull up the service again.\u003c/p\u003e
+\u003ch3 id=\u0022file-browser\u0022\u003eFile Browser\u003c/h3\u003e
+\u003ch4 id=\u0022initial-configuration-3\u0022\u003eInitial configuration\u003c/h4\u003e
+\u003cp\u003eCreate the volumes and touch the db file:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003emkdir -p /volumes/filebrowser/data
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003etouch /volumes/filebrowser/filebrowser.db
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eThen spin it up, wait some seconds for the certificate to be there and then finish the installation in the browser.\u003c/p\u003e
+\u003ch4 id=\u0022restore-3\u0022\u003eRestore\u003c/h4\u003e
+\u003cp\u003eRestore the \u003ccode\u003e/volumes/filebrowser/\u003c/code\u003e volume with the \u003ccode\u003efilebrowser.db\u003c/code\u003e file and the data folder, then just spin up the service.\u003c/p\u003e
+\u003ch3 id=\u0022gitlab-runners\u0022\u003eGitlab Runners\u003c/h3\u003e
+\u003cp\u003eOne of the main reasons for the faultier are gitlab runners. Gitlab runners are used to build the rest of the infrastructure.\u003c/p\u003e
+\u003cp\u003e\u003ca href=\u0022https://testdriven.io/blog/gitlab-ci-docker/\u0022\u003eGood article\u003c/a\u003e\u003c/p\u003e
+\u003ch4 id=\u0022technatcloud\u0022\u003etechnat.cloud\u003c/h4\u003e
+\u003ch5 id=\u0022initial-configuration-4\u0022\u003eInitial configuration\u003c/h5\u003e
+\u003cp\u003eCreate the volume: \u003ccode\u003emkdir /volumes/runners/technat_cloud/\u003c/code\u003e.\u003c/p\u003e
+\u003cp\u003eSpin up the container.\u003c/p\u003e
+\u003cp\u003eThen register the runner on gitlab:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003edocker-compose exec technat-cloud-runner \u003cspan style=\u0022color:#ae81ff\u0022\u003e\\
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#ae81ff\u0022\u003e\u003c/span\u003e    gitlab-runner register \u003cspan style=\u0022color:#ae81ff\u0022\u003e\\
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#ae81ff\u0022\u003e\u003c/span\u003e    --non-interactive \u003cspan style=\u0022color:#ae81ff\u0022\u003e\\
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#ae81ff\u0022\u003e\u003c/span\u003e    --url https://code.immerda.ch \u003cspan style=\u0022color:#ae81ff\u0022\u003e\\
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#ae81ff\u0022\u003e\u003c/span\u003e    --registration-token \u0026lt;YOUR-GITLAB-REGISTRATION-TOKEN\u0026gt; \u003cspan style=\u0022color:#ae81ff\u0022\u003e\\
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#ae81ff\u0022\u003e\u003c/span\u003e    --executor docker \u003cspan style=\u0022color:#ae81ff\u0022\u003e\\
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#ae81ff\u0022\u003e\u003c/span\u003e    --description \u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#34;technat-cloud-runner\u0026#34;\u003c/span\u003e \u003cspan style=\u0022color:#ae81ff\u0022\u003e\\
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#ae81ff\u0022\u003e\u003c/span\u003e    --docker-image \u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#34;docker:stable\u0026#34;\u003c/span\u003e \u003cspan style=\u0022color:#ae81ff\u0022\u003e\\
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#ae81ff\u0022\u003e\u003c/span\u003e    --docker-volumes /var/run/docker.sock:/var/run/docker.sock
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eYou may want to update the config after the registration and change the following lines:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-yaml\u0022 data-lang=\u0022yaml\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#ae81ff\u0022\u003econcurrent = 4\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#ae81ff\u0022\u003echeck_interval = 3\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e[[\u003cspan style=\u0022color:#ae81ff\u0022\u003erunners]]\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e  \u003cspan style=\u0022color:#ae81ff\u0022\u003elimit = 2\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e  \u003cspan style=\u0022color:#ae81ff\u0022\u003erequest_concurrency = 2\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e  [\u003cspan style=\u0022color:#ae81ff\u0022\u003erunners.cache]\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e    \u003cspan style=\u0022color:#ae81ff\u0022\u003eType = \u0026#34;s3\u0026#34;\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e    \u003cspan style=\u0022color:#ae81ff\u0022\u003ePath = \u0026#34;k8s_at_hetzner\u0026#34;\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e    \u003cspan style=\u0022color:#ae81ff\u0022\u003eShared = true\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e    [\u003cspan style=\u0022color:#ae81ff\u0022\u003erunners.cache.s3]\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e      \u003cspan style=\u0022color:#ae81ff\u0022\u003eServerAddress = \u0026#34;object.technat.cloud\u0026#34;\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e      \u003cspan style=\u0022color:#ae81ff\u0022\u003eBucketName = \u0026#34;gitlab-runner-cache\u0026#34;\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e      \u003cspan style=\u0022color:#ae81ff\u0022\u003eBucketLocation = \u0026#34;us-east-1\u0026#34;\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e      \u003cspan style=\u0022color:#ae81ff\u0022\u003eInsecure = false\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e      \u003cspan style=\u0022color:#ae81ff\u0022\u003eAuthenticationType = \u0026#34;access-key\u0026#34;\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e      \u003cspan style=\u0022color:#ae81ff\u0022\u003eAccessKey = \u0026#34;gitlab-runner-cache\u0026#34;\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e      \u003cspan style=\u0022color:#ae81ff\u0022\u003eSecretKey = \u0026#34;saflajhlsdhfoue42io3lmefjlkwhri1\u0026#34;\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eThen restart the container using \u003ccode\u003edocker restart technat-cloud-runner\u003c/code\u003e.\u003c/p\u003e
+\u003cp\u003eAll other runners work exactly the same, you can also register multiple runners\u003c/p\u003e
+\u003ch5 id=\u0022restore-4\u0022\u003eRestore\u003c/h5\u003e
+\u003cp\u003eThe runner has no data saved in \u003ccode\u003e/volumes\u003c/code\u003e. The config file contains a registration token which is stored within the git repo, you can just spin up the runner again. If you lose the token or the repo no longer exists, just delete the config file, reregister the runner somewhere and add the above configs back into the file.\u003c/p\u003e
+\u003ch2 id=\u0022maintenance\u0022\u003eMaintenance\u003c/h2\u003e
+\u003cp\u003eTo update service do the following:\u003c/p\u003e
+\u003col\u003e
+\u003cli\u003eReplace the image tag with a newer one when specified\u003c/li\u003e
+\u003cli\u003e\u003ccode\u003edocker-compose pull\u003c/code\u003e\u003c/li\u003e
+\u003cli\u003e\u003ccode\u003edocker-compose up -d --remove-orphans\u003c/code\u003e\u003c/li\u003e
+\u003cli\u003e\u003ccode\u003edocker image prune\u003c/code\u003e\u003c/li\u003e
+\u003c/ol\u003e
+\u003c/span\u003e`,"activity-content",contentDelay)};typeeffetct()</script></div><span class=navFull><span><a href=/>Home</a>
+<span>&#8192;|&#8192;</span>
+<a href=./..>/linux/</a></span>
+<span class=navCredits>Hugo theme created by
+<a href=https://github.com/Yukuro/hugo-theme-shell target=_blank rel=noopener>Yukuro</a></span></span></body></html>

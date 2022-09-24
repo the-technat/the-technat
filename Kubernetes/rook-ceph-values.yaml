@@ -1,0 +1,7 @@
+# Tolerations for the rook-ceph-operator to allow it to run on nodes with particular taints
+tolerations: 
+  - key: "node-role.kubernetes.io/master"
+    operator: "Equal"
+    value: "NoSchedule"
+
+enableDiscoveryDaemon: true

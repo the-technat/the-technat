@@ -1,0 +1,532 @@
+<!doctype html><html lang=en-us><head><title>proxmox_cloud_init</title><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content><style>@import "https://fonts.googleapis.com/css2?family=Inconsolata&display=swap";:root{--cursor-visibility:hidden}html,body{width:100%;height:100%;overflow:auto;font-family:inconsolata,monospace;font-size:4vmin;line-height:4.1vmin;font-weight:400}body{margin:0;display:flex;flex-direction:row;justify-content:center;align-items:center}#content{min-width:82vmin;min-height:82vmin}::-webkit-scrollbar{width:10px}::-webkit-scrollbar-track{border-radius:10px;box-shadow:inset 0 0 1px white}::-webkit-scrollbar-thumb{border-radius:10px;box-shadow:0 0 0 1px white}.cursor,#activity-title:after,#activity-content:after,#cd:after,#whoami:after,#cat:after,#tree:after{visibility:var(--cursor-visibility);content:"|";overflow:hidden;color:#fff;animation:blink 500ms linear infinite alternate}@keyframes blink{0%{opacity:0}100%{opacity:1}}@media only screen and (min-width:768px){body{font-size:2.5vmin;line-height:2.6vmin}#content{min-width:60vmin}}:root{--cursor-visibility:hidden}body{align-items:unset;overflow-y:scroll}#content{max-width:80vmin}pre{overflow-x:scroll;white-space:pre}@keyframes blink{0%{opacity:0}100%{opacity:1}}body{background:#002b36}body #terminal{color:#839496}body #user{color:#859900}body #dir{color:#268bd2}body .Typewriter__cursor{color:#839496}a{color:#839496}.navFull{background-color:#353535;font-family:courier new;font-size:17px;display:inline;position:fixed;bottom:0;left:0;width:100%;padding-top:5px;padding:10px;padding-bottom:0}.navCredits{float:right;padding-right:18px;padding-bottom:10px;padding-top:5px}#content::after{content:"\a\a";white-space:pre}</style></head><body><div id=content><span id=activity-title></span><br><span id=activity-content></span><br><script type=text/javascript>async function typewriter(e,t,n){var s=0,o=!1;addText="";const i=document.getElementById(t),a=()=>new Promise(e=>setTimeout(e,n)),r=()=>new Promise(e=>e()),c=()=>i.innerHTML=e.slice(0,s+1)+addText,l=document.createElement("span");for(l.id="blink",i.style.setProperty("--cursor-visibility","visible");s<e.length;){if(e.charAt(s+1)==="<"&&(o=!0),e.charAt(s+1)===">"&&(o=!1),o){s++;continue}requestAnimationFrame(c),n===0?await r():await a(),s++}i.style.setProperty("--cursor-visibility","collapse")}function parseDelay(e){const t=parseInt(e,10);return isNaN(t)?0:t}const titleDelay=parseDelay("0"),contentDelay=parseDelay("0"),typeeffetct=async()=>{await typewriter("\u003cspan id=\u0027terminal\u0027\u003e\u003ch1 id=\u0027title\u0027\u003eproxmox_cloud_init\u003c/h1\u003e\u003c/span\u003e","activity-title",titleDelay),await typewriter(`\u003cspan id=\u0027terminal\u0027\u003e\u003cp\u003eThis page describes how to create a cloud-init ready vm template in proxmox\u003c/p\u003e
+\u003ch2 id=\u0022create-initial-vm\u0022\u003eCreate initial VM\u003c/h2\u003e
+\u003ctable\u003e
+\u003cthead\u003e
+\u003ctr\u003e
+\u003cth\u003eKey\u003c/th\u003e
+\u003cth\u003eValue\u003c/th\u003e
+\u003c/tr\u003e
+\u003c/thead\u003e
+\u003ctbody\u003e
+\u003ctr\u003e
+\u003ctd\u003eID\u003c/td\u003e
+\u003ctd\u003e9000\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eName\u003c/td\u003e
+\u003ctd\u003edebian-11-generic\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eISO\u003c/td\u003e
+\u003ctd\u003edebian-11.0.0-adm64.netinst.iso\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eQemu-Agent\u003c/td\u003e
+\u003ctd\u003e1\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eBIOS\u003c/td\u003e
+\u003ctd\u003eOVMF (UEFI)\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eEFI Disk\u003c/td\u003e
+\u003ctd\u003e1, local-zfs\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eMachine type\u003c/td\u003e
+\u003ctd\u003eq35\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eGraphic card\u003c/td\u003e
+\u003ctd\u003eSPICE\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eOS Disk\u003c/td\u003e
+\u003ctd\u003elocal-zfs, 32gb, io-thread=1,discard=1\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eCores\u003c/td\u003e
+\u003ctd\u003e2\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eMemory\u003c/td\u003e
+\u003ctd\u003e2048MB\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eNet0\u003c/td\u003e
+\u003ctd\u003evmbr4, firewall=0\u003c/td\u003e
+\u003c/tr\u003e
+\u003c/tbody\u003e
+\u003c/table\u003e
+\u003ch3 id=\u0022k8s\u0022\u003eK8S\u003c/h3\u003e
+\u003ctable\u003e
+\u003cthead\u003e
+\u003ctr\u003e
+\u003cth\u003eKey\u003c/th\u003e
+\u003cth\u003eValue\u003c/th\u003e
+\u003c/tr\u003e
+\u003c/thead\u003e
+\u003ctbody\u003e
+\u003ctr\u003e
+\u003ctd\u003eID\u003c/td\u003e
+\u003ctd\u003e9008\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eName\u003c/td\u003e
+\u003ctd\u003edebian-11-k8s\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eISO\u003c/td\u003e
+\u003ctd\u003edebian-11.0.0-adm64.netinst.iso\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eQemu-Agent\u003c/td\u003e
+\u003ctd\u003e1\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eGraphic card\u003c/td\u003e
+\u003ctd\u003eSPICE\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eBIOS\u003c/td\u003e
+\u003ctd\u003eOVMF (UEFI)\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eEFI Disk\u003c/td\u003e
+\u003ctd\u003e1, local-zfs\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eMachine type\u003c/td\u003e
+\u003ctd\u003eq35\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eOS Disk\u003c/td\u003e
+\u003ctd\u003elocal-zfs, 32gb, io-thread=1,discard=1\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eCores\u003c/td\u003e
+\u003ctd\u003e2\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eMemory\u003c/td\u003e
+\u003ctd\u003e4096MB\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eNet0\u003c/td\u003e
+\u003ctd\u003evmbr4, firewall=0\u003c/td\u003e
+\u003c/tr\u003e
+\u003c/tbody\u003e
+\u003c/table\u003e
+\u003ch2 id=\u0022initial-setup\u0022\u003eInitial setup\u003c/h2\u003e
+\u003cp\u003eValues used when installing the OS for the first time:\u003c/p\u003e
+\u003ctable\u003e
+\u003cthead\u003e
+\u003ctr\u003e
+\u003cth\u003eKey\u003c/th\u003e
+\u003cth\u003eValue\u003c/th\u003e
+\u003c/tr\u003e
+\u003c/thead\u003e
+\u003ctbody\u003e
+\u003ctr\u003e
+\u003ctd\u003eLanugage\u003c/td\u003e
+\u003ctd\u003eEnglish\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eLocation\u003c/td\u003e
+\u003ctd\u003eEurope/Finland\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eLocale\u003c/td\u003e
+\u003ctd\u003een_US-UTF-8\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eKeyboard\u003c/td\u003e
+\u003ctd\u003eAmerican english\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eIP Type\u003c/td\u003e
+\u003ctd\u003eManual\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eIP\u003c/td\u003e
+\u003ctd\u003e192.168.114.2/24\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eGateway\u003c/td\u003e
+\u003ctd\u003e192.168.114.1\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eDNS\u003c/td\u003e
+\u003ctd\u003e192.168.111.11\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eHostname\u003c/td\u003e
+\u003ctd\u003edebian-11-generic\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eDomain Name\u003c/td\u003e
+\u003ctd\u003etechnat.lab\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eroot PW\u003c/td\u003e
+\u003ctd\u003erandom, remember it\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eDefault admin\u003c/td\u003e
+\u003ctd\u003etechnat\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eDefault admin pw\u003c/td\u003e
+\u003ctd\u003erandom, remember it\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eDisk Paritioning\u003c/td\u003e
+\u003ctd\u003emanual, /dev/sda1=efi 500mb,/dev/sda2=lvm-pv\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eVG\u003c/td\u003e
+\u003ctd\u003eos, use os-partition\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eLV-root\u003c/td\u003e
+\u003ctd\u003e10G,ext4,mount=/\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eLV-var\u003c/td\u003e
+\u003ctd\u003e5G,ext4,mount=/var\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eLV-tmp\u003c/td\u003e
+\u003ctd\u003e5G,ext4,mount=/tmp\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eLV-home\u003c/td\u003e
+\u003ctd\u003e10G,ext4,mount=/home\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eLV-swap\u003c/td\u003e
+\u003ctd\u003e2G,swap\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eSoftware selection\u003c/td\u003e
+\u003ctd\u003eonly ssh\u003c/td\u003e
+\u003c/tr\u003e
+\u003c/tbody\u003e
+\u003c/table\u003e
+\u003ch3 id=\u0022k8s-1\u0022\u003eK8S\u003c/h3\u003e
+\u003cp\u003eValues used for the k8s template:\u003c/p\u003e
+\u003ctable\u003e
+\u003cthead\u003e
+\u003ctr\u003e
+\u003cth\u003eKey\u003c/th\u003e
+\u003cth\u003eValue\u003c/th\u003e
+\u003c/tr\u003e
+\u003c/thead\u003e
+\u003ctbody\u003e
+\u003ctr\u003e
+\u003ctd\u003eLanugage\u003c/td\u003e
+\u003ctd\u003eEnglish\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eLocation\u003c/td\u003e
+\u003ctd\u003eEurope/Finland\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eLocale\u003c/td\u003e
+\u003ctd\u003een_US-UTF-8\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eKeyboard\u003c/td\u003e
+\u003ctd\u003eAmerican english\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eIP Type\u003c/td\u003e
+\u003ctd\u003eManual\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eIP\u003c/td\u003e
+\u003ctd\u003e192.168.114.3/24\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eGateway\u003c/td\u003e
+\u003ctd\u003e192.168.114.1\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eDNS\u003c/td\u003e
+\u003ctd\u003e192.168.111.11\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eHostname\u003c/td\u003e
+\u003ctd\u003edebian-11-k8s\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eDomain Name\u003c/td\u003e
+\u003ctd\u003etechnat.lab\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eroot PW\u003c/td\u003e
+\u003ctd\u003erandom, remember it\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eDefault admin\u003c/td\u003e
+\u003ctd\u003etechnat\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eDefault admin pw\u003c/td\u003e
+\u003ctd\u003erandom, remember it\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eDisk Paritioning\u003c/td\u003e
+\u003ctd\u003emanual, /dev/sda1=efi 500mb,/dev/sda2=lvm-pv\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eVG\u003c/td\u003e
+\u003ctd\u003eos, use os-partition\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eLV-root\u003c/td\u003e
+\u003ctd\u003e10G,ext4,mount=/\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eLV-var\u003c/td\u003e
+\u003ctd\u003e10G,ext4,mount=/var\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eLV-tmp\u003c/td\u003e
+\u003ctd\u003e7G,ext4,mount=/tmp\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eLV-home\u003c/td\u003e
+\u003ctd\u003e5G,ext4,mount=/home\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eSwap\u003c/td\u003e
+\u003ctd\u003eNone (ignore)\u003c/td\u003e
+\u003c/tr\u003e
+\u003ctr\u003e
+\u003ctd\u003eSoftware selection\u003c/td\u003e
+\u003ctd\u003eonly ssh\u003c/td\u003e
+\u003c/tr\u003e
+\u003c/tbody\u003e
+\u003c/table\u003e
+\u003cp\u003eReboot the machine and ssh into it with the ip and admin user set during installation.\u003c/p\u003e
+\u003ch2 id=\u0022system-preparation\u0022\u003eSystem Preparation\u003c/h2\u003e
+\u003cp\u003eAs mentioned in the \u003ca href=\u0022https://pve.proxmox.com/wiki/Cloud-Init_FAQ\u0022\u003eCloud-Init FAQ\u003c/a\u003e of Proxmox it\u0026rsquo;s best practise to configure your system before continuing with cloud-init. There are several things mentioned and there are some things I like to do. So let\u0026rsquo;s go through some things\u003c/p\u003e
+\u003ch3 id=\u0022predictable-network-interface-names\u0022\u003ePredictable Network Interface Names\u003c/h3\u003e
+\u003cp\u003eThe docs say that for compatibility it\u0026rsquo;s preferred to have NIC names \u003ccode\u003eeth0\u003c/code\u003e, \u003ccode\u003eeth1\u003c/code\u003e and so on instead of naming them according to their actual physical hardware.\u003c/p\u003e
+\u003cp\u003eRead more about the feature \u003ca href=\u0022https://www.freedesktop.org/wiki/Software/systemd/PredictableNetworkInterfaceNames/\u0022\u003ehere\u003c/a\u003e.\u003c/p\u003e
+\u003cp\u003eWe disable the names with the kernel parameter \u003ccode\u003enet.ifnames=0\u003c/code\u003e. Set it in \u003ccode\u003e/etc/default/grub\u003c/code\u003e and update the config:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esu - root \u003cspan style=\u0022color:#75715e\u0022\u003e# Must be root if sudo is not installed to run this command\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esed -i \u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#39;s/GRUB_CMDLINE_LINUX_DEFAULT=\u0026#34;quiet\u0026#34;/GRUB_CMDLINE_LINUX_DEFAULT=\u0026#34;net.ifnames=0 quiet\u0026#34;/g\u0026#39;\u003c/span\u003e /etc/default/grub
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eupdate-grub
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ereboot
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eAfter the reboot you should see in the output of \u003ccode\u003eip link\u003c/code\u003e that the names have changed.
+You might need to reapply your network config as nic names are hardcoded in \u003ccode\u003e/etc/network/interfaces\u003c/code\u003e.\u003c/p\u003e
+\u003ch3 id=\u0022default-packages\u0022\u003eDefault Packages\u003c/h3\u003e
+\u003cp\u003eNext is to install some default packages:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esu - root
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eapt install vim bash-completion sudo curl wget git stow qemu-guest-agent resolvconf -y
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eNote: resolvconf is important as it configures dns according to \u003ccode\u003e/etc/network/interfaces\u003c/code\u003e.\u003c/p\u003e
+\u003ch3 id=\u0022admin-user\u0022\u003eAdmin User\u003c/h3\u003e
+\u003cp\u003eDuring the installation we created the user \u003ccode\u003etechnat\u003c/code\u003e. This will be our admin user we login in the future. But the user needs some configs.\u003c/p\u003e
+\u003cp\u003eFirst do the following:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esu - root
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eecho \u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#34;technat ALL=(ALL) NOPASSWD:ALL\u0026#34;\u003c/span\u003e | sudo tee -a /etc/sudoers
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eusermod -aG sudo technat
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eexit
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ebash
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eNow we are able to run commands using sudo without beeing prompted for our password.\u003c/p\u003e
+\u003ch3 id=\u0022apt-mirrors\u0022\u003eAPT Mirrors\u003c/h3\u003e
+\u003cp\u003eHetnzer provides some \u003ca href=\u0022https://docs.hetzner.com/robot/dedicated-server/operating-systems/hetzner-aptitude-mirror/\u0022\u003eAPT Mirrors\u003c/a\u003e for Debian. As we can reach them much faster than others we replace the content of \u003ccode\u003e/etc/apt/sources.list\u003c/code\u003e with the following:\u003c/p\u003e
+\u003cpre tabindex=\u00220\u0022\u003e\u003ccode\u003e#Packages and Security Updates from the Hetzner Debian Mirror
+deb https://mirror.hetzner.com/debian/packages  bullseye           main contrib non-free
+deb https://mirror.hetzner.com/debian/packages  bullseye-updates   main contrib non-free
+deb https://mirror.hetzner.com/debian/security  bullseye-security  main contrib non-free
+deb https://mirror.hetzner.com/debian/packages  bullseye-backports main contrib non-free
+
+deb http://deb.debian.org/debian               bullseye          main non-free contrib
+deb http://deb.debian.org/debian               bullseye-updates  main non-free contrib
+deb http://security.debian.org/debian-security bullseye-security main contrib non-free
+\u003c/code\u003e\u003c/pre\u003e\u003ch3 id=\u0022ssh\u0022\u003eSSH\u003c/h3\u003e
+\u003cp\u003eWe adjust the ssh config \u003ccode\u003e/etc/ssh/sshd_config\u003c/code\u003e a bit:\u003c/p\u003e
+\u003cpre tabindex=\u00220\u0022\u003e\u003ccode\u003ePermitRootLogin no
+PubkeyAuthentication yes
+PermitEmptyPasswords no
+X11Forwarding no
+\u003c/code\u003e\u003c/pre\u003e\u003cp\u003eRestart the sshd service.\u003c/p\u003e
+\u003ch3 id=\u0022env-vars\u0022\u003eEnv Vars\u003c/h3\u003e
+\u003cp\u003eTwo env vars to set in \u003ccode\u003e/etc/environment\u003c/code\u003e:\u003c/p\u003e
+\u003cpre tabindex=\u00220\u0022\u003e\u003ccode\u003eEDITOR=vim
+PATH=\u0026#34;/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games\u0026#34;
+\u003c/code\u003e\u003c/pre\u003e\u003ch3 id=\u0022ntp\u0022\u003eNTP\u003c/h3\u003e
+\u003cp\u003eConfigure ntp and the timezone:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo timedatectl set-ntp true
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo timedatectl set-timezone Europe/Helsinki
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003ch3 id=\u0022misc\u0022\u003eMisc\u003c/h3\u003e
+\u003cul\u003e
+\u003cli\u003eRun \u003ccode\u003esudo systemctl enable fstrim.timer\u003c/code\u003e to enable periodical trim support\u003c/li\u003e
+\u003cli\u003eUncomment the \u003ccode\u003ell\u003c/code\u003e alias for root and technat\u003c/li\u003e
+\u003cli\u003eClone and stow the server-vimrc file\u003c/li\u003e
+\u003c/ul\u003e
+\u003ch2 id=\u0022configure-cloud-init\u0022\u003eConfigure Cloud-init\u003c/h2\u003e
+\u003cp\u003eOnce the system has reasonable settings we can continue to install and configure cloud-init:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo apt install cloud-init -y
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eThe \u0026ldquo;cloud\u0026rdquo; config is located at \u003ccode\u003e/etc/cloud/cloud.cfg\u003c/code\u003e. We make a backup of this file and start editing the real file.\u003c/p\u003e
+\u003ch3 id=\u0022config-source\u0022\u003eConfig source\u003c/h3\u003e
+\u003cp\u003e\u003ca href=\u0022https://pve.proxmox.com/wiki/Cloud-Init_FAQ\u0022\u003eReference Docs\u003c/a\u003e
+First we define that there are only two possibles sources for a cloud-init config (the ones proxmox supports).\u003c/p\u003e
+\u003cp\u003eEdit \u003ccode\u003e/etc/cloud/cloud.cfg.d/99_pve.cfg\u003c/code\u003e and add:\u003c/p\u003e
+\u003cpre tabindex=\u00220\u0022\u003e\u003ccode\u003edatasource_list: [ NoCloud, ConfigDrive ]
+\u003c/code\u003e\u003c/pre\u003e\u003ch3 id=\u0022config-paramters\u0022\u003eConfig paramters\u003c/h3\u003e
+\u003cp\u003eThen we add, change, delete the following keys in the config file:\u003c/p\u003e
+\u003cul\u003e
+\u003cli\u003eRemove the \u003ccode\u003edefault\u003c/code\u003e user entry in the \u003ccode\u003eusers\u003c/code\u003e section.\u003c/li\u003e
+\u003cli\u003eSet \u003ccode\u003edisable_root\u003c/code\u003e to false (already done)\u003c/li\u003e
+\u003cli\u003eAdd the following keys at root level to ensure the system will upgrade itself when booted for the first time:\u003c/li\u003e
+\u003c/ul\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-yaml\u0022 data-lang=\u0022yaml\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#f92672\u0022\u003epackage_update\u003c/span\u003e: \u003cspan style=\u0022color:#66d9ef\u0022\u003etrue\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#f92672\u0022\u003epackage_upgrade\u003c/span\u003e: \u003cspan style=\u0022color:#66d9ef\u0022\u003etrue\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#f92672\u0022\u003epackage_reboot_if_required\u003c/span\u003e: \u003cspan style=\u0022color:#66d9ef\u0022\u003etrue\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cul\u003e
+\u003cli\u003e\u003ccode\u003emanage_etc_hosts: true\u003c/code\u003e: Add this somewhere at root level so that \u003ccode\u003e/etc/hosts\u003c/code\u003e is updated with new hostname when template is cloned\u003c/li\u003e
+\u003cli\u003eRemove \u003ccode\u003ebyobu\u003c/code\u003e from the list of \u003ccode\u003ecloud_config_modules\u003c/code\u003e\u003c/li\u003e
+\u003cli\u003eAdd a section to generate a random password for root:\u003c/li\u003e
+\u003c/ul\u003e
+\u003cpre tabindex=\u00220\u0022\u003e\u003ccode\u003echpasswd:
+  list:
+  - root:RANDOM
+\u003c/code\u003e\u003c/pre\u003e\u003cul\u003e
+\u003cli\u003eRemove \u003ccode\u003epuppet,chef,salt-minion,mcollective\u003c/code\u003e from \u003ccode\u003ecloud_final_modules\u003c/code\u003e\u003c/li\u003e
+\u003cli\u003eComment the entire \u003ccode\u003esystem_info.package_mirrors\u003c/code\u003e section to prevent it from overriding our configured Hetzner Mirrors\u003c/li\u003e
+\u003cli\u003eAdd \u003ccode\u003e#cloud-config\u003c/code\u003e at the top of the file\u003c/li\u003e
+\u003cli\u003eAdd \u003ccode\u003edate \u0026gt; /etc/birth_date\u003c/code\u003e to the \u003ccode\u003ebootcmd\u003c/code\u003e section as a reference when this machine was first booted\u003c/li\u003e
+\u003cli\u003eAdd a section \u003ccode\u003eca-certs\u003c/code\u003e at root level and add our technat.lab CA cert:\u003c/li\u003e
+\u003c/ul\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-yaml\u0022 data-lang=\u0022yaml\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#f92672\u0022\u003eca-certs\u003c/span\u003e:
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e  \u003cspan style=\u0022color:#f92672\u0022\u003etrusted\u003c/span\u003e:
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e	- |\u003cspan style=\u0022color:#e6db74\u0022\u003e
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e  	-----BEGIN CERTIFICATE-----
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e    MIIEPzCCAyegAwIBAgIBADANBgkqhkiG9w0BAQsFADBzMRMwEQYDVQQDEwpUZWNo
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e    bmF0IENBMQswCQYDVQQGEwJDSDENMAsGA1UECBMEQmVybjEYMBYGA1UEBxMPSGVy
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e    em9nZW5idWNoc2VlMRQwEgYDVQQKEwtUZWNobmF0IExhYjEQMA4GA1UECxMHY29j
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e    b251dDAeFw0yMTAxMTkxOTUyMjJaFw0zMTAxMTcxOTUyMjJaMHMxEzARBgNVBAMT
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e    ClRlY2huYXQgQ0ExCzAJBgNVBAYTAkNIMQ0wCwYDVQQIEwRCZXJuMRgwFgYDVQQH
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e    Ew9IZXJ6b2dlbmJ1Y2hzZWUxFDASBgNVBAoTC1RlY2huYXQgTGFiMRAwDgYDVQQL
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e    Ewdjb2NvbnV0MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvsxtZvoF
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e    7AMB\u002b2zzwFb2sPy1IW2PjFLrSy6QGRS9ZMMldQhMh2bCWBTqcgFFErbk2AY8pKjf
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e    Ldw\u002bOJDWkCjGdNyMM7L9HlBvQdOq9BHrWW90LCmrFhB6f/RFesMfDCsToMEH0L6E
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e  	Ef9MzZM\u002b7Puydk7ETZR6twexy4UqZdm3CXNGJPMalMxUa0ewxsofx1x/0JnsCX3o
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e  	xoMXXrZP6/VsegjyQg7xn4ZtELt8cLhqUg5J2CNLezC2Mb5F809rk5xpGd0W2sMd
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e  	B80xlF\u002b2HY3BJFnoAseyN5WKQ2Z3pe0R/PU4qNqmX1hUhXMZ\u002bCLGb73uDkftHECG
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e  	gT3aTwOfMPxXOQIDAQABo4HdMIHaMB0GA1UdDgQWBBSNDGOQ/fjukvISuMe/vMgN
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e  	ppsrSTCBnQYDVR0jBIGVMIGSgBSNDGOQ/fjukvISuMe/vMgNppsrSaF3pHUwczET
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e  	MBEGA1UEAxMKVGVjaG5hdCBDQTELMAkGA1UEBhMCQ0gxDTALBgNVBAgTBEJlcm4x
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e  	GDAWBgNVBAcTD0hlcnpvZ2VuYnVjaHNlZTEUMBIGA1UEChMLVGVjaG5hdCBMYWIx
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e  	EDAOBgNVBAsTB2NvY29udXSCAQAwDAYDVR0TBAUwAwEB/zALBgNVHQ8EBAMCAQYw
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e  	DQYJKoZIhvcNAQELBQADggEBAAbZTKfB8zo6pe5FlOptGkIz\u002bhVvKfLr1wJdbz4o
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e  	HI833MFDxKDtmB5M53Bq26eRAAs\u002b4bWFr5JWTL3qPDbJ/vb0lZNJo6Ie/L1INY43
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e  	1CqbZjAq7xf8fYzEUdwMLLi7P3kh3eyJS\u002biOYno44ZwZxqTUmBZANat6jvdLsItm
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e  	5Cj1wv3D1klWBojXbuUw35AcALNvGJ3ORiuaIAOOQDn0RpHf\u002bwQah7B10RIzRmQA
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e  	g3BZdxaK0orHjH29wrSDwKC\u002bbPPPacT8bl7zY99zvNetoh4qrY/0HzCvAc9y6wt/
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e  	Hbc6Zcr\u002bzGcgxCKkJMIIgtqkMzHIQh6rBrG5x84B\u002bUTZEFU=
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e  	-----END CERTIFICATE-----\u003c/span\u003e  
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003ch2 id=\u0022k8s-configs\u0022\u003eK8S Configs\u003c/h2\u003e
+\u003cp\u003eFor the k8s template additionally configuration is done manually:\u003c/p\u003e
+\u003ch4 id=\u0022container-runtime\u0022\u003eContainer Runtime\u003c/h4\u003e
+\u003cp\u003eThe standard for technat.lab is to use containerd as runtime\u003c/p\u003e
+\u003cp\u003e\u003ca href=\u0022https://kubernetes.io/docs/setup/production-environment/container-runtimes/\u0022\u003eReference Docs\u003c/a\u003e\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esed -i \u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#39;GRUB_CMDLINE_LINUX=\u0026#34;\u0026#34;/GRUB_CMDLINE_LINUX=\u0026#34;systemd.unified_cgroup_hierarchy=1\u0026#34;/g\u0026#39;\u003c/span\u003e /etc/default/grub
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo update-grub
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ecat \u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026lt;\u0026lt;EOF | sudo tee /etc/modules-load.d/containerd.conf
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003eoverlay
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003ebr_netfilter
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003eEOF\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo modprobe overlay
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo modprobe br_netfilter
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#75715e\u0022\u003e# Setup required sysctl params, these persist across reboots.\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ecat \u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026lt;\u0026lt;EOF | sudo tee /etc/sysctl.d/99-kubernetes-cri.conf
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003enet.bridge.bridge-nf-call-iptables  = 1
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003enet.ipv4.ip_forward                 = 1
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003enet.bridge.bridge-nf-call-ip6tables = 1
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003eEOF\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#75715e\u0022\u003e# Apply sysctl params without reboot\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo sysctl --system
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo apt-get update
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo apt-get install \u003cspan style=\u0022color:#ae81ff\u0022\u003e\\
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#ae81ff\u0022\u003e\u003c/span\u003e    apt-transport-https \u003cspan style=\u0022color:#ae81ff\u0022\u003e\\
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#ae81ff\u0022\u003e\u003c/span\u003e    ca-certificates \u003cspan style=\u0022color:#ae81ff\u0022\u003e\\
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#ae81ff\u0022\u003e\u003c/span\u003e    curl \u003cspan style=\u0022color:#ae81ff\u0022\u003e\\
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#ae81ff\u0022\u003e\u003c/span\u003e    gnupg \u003cspan style=\u0022color:#ae81ff\u0022\u003e\\
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#ae81ff\u0022\u003e\u003c/span\u003e    lsb-release -y
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ecurl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eecho \u003cspan style=\u0022color:#ae81ff\u0022\u003e\\
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#ae81ff\u0022\u003e\u003c/span\u003e  \u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#34;deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian \\
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e  \u003c/span\u003e\u003cspan style=\u0022color:#66d9ef\u0022\u003e\$(\u003c/span\u003elsb_release -cs\u003cspan style=\u0022color:#66d9ef\u0022\u003e)\u003c/span\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003e stable\u0026#34;\u003c/span\u003e | sudo tee /etc/apt/sources.list.d/docker.list \u0026gt; /dev/null
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo apt update
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo apt install containerd.io -y
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo mkdir -p /etc/containerd
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003econtainerd config default | sudo tee /etc/containerd/config.toml
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo systemctl restart containerd
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eIn order for containerd to use the systemd cgroup driver we set the following in the config:\u003c/p\u003e
+\u003cpre tabindex=\u00220\u0022\u003e\u003ccode\u003e[plugins.\u0026#34;io.containerd.grpc.v1.cri\u0026#34;.containerd.runtimes.runc]
+  ...
+  [plugins.\u0026#34;io.containerd.grpc.v1.cri\u0026#34;.containerd.runtimes.runc.options]
+    SystemdCgroup = true
+\u003c/code\u003e\u003c/pre\u003e\u003ch4 id=\u0022kubeadm-kubelet-kubectl\u0022\u003ekubeadm, kubelet, kubectl\u003c/h4\u003e
+\u003cp\u003e\u003ca href=\u0022https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/\u0022\u003eReference Docs\u003c/a\u003e\u003c/p\u003e
+\u003cp\u003eSome prerequisites:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ecat \u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026lt;\u0026lt;EOF | sudo tee /etc/modules-load.d/k8s.conf
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003ebr_netfilter
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003eEOF\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ecat \u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026lt;\u0026lt;EOF | sudo tee /etc/sysctl.d/k8s.conf
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003enet.bridge.bridge-nf-call-ip6tables = 1
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003enet.bridge.bridge-nf-call-iptables = 1
+\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e\u003cspan style=\u0022color:#e6db74\u0022\u003eEOF\u003c/span\u003e
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003esudo sysctl --system
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eThen configure repo and install packages:\u003c/p\u003e
+\u003cpre tabindex=\u00220\u0022\u003e\u003ccode\u003esudo apt update
+sudo apt install -y apt-transport-https ca-certificates curl -y
+
+sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
+
+echo \u0026#34;deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main\u0026#34; | sudo tee /etc/apt/sources.list.d/kubernetes.list
+
+sudo apt update
+sudo apt install -y kubelet kubeadm kubectl
+\u003c/code\u003e\u003c/pre\u003e\u003ch4 id=\u0022kubectl-completion\u0022\u003eKubectl completion\u003c/h4\u003e
+\u003cp\u003e\u003ca href=\u0022https://kubernetes.io/docs/tasks/tools/included/optional-kubectl-configs-bash-linux/\u0022\u003eReference Docs\u003c/a\u003e\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-bash\u0022 data-lang=\u0022bash\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eecho \u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#39;source \u0026lt;(kubectl completion bash)\u0026#39;\u003c/span\u003e \u0026gt;\u0026gt;~/.bashrc
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ekubectl completion bash | sudo tee /etc/bash_completion.d/kubectl
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eecho \u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#39;alias k=kubectl\u0026#39;\u003c/span\u003e \u0026gt;\u0026gt;~/.bashrc
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eecho \u003cspan style=\u0022color:#e6db74\u0022\u003e\u0026#39;complete -F __start_kubectl k\u0026#39;\u003c/span\u003e \u0026gt;\u0026gt;~/.bashrc
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003ch2 id=\u0022networking\u0022\u003eNetworking\u003c/h2\u003e
+\u003cp\u003eCloud-init will write a network file in the \u003ccode\u003e/etc/network/interfaces.d/\u003c/code\u003e directory. So we shouldn\u0026rsquo;t let our static ip config from the initial setup in the \u003ccode\u003e/etc/network/interfaces\u003c/code\u003e file.\u003c/p\u003e
+\u003cp\u003eRemove it from the file so that the file looks like this:\u003c/p\u003e
+\u003cpre tabindex=\u00220\u0022\u003e\u003ccode\u003esource /etc/network/interfaces.d/*
+\u003c/code\u003e\u003c/pre\u003e\u003ch2 id=\u0022last-vm-settings\u0022\u003eLast vm settings\u003c/h2\u003e
+\u003cp\u003eShutdown the machine and adjust some settings in proxmox:\u003c/p\u003e
+\u003cul\u003e
+\u003cli\u003eRemove CD-Drive that was used to install the inital os\u003c/li\u003e
+\u003cli\u003eAdd a cloud-init drive at ide2 port\u003c/li\u003e
+\u003cli\u003eIn options remove all boot entries except the os disk (faster boot)\u003c/li\u003e
+\u003cli\u003econvert the vm to template\u003c/li\u003e
+\u003cli\u003etest if it works!\u003c/li\u003e
+\u003c/ul\u003e
+\u003c/span\u003e`,"activity-content",contentDelay)};typeeffetct()</script></div><span class=navFull><span><a href=/>Home</a>
+<span>&#8192;|&#8192;</span>
+<a href=./..>/linux/</a></span>
+<span class=navCredits>Hugo theme created by
+<a href=https://github.com/Yukuro/hugo-theme-shell target=_blank rel=noopener>Yukuro</a></span></span></body></html>

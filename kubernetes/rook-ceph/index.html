@@ -1,0 +1,58 @@
+<!doctype html><html lang=en-us><head><title>rook-ceph</title><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content><style>@import "https://fonts.googleapis.com/css2?family=Inconsolata&display=swap";:root{--cursor-visibility:hidden}html,body{width:100%;height:100%;overflow:auto;font-family:inconsolata,monospace;font-size:4vmin;line-height:4.1vmin;font-weight:400}body{margin:0;display:flex;flex-direction:row;justify-content:center;align-items:center}#content{min-width:82vmin;min-height:82vmin}::-webkit-scrollbar{width:10px}::-webkit-scrollbar-track{border-radius:10px;box-shadow:inset 0 0 1px white}::-webkit-scrollbar-thumb{border-radius:10px;box-shadow:0 0 0 1px white}.cursor,#activity-title:after,#activity-content:after,#cd:after,#whoami:after,#cat:after,#tree:after{visibility:var(--cursor-visibility);content:"|";overflow:hidden;color:#fff;animation:blink 500ms linear infinite alternate}@keyframes blink{0%{opacity:0}100%{opacity:1}}@media only screen and (min-width:768px){body{font-size:2.5vmin;line-height:2.6vmin}#content{min-width:60vmin}}:root{--cursor-visibility:hidden}body{align-items:unset;overflow-y:scroll}#content{max-width:80vmin}pre{overflow-x:scroll;white-space:pre}@keyframes blink{0%{opacity:0}100%{opacity:1}}body{background:#002b36}body #terminal{color:#839496}body #user{color:#859900}body #dir{color:#268bd2}body .Typewriter__cursor{color:#839496}a{color:#839496}.navFull{background-color:#353535;font-family:courier new;font-size:17px;display:inline;position:fixed;bottom:0;left:0;width:100%;padding-top:5px;padding:10px;padding-bottom:0}.navCredits{float:right;padding-right:18px;padding-bottom:10px;padding-top:5px}#content::after{content:"\a\a";white-space:pre}</style></head><body><div id=content><span id=activity-title></span><br><span id=activity-content></span><br><script type=text/javascript>async function typewriter(e,t,n){var s=0,o=!1;addText="";const i=document.getElementById(t),a=()=>new Promise(e=>setTimeout(e,n)),r=()=>new Promise(e=>e()),c=()=>i.innerHTML=e.slice(0,s+1)+addText,l=document.createElement("span");for(l.id="blink",i.style.setProperty("--cursor-visibility","visible");s<e.length;){if(e.charAt(s+1)==="<"&&(o=!0),e.charAt(s+1)===">"&&(o=!1),o){s++;continue}requestAnimationFrame(c),n===0?await r():await a(),s++}i.style.setProperty("--cursor-visibility","collapse")}function parseDelay(e){const t=parseInt(e,10);return isNaN(t)?0:t}const titleDelay=parseDelay("0"),contentDelay=parseDelay("0"),typeeffetct=async()=>{await typewriter("\u003cspan id=\u0027terminal\u0027\u003e\u003ch1 id=\u0027title\u0027\u003erook-ceph\u003c/h1\u003e\u003c/span\u003e","activity-title",titleDelay),await typewriter(`\u003cspan id=\u0027terminal\u0027\u003e\u003cp\u003eMaybe you know rook.io. Rook is a storage operator.\u003c/p\u003e
+\u003cp\u003eRook can configure Ceph clusters based on CRDS. Ceph provides Block, File and Object storage.\u003c/p\u003e
+\u003cp\u003eThe workers nodes used in this values file have each an empty 50GB disk attached. By default rook will only take disks that are unused.\u003c/p\u003e
+\u003ch2 id=\u0022rook-ceph-chart\u0022\u003erook-ceph chart\u003c/h2\u003e
+\u003cp\u003eWe start by installing the rook-operator which gives us the base to deploy ceph later on:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-plaintext\u0022 data-lang=\u0022plaintext\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ehelm repo add rook-release https://charts.rook.io/release
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ekubectl create namespace rook-ceph
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ehelm show values rook-release/rook-ceph \u0026gt; rook-values.yaml
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eLet\u0026rsquo;s change the values a bit and make a custom config for it. See the \u003ccode\u003erook-ceph-values.yaml\u003c/code\u003e\u003c/p\u003e
+\u003cp\u003eAnd finally install the rook operator:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-plaintext\u0022 data-lang=\u0022plaintext\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ehelm upgrade -i rook-ceph rook-release/rook-ceph -n rook-ceph -f rook-ceph-values.yaml
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eWe ignore the PSP deprication warnings for now.\u003c/p\u003e
+\u003ch2 id=\u0022rook-ceph-cluster-chart\u0022\u003erook-ceph-cluster chart\u003c/h2\u003e
+\u003cp\u003eThe rook operator manages ceph clusters, so let\u0026rsquo;s create one using the official rook-ceph-cluster chart.\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-plaintext\u0022 data-lang=\u0022plaintext\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ehelm show values rook-release/rook-ceph-cluster \u0026gt; original-values-cluster.yaml
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eWe modify the values a bit to match our setup. See the \u003ccode\u003erook-ceph-cluster-values.yaml\u003c/code\u003e file.\u003c/p\u003e
+\u003cp\u003eSome things to note here:\u003c/p\u003e
+\u003cp\u003e- By default rook is configured to keep data on disks when an admin actidentially calls the kubeapi to delete the CephCluster resource. To delete the data as well, confirmation needs to set on the resource, e.q you need to patch the resource first and then delete it.\u003c/p\u003e
+\u003cp\u003e- We automatically use any disk on our worker nodes which are not used (that excludes the os diks)\u003c/p\u003e
+\u003cp\u003e- if we got an ingress controller we will expose the dashboard using ingress, until then, a loadbalancer will do fine.\u003c/p\u003e
+\u003cp\u003e- all storageclasses have the reclaimPolicy of Retain, meaining that PVC\u0026rsquo;s that are deleted will result in PVs laying around until they are manually deleted.\u003c/p\u003e
+\u003cp\u003eSo we can now install the ceph cluster:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-plaintext\u0022 data-lang=\u0022plaintext\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ehelm upgrade -i  rook-ceph-cluster rook-release/rook-ceph-cluster -f rook-ceph-cluster-values.yaml -n rook-ceph
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eNote: This takes some minutes (mine took between 10 and 30 minutes) to get fully up and running.\u003c/p\u003e
+\u003ch3 id=\u0022ceph-dashboard\u0022\u003eCeph Dashboard\u003c/h3\u003e
+\u003cp\u003eThe ceph dashboard is enabled, but we haven\u0026rsquo;t set an Ingress Route yet. So let\u0026rsquo;s create a svc in the meantime:\u003c/p\u003e
+\u003cdiv class=\u0022highlight\u0022\u003e\u003cpre tabindex=\u00220\u0022 style=\u0022color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;\u0022\u003e\u003ccode class=\u0022language-plaintext\u0022 data-lang=\u0022plaintext\u0022\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003eapiVersion: v1
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003ekind: Service
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003emetadata:
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e name: rook-ceph-mgr-dashboard-external-https
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e namespace: rook-ceph
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e labels:
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e   app: rook-ceph-mgr
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e   rook_cluster: rook-ceph
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003espec:
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e ports:
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e - name: dashboard
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e   port: 80
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e   protocol: TCP
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e   targetPort: 7000
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e selector:
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e   app: rook-ceph-mgr
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e   rook_cluster: rook-ceph
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e sessionAffinity: None
+\u003c/span\u003e\u003c/span\u003e\u003cspan style=\u0022display:flex;\u0022\u003e\u003cspan\u003e type: LoadBalancer
+\u003c/span\u003e\u003c/span\u003e\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp\u003eThe loadbalancer ip: \u003ccode\u003ekubectl -n rook-ceph get svc rook-ceph-mgr-dashboard-external-https -o yaml | grep -A \u0026quot;loadbalancer\u0026quot;\u003c/code\u003e\u003c/p\u003e
+\u003cp\u003eThe password: \u003ccode\u003ekubectl -n rook-ceph get secret rook-ceph-dashboard-password -o jsonpath=\u0026quot;{[\u0027data\u0027][\u0027password\u0027]}\u0026quot; | base64 --decode \u0026amp;\u0026amp; echo\u003c/code\u003e\u003c/p\u003e
+\u003cp\u003eThen we can reach the dashboard: \u003ccode\u003ehttps://192.168.100.100:7000\u003c/code\u003e\u003c/p\u003e
+\u003ch2 id=\u0022files\u0022\u003eFiles\u003c/h2\u003e
+\u003cp\u003eDashboard SVC: \u003ca href=\u0022/Kubernetes/ceph-dashboard-svc.yaml\u0022\u003eceph-dashboard-svc.yaml\u003c/a\u003e\u003c/p\u003e
+\u003cp\u003eCustom Cluster Values: \u003ca href=\u0022/Kubernetes/rook-ceph-cluster-values.yaml\u0022\u003erook-ceph-cluster-values.yaml\u003c/a\u003e\u003c/p\u003e
+\u003cp\u003eCustom Operator Values: \u003ca href=\u0022/Kubernetes/rook-ceph-values.yaml\u0022\u003erook-ceph-values.yaml\u003c/a\u003e\u003c/p\u003e
+\u003cp\u003eOSD-Purge: \u003ca href=\u0022/Kubernetes/osd-purge.yaml\u0022\u003eosd-purge.yaml\u003c/a\u003e\u003c/p\u003e
+\u003c/span\u003e`,"activity-content",contentDelay)};typeeffetct()</script></div><span class=navFull><span><a href=/>Home</a>
+<span>&#8192;|&#8192;</span>
+<a href=./..>/kubernetes/</a></span>
+<span class=navCredits>Hugo theme created by
+<a href=https://github.com/Yukuro/hugo-theme-shell target=_blank rel=noopener>Yukuro</a></span></span></body></html>

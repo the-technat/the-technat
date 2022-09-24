@@ -1,0 +1,151 @@
+<!doctype html><html lang=en-us><head><title>homelab_concept_old</title><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content><style>@import "https://fonts.googleapis.com/css2?family=Inconsolata&display=swap";:root{--cursor-visibility:hidden}html,body{width:100%;height:100%;overflow:auto;font-family:inconsolata,monospace;font-size:4vmin;line-height:4.1vmin;font-weight:400}body{margin:0;display:flex;flex-direction:row;justify-content:center;align-items:center}#content{min-width:82vmin;min-height:82vmin}::-webkit-scrollbar{width:10px}::-webkit-scrollbar-track{border-radius:10px;box-shadow:inset 0 0 1px white}::-webkit-scrollbar-thumb{border-radius:10px;box-shadow:0 0 0 1px white}.cursor,#activity-title:after,#activity-content:after,#cd:after,#whoami:after,#cat:after,#tree:after{visibility:var(--cursor-visibility);content:"|";overflow:hidden;color:#fff;animation:blink 500ms linear infinite alternate}@keyframes blink{0%{opacity:0}100%{opacity:1}}@media only screen and (min-width:768px){body{font-size:2.5vmin;line-height:2.6vmin}#content{min-width:60vmin}}:root{--cursor-visibility:hidden}body{align-items:unset;overflow-y:scroll}#content{max-width:80vmin}pre{overflow-x:scroll;white-space:pre}@keyframes blink{0%{opacity:0}100%{opacity:1}}body{background:#002b36}body #terminal{color:#839496}body #user{color:#859900}body #dir{color:#268bd2}body .Typewriter__cursor{color:#839496}a{color:#839496}.navFull{background-color:#353535;font-family:courier new;font-size:17px;display:inline;position:fixed;bottom:0;left:0;width:100%;padding-top:5px;padding:10px;padding-bottom:0}.navCredits{float:right;padding-right:18px;padding-bottom:10px;padding-top:5px}#content::after{content:"\a\a";white-space:pre}</style></head><body><div id=content><span id=activity-title></span><br><span id=activity-content></span><br><script type=text/javascript>async function typewriter(e,t,n){var s=0,o=!1;addText="";const i=document.getElementById(t),a=()=>new Promise(e=>setTimeout(e,n)),r=()=>new Promise(e=>e()),c=()=>i.innerHTML=e.slice(0,s+1)+addText,l=document.createElement("span");for(l.id="blink",i.style.setProperty("--cursor-visibility","visible");s<e.length;){if(e.charAt(s+1)==="<"&&(o=!0),e.charAt(s+1)===">"&&(o=!1),o){s++;continue}requestAnimationFrame(c),n===0?await r():await a(),s++}i.style.setProperty("--cursor-visibility","collapse")}function parseDelay(e){const t=parseInt(e,10);return isNaN(t)?0:t}const titleDelay=parseDelay("0"),contentDelay=parseDelay("0"),typeeffetct=async()=>{await typewriter("\u003cspan id=\u0027terminal\u0027\u003e\u003ch1 id=\u0027title\u0027\u003ehomelab_concept_old\u003c/h1\u003e\u003c/span\u003e","activity-title",titleDelay),await typewriter(`\u003cspan id=\u0027terminal\u0027\u003e\u003ch2 id=\u0022introduction\u0022\u003eIntroduction\u003c/h2\u003e
+\u003cp\u003eThis page serves as a concept for my homelab. It defines some basic principles that are important for me when homelabing. Note though that it can evolve over time and that it\u0026rsquo;s just a hobby.\u003c/p\u003e
+\u003ch2 id=\u0022to-do\u0022\u003eTo Do\u003c/h2\u003e
+\u003cul\u003e
+\u003cli\u003e\u003cinput disabled=\u0022\u0022 type=\u0022checkbox\u0022\u003e : Explain technat.ch and technat.home at the beginning and restructure accordingly\u003c/li\u003e
+\u003cli\u003e\u003cinput disabled=\u0022\u0022 type=\u0022checkbox\u0022\u003e : Think about services hosted twice, once for the cloud and once at home\u003c/li\u003e
+\u003cli\u003e\u003cinput disabled=\u0022\u0022 type=\u0022checkbox\u0022\u003e : Backup Concept: how to get the data from Swiss Backup to the NAS? Or should we switch the order?\u003c/li\u003e
+\u003cli\u003e\u003cinput disabled=\u0022\u0022 type=\u0022checkbox\u0022\u003e : Backups: Is this DR friendly? Will that work?\u003c/li\u003e
+\u003cli\u003e\u003cinput disabled=\u0022\u0022 type=\u0022checkbox\u0022\u003e : Test out DR\u003c/li\u003e
+\u003cli\u003e\u003cinput disabled=\u0022\u0022 type=\u0022checkbox\u0022\u003e : See if we can make this page public\u003c/li\u003e
+\u003c/ul\u003e
+\u003ch2 id=\u0022services\u0022\u003eServices\u003c/h2\u003e
+\u003cp\u003eHere\u0026rsquo;s an overview of all the services I have worked on in my homelab.\u003c/p\u003e
+\u003cp\u003eWeb Apps:\u003c/p\u003e
+\u003cul\u003e
+\u003cli\u003ecloud.technat.ch: My person cloud (\u0026amp; doc.technat.ch)\u003c/li\u003e
+\u003cli\u003ewiki.technat.ch: My personal wiki\u003c/li\u003e
+\u003cli\u003es3.technat.ch: My personal S3 storage\u003c/li\u003e
+\u003cli\u003evpn.technat.ch: My WireGuard VPN\u003c/li\u003e
+\u003cli\u003evault.technat.ch: My personal Vault\u003c/li\u003e
+\u003c/ul\u003e
+\u003cp\u003eWebsites:\u003c/p\u003e
+\u003cul\u003e
+\u003cli\u003etechnat.ch: Portfolio website (ConcreteCMS)\u003c/li\u003e
+\u003cli\u003e360.technat.ch: different 360 panos (marzipano.net)\u003c/li\u003e
+\u003cli\u003ejs-buchsi.ch: Website of JS-Buchsi (Mocca CMS)\u003c/li\u003e
+\u003cli\u003efoto.js-buchsi.ch: Photogallery of JS-Buchsi (Lychee)\u003c/li\u003e
+\u003cli\u003efvphub.ch: Website for FPV Hub in switzerland (ConcreteCMS)\u003c/li\u003e
+\u003cli\u003efpv-enthusiasts.ch: Website for our FPV club (ConcreteCMS)\u003c/li\u003e
+\u003c/ul\u003e
+\u003cp\u003eInfrastructure Services:\u003c/p\u003e
+\u003cul\u003e
+\u003cli\u003e\u003ca href=\u0022https://github.com/nginx-proxy/nginx-proxy\u0022\u003enginx-proxy\u003c/a\u003e: Reverse Proxy on faultier to expose services\u003c/li\u003e
+\u003cli\u003eBackups\u003c/li\u003e
+\u003c/ul\u003e
+\u003ch3 id=\u0022external-services\u0022\u003eExternal Services\u003c/h3\u003e
+\u003cp\u003eThe following services of my homelab are used externaly:\u003c/p\u003e
+\u003cul\u003e
+\u003cli\u003egithub.com: SCM of choice\u003c/li\u003e
+\u003cli\u003eapp.terraform.io: IaaC Tool of choice\u003c/li\u003e
+\u003cli\u003eDomain Registration: Infomaniak\u003c/li\u003e
+\u003cli\u003eMail Hosting: Infomaniak\u003c/li\u003e
+\u003cli\u003ePublic Nameservers: Hetzner Online\u003c/li\u003e
+\u003cli\u003eServers: Hetzner Online\u003c/li\u003e
+\u003c/ul\u003e
+\u003ch2 id=\u0022hosting\u0022\u003eHosting\u003c/h2\u003e
+\u003cp\u003eIt wasn\u0026rsquo;t easy for me to find a place for my homelab. Although the name says it should be putten in your home, it\u0026rsquo;s much easier to do this in the cloud and independent too. So the current state of the art is to put things in the cloud.\u003c/p\u003e
+\u003cp\u003eWhich cloud?\u003c/p\u003e
+\u003cp\u003eThe services list above already shows it, but a summary here:\u003c/p\u003e
+\u003cp\u003eHetzner Online: Hoster from germany, used for Compute and Nameservers due to it\u0026rsquo;s unbeatable prices\u003c/p\u003e
+\u003cp\u003eInfomanaik: Hoster in Switzerland, used for everthing I don\u0026rsquo;t want to host myself (e.g Mail)\u003c/p\u003e
+\u003ch2 id=\u0022architecture\u0022\u003eArchitecture\u003c/h2\u003e
+\u003cp\u003eThe following picture shows the big architecture I\u0026rsquo;m using:\u003c/p\u003e
+\u003cp\u003e\u003cimg src=\u0022\u0022 alt=\u0022\u0022\u003e\u003c/p\u003e
+\u003cp\u003eWe got two Kubernetes Clusters:\u003c/p\u003e
+\u003cp\u003eadmin.technat.ch: My management cluster, powered by K3s, setup completely manually and using a single VM. It contains Cluster API and tools that are not a runtime dependency for important workload. The idea is to solve Chicken/Egg situations with this server but still have Kubernetes for everything. This includes:\u003c/p\u003e
+\u003cul\u003e
+\u003cli\u003eCluster API -\u0026gt; if it doesn\u0026rsquo;t work, the cluster can\u0026rsquo;t be updated, but that\u0026rsquo;s all\u003c/li\u003e
+\u003cli\u003e(Argo CD) -\u0026gt; maybe to deploy the management apps itself to this cluster, but for sure not to deploy the apps on the other clusters\u003c/li\u003e
+\u003cli\u003eBackup Tool for cluster itself and workload cluster (should be combined with Cluster API) -\u0026gt; no problem if it\u0026rsquo;s not working for some days\u003c/li\u003e
+\u003cli\u003eHashicorp Vault as secrets solution -\u0026gt; potentially a runtime dependency as we can\u0026rsquo;t work on new Apps / Update certificates when Vault becomes unaccessable\u003c/li\u003e
+\u003cli\u003ePersonal Wiki -\u0026gt; no problem if it\u0026rsquo;s unavailable for some days\u003c/li\u003e
+\u003cli\u003ePersonal Vault -\u0026gt; no problem if it\u0026rsquo;s unavaulable for some days, local cache is still working\u003c/li\u003e
+\u003c/ul\u003e
+\u003cp\u003eThe goal is to have a single node setup, that can be quickly restored to another location if necessary, to regain control over workload. But if it fails, no one will blame you or run because it\u0026rsquo;s just the management layer that burnt up. Maybe in the future this cluster will be running at home or somewhere else.\u003c/p\u003e
+\u003cp\u003etechnat.ch: The actual workload cluster where all my Apps are gona live I ever deploy.\u003c/p\u003e
+\u003ch2 id=\u0022backups\u0022\u003eBackups\u003c/h2\u003e
+\u003cp\u003eThe thing with backups is, that they need to be stored in a location that can be accessed in a Desaster Recovery situation. So at the end, someone should put the Data into Infomaniak Swiss Backup.\u003c/p\u003e
+\u003cp\u003eBut who is someone? Well it\u0026rsquo;s the management cluster! The management cluster does the following:\u003c/p\u003e
+\u003cul\u003e
+\u003cli\u003eBackup itself to Infomaniak\u003c/li\u003e
+\u003cli\u003eBackup the workload cluster to Infomaniak\u003c/li\u003e
+\u003c/ul\u003e
+\u003cp\u003eSo what happens when the Management Cluster is gone? You have to manually restore it from Backup. What if the workload cluster is gone? Cluster API can restore your cluster with your backup tool\u0026hellip; At least that\u0026rsquo;s the idea.\u003c/p\u003e
+\u003ch2 id=\u0022desaster-recovery\u0022\u003eDesaster Recovery\u003c/h2\u003e
+\u003cp\u003eDesaster Recovery is composed of two factors:\u003c/p\u003e
+\u003cul\u003e
+\u003cli\u003eSomething you know -\u0026gt; a list of important passwords
+\u003cul\u003e
+\u003cli\u003eMaster Password for vault\u003c/li\u003e
+\u003cli\u003ePins of Yubikey\u003c/li\u003e
+\u003cli\u003ePGP Master Password\u003c/li\u003e
+\u003cli\u003eBackup Credentials\u003c/li\u003e
+\u003cli\u003eCloud Provider Credentials (e.g to recreate backup creds)\u003c/li\u003e
+\u003c/ul\u003e
+\u003c/li\u003e
+\u003cli\u003eSomething you have -\u0026gt; a Yubikey for 2FA\u003c/li\u003e
+\u003c/ul\u003e
+\u003cp\u003e=\u0026gt; Those factors are placed somewhere in your home and somewhere in another home.\u003c/p\u003e
+\u003cp\u003eHypothesis: With those two factors in a save place, it should be possible for someone to gain access to everything I have in my homelab and other places in the Internet\u003c/p\u003e
+\u003cp\u003eThe following list thinks of different szenarious and how to react:\u003c/p\u003e
+\u003cul\u003e
+\u003cli\u003eKey Chain stolen: can´t login to differnet accounts anymore -\u0026gt; Backup Key\u003c/li\u003e
+\u003cli\u003ePhone stolen: can\u0026rsquo;t access my Database anymore -\u0026gt; vault.technat.ch, Master password and Yubikey\u003c/li\u003e
+\u003cli\u003eLaptop stolen: can\u0026rsquo;t ssh into servers, personal data is stolen -\u0026gt; personal data on nextcloud, login possible with Yubikey, ssh is still possible as the key is on your Yubikey\u003c/li\u003e
+\u003cli\u003eVault compromised: can´t access my passwords anymore -\u0026gt; Use passwordlist to restore backup of vault\u003c/li\u003e
+\u003cli\u003eNextcloud compromised: can´t access my data anymore -\u0026gt; restore data from backup either using vault or password list\u003c/li\u003e
+\u003cli\u003ehome network is compromised: restore everything from remote backup using offline password list\u003c/li\u003e
+\u003cli\u003ehome is physically compromised: restore everything from remote backup using remote password list\u003c/li\u003e
+\u003c/ul\u003e
+\u003cp\u003e=\u0026gt; It\u0026rsquo;s a pretty save DR. Many szenarious are covered and it\u0026rsquo;s hard to lose complete track of them all.\u003c/p\u003e
+\u003ch3 id=\u0022dependency-chain\u0022\u003eDependency Chain\u003c/h3\u003e
+\u003cp\u003eThis section show up a dependency graph. This is important for rebuilding everything, as you always have dependencies.\u003c/p\u003e
+\u003col\u003e
+\u003cli\u003eMy Personal Computer\u003c/li\u003e
+\u003cli\u003eServices on Infomaniak (Domains, Backup, Mail)\u003c/li\u003e
+\u003cli\u003eManagement Cluster\u003c/li\u003e
+\u003cli\u003eManagement Tools (Wiki, Vault)\u003c/li\u003e
+\u003cli\u003eWorkload Cluster\u003c/li\u003e
+\u003cli\u003eInfrastructure Tools
+\u0026hellip;\u003c/li\u003e
+\u003c/ol\u003e
+\u003ch2 id=\u0022design-principles\u0022\u003eDesign principles\u003c/h2\u003e
+\u003ch3 id=\u0022naming\u0022\u003eNaming\u003c/h3\u003e
+\u003cul\u003e
+\u003cli\u003etechnat.ch is my Domain for the public
+\u003cul\u003e
+\u003cli\u003eUsernames\u003c/li\u003e
+\u003cli\u003eMail\u003c/li\u003e
+\u003cli\u003eServices\u003c/li\u003e
+\u003cli\u003e\u003ca href=\u0022mailto:root@technat.ch\u0022\u003eroot@technat.ch\u003c/a\u003e is the mail address to use for any system accounts and applications sending mails\u003c/li\u003e
+\u003c/ul\u003e
+\u003c/li\u003e
+\u003c/ul\u003e
+\u003ch3 id=\u0022security\u0022\u003eSecurity\u003c/h3\u003e
+\u003cul\u003e
+\u003cli\u003eUse public repos where possible, hiding things with private repos is not the way to go.\u003c/li\u003e
+\u003cli\u003eUse a vault as central store for credentials, let apps sync them from there.\u003c/li\u003e
+\u003cli\u003eInfrastructur Accounts like TFE, AWS, Hetzner should use the Yubikey as second factor and not OTP\u003c/li\u003e
+\u003c/ul\u003e
+\u003ch3 id=\u0022no-automation\u0022\u003eNo Automation\u003c/h3\u003e
+\u003cp\u003eAutomation is cool, but it is also more effort. For a homelab it makes no sense to automate everything. Build your stuff manually and learn something.\u003c/p\u003e
+\u003cp\u003eOf course that doesn\u0026rsquo;t mean that we can’t try out things, but don\u0026rsquo;t use it for productive services.\u003c/p\u003e
+\u003ch3 id=\u0022no-ha\u0022\u003eNo HA\u003c/h3\u003e
+\u003cp\u003etechnat.home: No HA! It\u0026rsquo;s simply not possible to have everything HA, therefore forget about it from the beginning on.\u003c/p\u003e
+\u003cp\u003etechnat.ch: Yes please HA if possible, but not a hard requirement, rather a soft requirement. But for serivces that you host for others, HA is a requirement.\u003c/p\u003e
+\u003ch3 id=\u0022container-over-vm\u0022\u003eContainer over VM\u003c/h3\u003e
+\u003cp\u003eThere are so many applications providing container images these days that it is so easy to spin up a new tool using containers rather than run it in a vm. So use containers where possible.\u003c/p\u003e
+\u003cp\u003eBUT: don\u0026rsquo;t use docker! It\u0026rsquo;s ugly and Kubernetes is better ;).\u003c/p\u003e
+\u003cp\u003eAlthoug, there are some use-cases which are simply not designed to be deployed in a container. Databases for example. So there is always the option to use a VM for something if it\u0026rsquo;s better suited.\u003c/p\u003e
+\u003ch3 id=\u0022maintenance-windows\u0022\u003eMaintenance Windows\u003c/h3\u003e
+\u003cp\u003eWe don\u0026rsquo;t have regular maintenance windows, we patch frequently but not automatically.\u003c/p\u003e
+\u003ch3 id=\u0022documentation\u0022\u003eDocumentation\u003c/h3\u003e
+\u003cp\u003eAll documentation is done in this wiki here. Do only the necessary things in git.\u003c/p\u003e
+\u003ch3 id=\u0022never-ending-story\u0022\u003eNever ending story\u003c/h3\u003e
+\u003cp\u003eThis homelab is big and it\u0026rsquo;s totaly unnecessary. At least most of it. So whenever you think you should go on to finish creating, forget about it. The funniest part of it is creating it, so don\u0026rsquo;t try to be finished as soon as possible. It\u0026rsquo;s a good place to learn and because it\u0026rsquo;s fun it is even better. But keep in mind that maybe in some years this is no longer something you want to do, so don\u0026rsquo;t write things into stone.\u003c/p\u003e
+\u003c/span\u003e`,"activity-content",contentDelay)};typeeffetct()</script></div><span class=navFull><span><a href=/>Home</a>
+<span>&#8192;|&#8192;</span>
+<a href=./..>/linux/</a></span>
+<span class=navCredits>Hugo theme created by
+<a href=https://github.com/Yukuro/hugo-theme-shell target=_blank rel=noopener>Yukuro</a></span></span></body></html>
