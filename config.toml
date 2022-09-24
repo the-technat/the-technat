@@ -1,0 +1,23 @@
+baseURL = 'https://technat.ch/'
+languageCode = 'en-us'
+title = "ssh technat"
+theme = 'shell'
+
+[Params]
+  description = "Technat's Portfolio"
+  [Params.Terminal]
+  scheme = "SolarizedDark"
+  userName = "technat"
+  pcName = "wall-e"
+  workDir = ".config"
+  profile = "about.me"
+  description = "/about.md"
+  [Params.Extensions]
+  ext = ".md"
+  [Params.Tree]
+  use = true
+  folderName = "../code"
+  files = [
+    ["Kubernetes", "/Kubernetes"],
+    ["Linux", "/Linux"],
+  ]

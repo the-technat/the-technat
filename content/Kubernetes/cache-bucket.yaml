@@ -1,0 +1,11 @@
+apiVersion: objectbucket.io/v1alpha1
+kind: ObjectBucketClaim
+metadata:
+  name: gitlab-cache
+spec:
+  bucketName: gitlab-cache
+  generateBucketName: gitlab-cache
+  storageClassName: ceph-bucket
+  additionalConfig: 
+    maxSize: "20G"
+

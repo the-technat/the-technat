@@ -1,0 +1,74 @@
+replicas: 3
+gitlabUrl: https://code.immerda.ch/
+runnerRegistrationToken: "from-ci-cd-settings-page"
+unregisterRunners: true
+checkInterval: 5
+
+rbac:
+  create: true
+
+  podSecurityPolicy:
+    enabled: true
+    resourceNames:
+    - k8s_at_hetzner
+
+runners:
+  config: |
+    [[runners]]
+      executor = "kubernetes"
+      name = "k8s_at_hetzner"
+      builds_dir = "/builds"
+      environment = ["HOME=/tmp"]
+      [runners.kubernetes]
+        namespace = "{{.Release.Namespace}}"
+        image = "debian:bullseye"
+        cpu_limit = "1.5"
+        cpu_request = "500m"
+        memory_limit = "1.5Gi"
+        memory_request = "512Mi"
+        helper_cpu_limit = "1"
+        helper_cpu_request = "200m"
+        helper_memory_limit = "1Gi"
+        helper_memory_requests = "256Mi"
+        # [runners.kubernetes.pod_security_context]
+        #   run_as_non_root = true
+        #   run_as_user = 100
+        #   run_as_group = 100
+        #   fs_group = 65533
+        # [runners.kubernetes.build_container_security_context]
+        #   run_as_user = 65534
+        #   run_as_group = 65534
+        # [runners.kubernetes.helper_container_security_context]
+        #   run_as_user = 1000
+        #   run_as_group = 1000
+        # [runners.kubernetes.service_container_security_context]
+        #   run_as_user = 1000
+        #   run_as_group = 1000
+        [runners.cache]
+          Type = "s3"
+          Path = "k8s_at_hetzner"
+          Shared = true
+          [runners.cache.s3]
+            ServerAddress = "rook-ceph-rgw-ceph-objectstore.rook-ceph.svc"
+            BucketName = "gitlab-cache"
+            BucketLocation = "us-east-1"
+            Insecure = true
+            AuthenticationType = "access-key"
+  cache:
+    secretName: s3access
+
+securityContext:
+  runAsUser: 100
+  runAsGroup: 65533
+  fsGroup: 65533
+  supplementalGroups: [65533]
+
+resources: 
+  limits:
+    memory: 512Mi
+    cpu: 400m
+  requests:
+    memory: 128Mi
+    cpu: 100m
+
+

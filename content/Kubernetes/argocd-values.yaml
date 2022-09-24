@@ -1,0 +1,87 @@
+controller:
+  resources: {}
+  #  limits:
+  #    cpu: 500m
+  #    memory: 512Mi
+  #  requests:
+  #    cpu: 250m
+  #    memory: 256Mi
+
+## Dex
+dex:
+  resources: {}
+  #  limits:
+  #    cpu: 50m
+  #    memory: 64Mi
+  #  requests:
+  #    cpu: 10m
+  #    memory: 32Mi
+
+## Redis
+redis:
+  resources: {}
+  #  limits:
+  #    cpu: 200m
+  #    memory: 128Mi
+  #  requests:
+  #    cpu: 100m
+  #    memory: 64Mi
+
+server:
+  extraArgs: 
+  - --insecure
+
+  resources: {}
+  #  limits:
+  #    cpu: 100m
+  #    memory: 128Mi
+  #  requests:
+  #    cpu: 50m
+  #    memory: 64Mi
+
+  ingress:
+    enabled: true
+    annotations: 
+      cert-manager.io/cluster-issuer: letsencrypt-production
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      kubernetes.io/ingress.class: nginx
+    tls:
+      - secretName: argocd-secret
+        hosts:
+          - cd.technat.cloud
+    hosts:
+      - cd.technat.cloud
+    paths:
+      - /
+    pathType: Prefix
+
+  config:
+    url: https://cd.technat.cloud
+    accounts.dev: login
+    accounts.ci: apiKey
+    accounts.technat: login
+    accounts.admin.enabled: "false"
+
+  rbacConfig:
+    policy.default: role:readonly
+    policy.csv: |
+      g, technat, role:admin
+      p, role:ci, applications, *, */*, allow
+      g, ci, role:ci
+
+configs:
+  knownHosts:
+    data:
+      ssh_known_hosts: |
+        github.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEmKSENjQEezOmxkZMy7opKgwFB9nkt5YRrYMjNuG5N87uRgg6CLrbo5wAdT/y6v0mKV0U2w0WZ2YB/++Tpockg=
+        github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl
+        github.com ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ==
+
+## Creates a secret for each key/value specified below to create repository credentials
+  credentialTemplates: 
+    ssh-creds:
+     url: git@github.com:the-technat
+     sshPrivateKey: |
+      -----BEGIN OPENSSH PRIVATE KEY-----
+      -----END OPENSSH PRIVATE KEY-----
+

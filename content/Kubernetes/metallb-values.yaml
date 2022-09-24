@@ -1,0 +1,14 @@
+# rest of the config is there
+existingConfigMap: "metallb-config"
+prometheus:
+  # Prometheus Operator PodMonitors
+  podMonitor:
+    # enable support for Prometheus Operator
+    enabled: false
+  # Prometheus Operator alertmanager alerts
+  prometheusRule:
+    # enable alertmanager alerts
+    enabled: false
+    # MetalLBBGPSessionDown
+    bgpSessionDown:
+      enabled: false

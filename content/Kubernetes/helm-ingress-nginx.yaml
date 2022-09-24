@@ -1,0 +1,63 @@
+## nginx configuration
+## Ref: https://github.com/kubernetes/ingress-nginx/blob/main/docs/user-guide/nginx-configuration/index.md
+##
+
+controller:
+  # Will add custom configuration options to Nginx https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/
+  config: {}
+
+  # Will add custom headers before sending traffic to backends according to https://github.com/kubernetes/ingress-nginx/tree/main/docs/examples/customization/custom-headers
+  proxySetHeaders: {}
+
+  # Will add custom headers before sending response traffic to the client according to: https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/#add-headers
+  addHeaders: {}
+
+  # This section refers to the creation of the IngressClass resource
+  # IngressClass resources are supported since k8s >= 1.18 and required since k8s >= 1.19
+  ingressClassResource:
+    name: nginx
+    enabled: true
+    default: true
+    controllerValue: "k8s.io/ingress-nginx"
+
+  ## DaemonSet or Deployment
+  ##
+  kind: DaemonSet
+
+  # The update strategy to apply to the Deployment or DaemonSet
+  ##
+  rollingUpdate:
+    maxUnavailable: 1
+  type: RollingUpdate
+
+  # minReadySeconds to avoid killing pods before we are ready
+  ##
+  minReadySeconds: 5
+
+  service:
+    ## List of IP addresses at which the controller services are available
+    ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+    ##
+    externalIPs: ["135.181.163.155"]
+
+
+## Default 404 backend
+##
+defaultBackend:
+  ##
+  enabled: true
+  replicaCount: 2
+
+  resources:
+    limits:
+      cpu: 100m
+      memory: 200Mi
+    requests:
+      cpu: 10m
+      memory: 20Mi
+
+# A base64ed Diffie-Hellman parameter
+# This can be generated with: openssl dhparam 4096 2> /dev/null | base64
+# Ref: https://github.com/kubernetes/ingress-nginx/tree/main/docs/examples/customization/ssl-dh-param
+dhParam: param
+
