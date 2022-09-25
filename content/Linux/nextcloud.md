@@ -218,7 +218,7 @@ Then just restart the service:
 sudo systemctl restart fail2ban
 ```
 
-Note: For remote mails to be sent when something happens, you need to configure a mail client as described [here](https://wiki.technat.ch/en/Linux/Cronjobs#send-mails-from-cronjobs).
+Note: For remote mails to be sent when something happens, you need to configure a mail client as described [here](https://technat.ch/linux/cronjobs).
 
 ## Postgresql
 

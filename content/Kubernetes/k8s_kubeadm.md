@@ -74,7 +74,7 @@ Kubernetes requires you to have an odd number of master nodes, for true HA. Also
 | Helsinki | Ubuntu 22.04 | CX21  | k8s, ipv4 | workers         | false   | burro-03   | cluster=technat_ch,worker=true |
 
 Some notes:
-- All my servers are initalized with a [cloud-init](https://wiki.technat.ch/Linux/cloud_init.html) config to speed up.
+- All my servers are initalized with a [cloud-init](https://technat.ch/linux/cloud_init) config to speed up.
 - Expect the size and number of workers to change over time.
 - That's also the reason why I don't add DNS records for my nodes. They should be as ephemeral as possible.
 - However you should have a DNS record for your kubeapi where you have added all master node IPs as valid answers (e.g three records for the same domain name). This is the simplest way to avoid an external load balancer in front of your control plane (of course you could do that too and just forward port 6443 to all the master nodes)
