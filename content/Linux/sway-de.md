@@ -24,14 +24,15 @@ Linus is always broken and nothing is perfect:
 - Sway doesn't have the abbility to mirror outputs (https://github.com/swaywm/sway/issues/1666)
 - This guide is not yet fully transparent, some config files are not explained (see TODOs in text)
 - Ranger cannot connect to sshfs, sftp, nfs, smb...
-- Switch sway sub apps to systemd?
+- Refactor ordering of guide, explain systemd, environment.d and so on before doing it...
+- Switch sway sub apps to systemd (using [that](https://blog.ongy.net/posts/sway-and-systemd/))
 
 ## Prerequisites
 
 Some of the config files don´t have to be rewritten and can just be linked in. Therefore I maintain a repository with config files for different tools which I usually clone before configuring the environment:
 
 ```bash
-git clone https://code.immerda.ch/technat/WALL-E.git ~/WALL-E
+git clone https://github.com/the-technat/WALL-E.git ~/WALL-E
 ```
 
 In order to use the config files from this repo I further use `stow` to symlink the files to the correct location (this ensures further updates over the git repository), so it's a good idea to install this as well:
@@ -39,7 +40,6 @@ In order to use the config files from this repo I further use `stow` to symlink 
 ```bash
 sudo pacman -S stow
 ```
-
 Also install the fonts now:
 
 ```bash
@@ -58,7 +58,26 @@ Install them:
 sudo pacman -S sway foot xorg-xwayland dmenu firefox
 ```
 
-Now to launch sway you can type `sway` on your terminal (We'll improve this situation later).
+Now after sway is installed you may ask how to start it? Well it's as simple as tipping `sway` on the command line. Well it's as simple as that, but people tend to make it more complex. There are display managers, shell files, systemd and many more that all can do this for you. I'm planning on running sway as a systemd/user service in the future, without using a display manager. So I'm fine with running `sway` from the command line after logging in. One thing I do though is making sure that sway get's all the environment variables I set in `~/.config/environment.d/*.conf`. `environment.d` is the current most simple way to set environment variables so that they are set for all your user services and with a wrapper script also for all your sway inherited processes.
+
+So let's write the following wrapper script `~/.local/bin/swayrun.sh` that inherits systemd/user env vars:
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Export all variables
+set -a
+# Call the systemd generator that reads all files in environment.d
+source /dev/fd/0 <<EOF
+$(/usr/lib/systemd/user-environment-generators/30-systemd-environment-d-generator)
+EOF
+set +a
+
+exec sway
+```
+
+Make it executable `chmod +x ~/.local/bin/swayrun.sh` and then you can finally run `swayrun.sh` which will start sway.
 
 When sway has launched, use Super+Enter to open alacritty, Super+d to launch firefox.
 
