@@ -22,10 +22,8 @@ As for all we need some concepts and principles. Mine are:
 Linus is always broken and nothing is perfect:
 
 - Sway doesn't have the abbility to mirror outputs (https://github.com/swaywm/sway/issues/1666)
-- Screen Recording is not configured (must find a tool)
-- Guide is not fully transparent, some config files are not explained (see TODOs in text)
+- This guide is not yet fully transparent, some config files are not explained (see TODOs in text)
 - Ranger cannot connect to sshfs, sftp, nfs, smb...
-- Where to set environment variables to be applied at certain levels?
 - Switch sway sub apps to systemd?
 
 ## Prerequisites
@@ -52,22 +50,15 @@ Then we can get started with a cup of ☕.
 
 ## Sway
 
-The first thing we need from a basic arch installation is sway (the wayland compositor) and ly which is my [display manager](https://wiki.archlinux.org/title/Display_manager) of choice. In order to further configure sway we also need a browser (firefox), foot (default terminal emulator) and dmenu (default application launcher). Because dmenu runs on X11, we need xorg-xwayland to allow X11 apps to run within our wayland session.
+The first thing we need from a basic arch installation is sway (the wayland compositor). In order to further configure sway we also need a browser (firefox), foot (default terminal emulator) and dmenu (default application launcher). Because dmenu runs on X11, we need xorg-xwayland to allow X11 apps to run within our wayland session.
 
 Install them:
 
 ```bash
 sudo pacman -S sway foot xorg-xwayland dmenu firefox
-yay -aS ly-git
 ```
 
-Once their installed we can enable the display manager to start at boot, so that we are greeted by it when we reboot our machine.
-
-```bash
-sudo systemctl enable ly
-```
-
-Now to launch sway you can either type `sway` or reboot the machine to see the display manager in action.
+Now to launch sway you can type `sway` on your terminal (We'll improve this situation later).
 
 When sway has launched, use Super+Enter to open alacritty, Super+d to launch firefox.
 
@@ -1283,14 +1274,14 @@ Then add the following as `kmeet.desktop` into `~/.local/share/applications` to 
 Encoding=UTF-8
 Version=1.0
 Type=Application
-Exec=/home/technat/.local/bin/kMeet-x86_64.AppImage
+Exec=/home/technat/.local/bin/kmeet
 Name=Kmeet
 Comment=Infomaniak video-conferencing
 ```
 
 ### kDrive
 
-Get the AppImage from [here](https://www.infomaniak.com/de/anwendungen/kdrive-herunterladen), make it executable and put it somewhere in your PATH (eq /home/technat/.local/bin).
+Get the AppImage from [here](https://www.infomaniak.com/en/apps/download-kdrive), make it executable and put it somewhere in your PATH (eq /home/technat/.local/bin).
 
 Then add the following as `kdrive.desktop` into `~/.local/share/applications` to make it launchable by your application launcher:
 
@@ -1299,27 +1290,10 @@ Then add the following as `kdrive.desktop` into `~/.local/share/applications` to
 Encoding=UTF-8
 Version=1.0
 Type=Application
-Exec=/home/technat/.local/bin/kDrive.AppImage
+Exec=/home/technat/.local/bin/kdrive
 Name=kDrive
 Comment=Infomaniak file sync
 ```
-
-### notable
-
-Get the AppImage from [here](https://notable.app/#download), make it executable and put it somewhere in your PATH (eq /home/technat/.local/bin).
-
-Then add the following as `notable.desktop` into `~/.local/share/applications` to make it launchable by your application launcher:
-
-```
-[Desktop Entry]
-Encoding=UTF-8
-Version=1.0
-Type=Application
-Exec=/home/technat/.local/bin/notable.AppImage
-Name=notable
-Comment=Notable Notepad
-```
-
 
 ### Teams
 
@@ -1340,6 +1314,12 @@ yay -S bolt
 ```
 
 And then use it as `boltctl`.
+
+### Set default apps
+
+This section collects things that are opened with the wrong programm.
+
+- Default browser: `xdg-settings set default-web-browser firefox.desktop`
 
 ## Further reading
 
