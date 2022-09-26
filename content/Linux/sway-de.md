@@ -711,7 +711,7 @@ stow kitty
 
 ### Shell
 
-A Terminal Emulator launches a shell by default. My prefered one is ZSH using the [oh-my-zsh](https://ohmyz.sh/) framework. Zsh is already installed and my default shell, when followed the [Arch Linux](/Linux/arch) guide.
+A Terminal Emulator launches a shell by default. My prefered one is ZSH using the [oh-my-zsh](https://ohmyz.sh/) framework. Zsh is already installed and my default shell, when followed the [Arch Linux](arch.md) guide.
 
 If not done, change your shell like so:
 
