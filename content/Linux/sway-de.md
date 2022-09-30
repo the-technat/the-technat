@@ -15,17 +15,16 @@ As for all we need some concepts and principles. Mine are:
 - If apps run on xwayland or wayland doesn't matter. We will need both, so we don't actively force all apps that are theoretically possible to run on wayland to do so (in some years, it might be possible...)
 - I'm going to style everything using [Rubik](https://fonts.google.com/specimen/Rubik) for UI text, [FiraCode NerdFont](https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/FiraCode) for code and [Solarized](https://ethanschoonover.com/solarized/) for colors.
 - This guide shows how things are done, where the tools and configs come from, most config snippets should be shown in this guide, so that someone can follow this and configure it's sway DE accordingly
-- But: My actual config files can differ from what is in this repository. They are stored in my WALL-E repo: https://github.com/the-technat/WAll-E
+- But: My actual config files can differ from what is in this guide. They are stored in my WALL-E repo: https://github.com/the-technat/WAll-E
 
 ## Drawbacks & To Do
 
 Linus is always broken and nothing is perfect:
 
 - Sway doesn't have the abbility to mirror outputs (https://github.com/swaywm/sway/issues/1666)
-- This guide is not yet fully transparent, some config files are not explained (see TODOs in text)
-- Ranger cannot connect to sshfs, sftp, nfs, smb...
-- Refactor ordering of guide, explain systemd, environment.d and so on before doing it...
-- Switch sway sub apps to systemd (using [that](https://blog.ongy.net/posts/sway-and-systemd/))
+- Ranger cannot connect to sshfs, sftp, nfs, smb using my config (rarely used, but would be nice if we could do that)
+- [sway-systemd](https://github.com/alebastr/sway-systemd) or [sway-services](https://github.com/xdbob/sway-services/)? We either have to integrate sway with systemd or start sway from systemd
+- This guide is not yet fully transparent, some config files are not explained but just linked (see TODOs in text)
 
 ## Prerequisites
 
@@ -79,7 +78,7 @@ exec sway
 
 Make it executable `chmod +x ~/.local/bin/swayrun.sh` and then you can finally run `swayrun.sh` which will start sway.
 
-When sway has launched, use Super+Enter to open alacritty, Super+d to launch firefox.
+When sway has launched, use Super+Enter to open alacritty, Super+d to launch firefox. For a good introduction in basic navigating in sway, watch the video on sway's [homepage](https://swaywm.org/).
 
 ### Config
 
