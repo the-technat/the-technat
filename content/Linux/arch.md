@@ -151,7 +151,6 @@ Before we create logical volumes we encrypt the second partition with LUKS:
 ```bash
 cryptsetup luksFormat -v /dev/sda2
 ```
-
 Type YES to continue and enter a strong password twice.
 
 Now it's encrypted. But we need to install the system on it so let's open it again:
@@ -163,6 +162,24 @@ cryptsetup luksOpen /dev/sda2 cryptlvm
 Note: when opening the device you have to give it a name I called mine `cryptlvm` but you can name it howevery you want. We will use this name later so remeber it.
 
 This will make the LUKS device available as `/dev/mapper/cryptlvm`.
+
+#### FIDO2 Key unlocking
+
+I'm using Yubikeys, so for me a password is not what I want to unlock the device. So I close / lock the device again and run the following commands to configure my Yubikey as another valid auth mechanism:
+
+```bash
+systemd-cryptenroll --fido2-device=list
+systemd-cryptenroll --fido2-device=auto /dev/sda2
+```
+
+Note: Only do this if you really know what you are doing. You need to enter your FIDO2 pin which you should have setup already. If not, read some articles about that before you do that and for now continue using a password.
+
+Later on remove the password as valid auth option:
+
+```bash
+systemd-cryptenroll /dev/sda2 --wipe-slot=0
+```
+**Only do this if you have tested that your FIDO2 Key works and you have at least two fido keys configured.**
 
 ### LVM
 
@@ -480,9 +497,25 @@ EOF
 
 The `editor 0` directive disables the option to add kernel parameters during boot. The `timeout 0`  waits 0 seconds before continuing to boot. So you won't see the bootloader with the different options at all, if you don't press space during boot.
 
+## FIDO2 Key
+
+If you have added a FIDO2 key for your LUKS partition, you have to configure the following in the `options` to make sure your root partition is unlocked using the fido2 key during boot:
+
+```bash
+options rd.luks.name=UUID=system rd.luks.options=fido2-device=auto root=/dev/system/root
+```
+
+In addition to that, you need to tell the systemd to automatically unlock the device. Add a line to `/etc/crypttab`:
+
+```bash
+system  /dev/sda2 fido2-device=auto
+```
+
+Note: only remove your passphrase key slot when you have multiple Yubikeys configured and made sure they all work to unlock the computer!
+
 ## Keyfile
 
-On my machine I have a problem which causes the keyboard to not work during the early boot process (BIOS problem) even with the keyboard hook in initramfs.
+On my machine I had a problem which causes the keyboard to not work during the early boot process (BIOS problem) even with the keyboard hook in initramfs.
 So I used a workaround which uses a keyfile stored in the initramfs to unlock the LUKS partition. This is not very secure as the initramfs is stored on the `/dev/sda1` partition which is not encrypted and anyone with access to the disk could extract the keyfile and then decrypt your data. A better option would be to store the keyfile on a thumb drive and insert this everytime you boot. But I'm not at a point where I think this is necessary for me. If you want to do it you can read everything about it [here](https://wiki.archlinux.org/title/Dm-crypt/Device_encryption).
 
 So that's what I did to fix my problem:
