@@ -1,6 +1,6 @@
----
-title: "external-dns"
----
++++
+title =  "external-dns"
++++
 ## Prepare
 
 See https://github.com/kubernetes-sigs/external-dns/tree/master/charts/external-dns
@@ -14,4 +14,4 @@ helm upgrade -i external-dns -n external-dns external-dns/external-dns --set env
 
 ## Files
 
-Custom Values: [external-dns-values.yaml](/Kubernetes/external-dns-values.yaml)
+Custom Values: [external-dns-values.yaml](/posts/external-dns-values.yaml)

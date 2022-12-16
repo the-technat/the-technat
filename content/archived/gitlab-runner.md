@@ -1,6 +1,6 @@
----
-title: "gitlab-runners"
----
++++
+title =  "gitlab-runners"
++++
 Chart: https://artifacthub.io/packages/helm/gitlab/gitlab-runner
 
 ## Preparations
@@ -43,6 +43,6 @@ helm upgrade -i k8s-at-hetzner-runner -n gitlab-runners gitlab/gitlab-runner -f 
 
 ## Files
 
-Cache Bucket: [cache-bucket.yaml](/cache-bucket.yaml)
+Cache Bucket: [cache-bucket.yaml](/posts/cache-bucket.yaml)
 
-Custom Values: [k8s-at-hetzner-runner-values.yaml](/k8s-at-hetzner-runner-values.yaml)
+Custom Values: [k8s-at-hetzner-runner-values.yaml](/posts/k8s-at-hetzner-runner-values.yaml)

@@ -1,23 +1,24 @@
 baseURL = 'https://technat.ch/'
-languageCode = 'en-us'
-title = "ssh technat"
-theme = 'shell'
+title = "technat.ch"
+author = "Nathanael Liechti"
+languageCode = 'en'
+DefaultContentLanguage = "en"
+enableInLineShortcodes = true
+theme = 'holy'
 
-[Params]
-  description = "Technat's Portfolio"
-  [Params.Terminal]
-  scheme = "SolarizedDark"
-  userName = "technat"
-  pcName = "wall-e"
-  workDir = ".config"
-  profile = "about.me"
-  description = "/about.md"
-  [Params.Extensions]
-  ext = ".md"
-  [Params.Tree]
-  use = true
-  folderName = "../code"
-  files = [
-    ["Kubernetes", "/Kubernetes"],
-    ["Linux", "/Linux"],
-  ]
+[menu]
+  [[menu.main]]
+    identifier = "about"
+    name = "About"
+    url = "/about/"
+    weight = 10
+  [[menu.main]]
+    identifier = "github"
+    name = "Github"
+    url = "https://github.com/the-technat"
+    weight = 10
+
+[taxonomies]
+category = "categories"
+tag = "tags"
+series = "series"

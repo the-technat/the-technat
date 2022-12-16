@@ -1,6 +1,6 @@
----
-title: "heimdall"
----
++++
+title =  "heimdall"
++++
 Chart: https://artifacthub.io/packages/helm/k8s-at-home/heimdall
 
 ## Installation

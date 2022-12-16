@@ -1,6 +1,7 @@
----
-title: "nextcloud_maintenance"
----
++++
+title =  "Nextcloud Maintenance"
+date = "2022-07-31"
++++
 
 ## Backups
 

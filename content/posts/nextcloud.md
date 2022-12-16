@@ -1,16 +1,17 @@
----
-title: "nextcloud"
----
++++
+title =  "Nextcloud"
+date = "2022-07-31"
++++
 
 My personal nextcloud on hcloud.
 
 ## Infrastructure
 
-Managed by terraform, see [this file](https://code.immerda.ch/technat/technat_cloud/-/blob/master/terraform/nextcloud.tf).
+Single VPS on Hetzner
 
 ## DNS
 
-Managed by terraform, see [here](https://code.immerda.ch/technat/technat_cloud/-/blob/master/terraform/dns.tf#L20).
+Simple A record pointing to the public IP of your server (e.g `cloud.technat.ch` for me).
 
 ## OS Preparations
 

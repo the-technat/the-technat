@@ -1,6 +1,6 @@
----
-title: "fairphone"
----
++++
+title =  "fairphone"
++++
 
 ## Tools needed
 

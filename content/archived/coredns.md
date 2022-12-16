@@ -1,6 +1,6 @@
----
-title: "coredns"
----
++++
+title = "coredns"
++++
 
 ## Server preparations
 
@@ -267,7 +267,7 @@ Zones are transfered from primary so no zones have to be defined.
 * [very good blog article[(https://blog.idempotent.ca/2018/04/18/run-your-own-home-dns-on-coredns/)
 *
 
---------
+++++++--
 ## old
 penguin-01 and penguin-02 are DNS Servers on Debian LXC images. they are working in a primary / secondary mode where penguin-01 is  the primary.
 
@@ -289,7 +289,7 @@ Basically just replace the entire file (`/etc/bind/named.conf.options`) with the
 ```
 options {
 
-        // --------- General Settings ---------------
+        // +++++++++ General Settings +++++++++++++++
 
 				// DNS-Cache directory
         directory "/var/cache/bind";
@@ -309,9 +309,9 @@ options {
 				  none;
 		    };
 
-				// ---------- Primary Settings ---------------
+				// +++++++++- Primary Settings +++++++++++++++
 
-        // -------- DNS Resolver (Recursive Requests) -----------
+        // ++++++-- DNS Resolver (Recursive Requests) +++++++++--
         //Allow Queries in general
         allow-query {
                 technat.lab;
@@ -506,7 +506,7 @@ Basically just replace the entire file (`/etc/bind/named.conf.options`) with the
 ```
 options {
 
-        // --------- General Settings ---------------
+        // +++++++++ General Settings +++++++++++++++
 
 				// DNS-Cache directory
         directory "/var/cache/bind";
@@ -520,9 +520,9 @@ options {
                 any;
         };
 
-				// ---------- Secondary Settings ---------------
+				// +++++++++- Secondary Settings +++++++++++++++
 
-        // -------- DNS Resolver (Recursive Requests) -----------
+        // ++++++-- DNS Resolver (Recursive Requests) +++++++++--
         //Allow Queries in general
         allow-query {
                 technat.lab;

@@ -1,6 +1,6 @@
----
-title: "faultier"
----
++++
+title =  "faultier"
++++
 
 The faultier is the answer to the Chicken and the Egg. If you have desinged anything in IT, you know that there is always at least one Chicken and Egg situation where you have to choose what depends on what. This is exactly what the faultier solves. It's a VM created by Terraform, but configured manually. Why? Because there are some services that just need to exist if you want to setup an automated environment.
 

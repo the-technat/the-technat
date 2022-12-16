@@ -1,6 +1,6 @@
----
-title: "gitea"
----
++++
+title =  "gitea"
++++
 Setup a private Git on a Debian 11 machine.
 
 ## Preparation: Data Disk
@@ -53,7 +53,7 @@ The installation of gitea is done [from binary](https://docs.gitea.io/en-us/inst
 
 ## Initial Configuration
 | Option | Value |
-| ------- | ----- |
+| ++++++- | +++-- |
 | DB-Backend | MySQL |
 | Host | 127.0.0.1:3306 |
 | Username | gitea|

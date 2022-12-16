@@ -1,6 +1,6 @@
----
-title: "proxmox"
----
++++
+title =  "proxmox"
++++
 
 This page shows one of many approaches how Proxmox can be installed and configured on a Dedicated Root Server from Hetzner.
 
@@ -23,7 +23,7 @@ In the Hetzner Robot you have the option to add firewall rules for your server o
 In the Hetzner Robot you can also add simple Up-state monitoring Rules for your server. The following ones could be helpful:
 
 | Check | Target | Protocol | Options | Contact |
-| :----- | :------ | :-------- | :-------- | :--------- |
+| :+++-- | :++++++ | :++++++-- | :++++++-- | :+++++++++ |
 | ping | 135.181.162.151 | icmp | 5,180 | technat |
 | https | 135.181.162.151 | https | 5,180 | technat |
 
@@ -35,7 +35,7 @@ To install proxmox the easiest way is to request a KVM console using the support
 During the inital installation over the KVM console the following values have been applied:
 
 | Option | Value |
-| :------ | :------ |
+| :++++++ | :++++++ |
 | OS-Disk | ZFS (Raid1) with the NVME 512GB disks |
 | ZFS ashift | 12 |
 | ZFS compress | on |
@@ -174,7 +174,7 @@ systemctl restart pveproxy
 For security the following settings were applied in OpenSSH config:
 
 | Option | Value |
-| :------ | :------ |
+| :++++++ | :++++++ |
 | Port | 59245 |
 | PubkeyAuthentication | yes |
 | PasswordAuthentication | no |
@@ -198,7 +198,7 @@ If you but a dedicated root server you get an additional 100GB Storagebox for fr
 Use the following options
 
 | Option | Value |
-| :------ | :------ |
+| :++++++ | :++++++ |
 | ID | remote-cifs |
 | Server | u253012.your-storagebox.de |
 | User | u253012 |
@@ -210,7 +210,7 @@ Use the following options
 While ordering the server I added 2 additional 1TB SATA drives for data disks of VMs. In the ZFS tab on the host I created a data store out of them:
 
 | Option | Value |
-| :-------| :------|
+| :++++++-| :++++++|
 | Name | local-data |
 | ZFS ashift | 12 |
 | Type | Mirror
@@ -245,7 +245,7 @@ deb http://download.proxmox.com/debian buster pve-no-subscription
 Now we can enable the Proxmox firewall. Default in-Policy is Drop and then I added the following rules at datacenter level:
 
 | Direction | Action | Interface | Source-IP | Dest-IP | Macro | Protocol | Source-Port | Dest-Port | LogLevel |
-| :------ | :--------- | :-------------- |  :------------ | :----------------- | :--------- | :---------- | :------ | :----- | :----- |
+| :++++++ | :+++++++++ | :++++++++++++-- |  :++++++++++++ | :+++++++++++++++-- | :+++++++++ | :+++++++++- | :++++++ | :+++-- | :+++-- |
 | in | ACCEPT | vmbr0 | any | 135.191.162.151 | - | icmp | any | any | nolog |
 | in | ACCEPT | vmbr0 | any | 135.181.162.151 | - | tcp | any | 8006 | critical |
 | in | ACCEPT | vmbr0 | any | 135.181.162.151 | - | tcp | any | 59245 | critical |

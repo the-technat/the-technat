@@ -1,6 +1,6 @@
----
-title: "metrics-server"
----
++++
+title =  "metrics-server"
++++
 
 See https://github.com/kubernetes-sigs/metrics-server/blob/master/charts/metrics-server/README.md
 
@@ -12,4 +12,4 @@ helm upgrade -i metrics-server metrics-server/metrics-server -f metrics-server-v
 
 ## Files
 
-Custom Values: [metrics-server-values.yaml](/Kubernetes/metrics-server-values.yaml)
+Custom Values: [metrics-server-values.yaml](/posts/metrics-server-values.yaml)

@@ -1,6 +1,6 @@
----
-title: "backups"
----
++++
+title = "Backups"
++++
 
 This page describes how to backup files using restic.
 

@@ -1,6 +1,7 @@
----
-title: "lv-extending"
----
++++
+title =  "LVM - extend LV"
+date = "2022-12-06"
++++
 
 Containers have their temporare file system on the node under `/var/...`. This means that K8s worker nodes need to have a big `/var` if you mount this on a separate partition.
 
@@ -12,7 +13,7 @@ First drain the node:
 k drain node-0x --ignore-daemonsets --delete-empty-dir-data
 ```
 
-Then we shutdown the node and mount a live-iso. I'm using the archlinux iso here.
+Then we shutdown the node and mount a live-iso. I'm using the [archlinux](https://archlinux.org/download) iso here.
 
 Don't forget to resize the VM disk to be bigger.
 
