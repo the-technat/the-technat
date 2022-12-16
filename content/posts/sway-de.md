@@ -876,11 +876,11 @@ pub  rsa4096/0x22391B207DAD6969
      created: 2022-05-29  expires: never       usage: C
      trust: ultimate      validity: unknown
 sub  rsa4096/0x2E8A914D0D5D6195
-     created: 2022-05-29  expires: 2023-05-29  usage: A
+     created: 2022-05-29  expires: 2027-11-05  usage: A
 sub  rsa4096/0xBC3ECF83D49EB271
-     created: 2022-05-29  expires: 2023-05-29  usage: E
+     created: 2022-05-29  expires: 2027-11-05  usage: E
 sub  rsa4096/0x9537A18EF9A0A4EB
-     created: 2022-05-29  expires: 2023-05-29  usage: S
+     created: 2022-05-29  expires: 2027-11-05  usage: S
 [ unknown] (1). Nathanael Liechti <technat@technat.ch>
 [ unknown] (2)  Nathanael Liechti <root@technat.ch>
 Please note that the shown key validity is not necessarily correct
