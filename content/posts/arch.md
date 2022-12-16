@@ -1,6 +1,14 @@
----
-title: "arch"
----
++++
+title = "Arch Linux"
+author = "Nathanael Liechti"
+date = "2022-12-16"
+description = "Install Arch Linux on my daily driver notebook"
+tags = [
+  "linux",
+  "arch",
+  "wayland",
+]
++++
 
 Install Arch Linux on my daily driver notebook.
 
@@ -101,7 +109,7 @@ But how does the partitioning layout look like for an Arch installation?
 Like that:
 
 | Drive Letter    | Part Nr  | Size                  | Type          |
-|-----------------|----------|-----------------------|---------------|
+|+++++++++++++++--|+++++++++-|+++++++++++++++++++++--|+++++++++++++++|
 | /dev/sda1       | 1        | 300M                  | 1 EFI System  |
 | /dev/sda2       | 2        | Reminder of the space | 43 Linux LVM  |
 
@@ -186,7 +194,7 @@ systemd-cryptenroll /dev/sda2 --wipe-slot=0
 On our encryped partition we can now setup LVM. I'm going to create multiple logical volumes like that:
 
 | LV Name  | Size     | VG Name   |
-|----------|----------|-----------|
+|+++++++++-|+++++++++-|+++++++++--|
 | root     | 40GB     | vgcrypt   |
 | var      | 20GB     | vgcrypt   |
 | tmp      | 5GB      | vgcrypt   |

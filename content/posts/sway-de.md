@@ -1,6 +1,9 @@
----
-title: "sway-de"
----
++++
+title =  "SwayWM"
+author = "Nathanael Liechti"
+date = "2022-12-16"
+description = "My Setup of a Wayland Compositor with all the tools needed to be productive, while only having what is really necessary (minimalistic approach)."
++++
 
 My Setup of a Wayland Compositor with all the tools needed to be productive, while only having what is really necessary (minimalistic approach).
 

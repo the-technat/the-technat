@@ -1,6 +1,6 @@
----
-title: "rook-ceph"
----
++++
+title =  "rook-ceph"
++++
 
 Maybe you know rook.io. Rook is a storage operator.
 
@@ -90,10 +90,10 @@ Then we can reach the dashboard: `https://192.168.100.100:7000`
 
 ## Files
 
-Dashboard SVC: [ceph-dashboard-svc.yaml](/Kubernetes/ceph-dashboard-svc.yaml)
+Dashboard SVC: [ceph-dashboard-svc.yaml](/posts/ceph-dashboard-svc.yaml)
 
-Custom Cluster Values: [rook-ceph-cluster-values.yaml](/Kubernetes/rook-ceph-cluster-values.yaml)
+Custom Cluster Values: [rook-ceph-cluster-values.yaml](/posts/rook-ceph-cluster-values.yaml)
 
-Custom Operator Values: [rook-ceph-values.yaml](/Kubernetes/rook-ceph-values.yaml)
+Custom Operator Values: [rook-ceph-values.yaml](/posts/rook-ceph-values.yaml)
 
-OSD-Purge: [osd-purge.yaml](/Kubernetes/osd-purge.yaml)
+OSD-Purge: [osd-purge.yaml](/posts/osd-purge.yaml)

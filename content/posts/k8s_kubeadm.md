@@ -1,6 +1,7 @@
----
-title: "k8s_kubeadm"
----
++++
+title =  "Kubernetes - the kubeadm way"
+date = "2022-11-29"
++++
 This is my current approach on how to setup Kubernetes for labing purposes. I'm not a fan of automation when It comes to trying things out, so my setup is completely manual using kubeadm.
 
 Here are some other aspects of my setup that will be part of this guide:
@@ -49,7 +50,7 @@ First start with everything you need outside the servers:
   - workers:
 
   | Type     | Source          | Protocol  | Port    |
-  | -------- | --------------- | --------- | --------|
+  | -------- | --------------- | ----------| --------|
   | Incoming | 0.0.0.0/0, ::/0 | TCP       | 59245   |
   | Incoming | 0.0.0.0/0, ::/0 | ICMP      | -       |
   | Incoming | 0.0.0.0/0, ::/0 | TCP       | 30000 - 32768 |
@@ -65,7 +66,7 @@ First start with everything you need outside the servers:
 Kubernetes requires you to have an odd number of master nodes, for true HA. Also many applications you may install require three replicas that are spread accross different nodes, so at least three worker nodes are ideal too. So here's a list of all the servers I'm going to create:
 
 | Location | Image        | Type  | Networks    | Placement Group | Backups | Name       | Labels                         |
-| -------- | ------------ | ----- | ----------- | --------------- | ------- | ---------- | ------------------------------ |
+| -------- | ------------ | ----- | ----------- | --------------- | ------- | ----------- | ------------------------ |
 | Helsinki | Ubuntu 22.04 | CPX11 | k8s, ipv4 | masters         | true    | lion       | cluster=technat_ch,master=true |
 | Helsinki | Ubuntu 22.04 | CPX11 | k8s, ipv4 | masters         | true    | giraffe    | cluster=technat_ch,master=true |
 | Helsinki | Ubuntu 22.04 | CPX11 | k8s, ipv4 | masters         | true    | gorilla    | cluster=technat_ch,master=true |
@@ -234,14 +235,14 @@ kubeadm config print init-defaults > kubeadm-config.yaml
 We are going to change some things in this default config. All options can be found in the [reference docs](https://kubernetes.io/docs/reference/config-api/kubeadm-config.v1beta3/#kubeadm-k8s-io-v1beta3). My file usually looks like that:
 
 ```yaml
----
++++
 apiVersion: kubeadm.k8s.io/v1beta3
 kind: ClusterConfiguration
 clusterName: technat.k8s
 networking:
   dnsDomain: admin.alleaffengaffen.k8s # not necessary: custom internal dns domain
 controlPlaneEndpoint: admin.alleaffengaffen.ch:6443 # DNs record pointing to your master nodes
----
++++
 apiVersion: kubelet.config.k8s.io/v1beta1
 kind: KubeletConfiguration
 cgroupDriver: systemd # must match the value you set for containerd

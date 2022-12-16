@@ -1,6 +1,6 @@
----
-title: "cert-manager"
----
++++
+title = "cert-manager"
++++
 ## Installation
 
 ```plaintext

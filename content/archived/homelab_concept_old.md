@@ -1,6 +1,6 @@
----
-title: "homelab_concept_old"
----
++++
+title =  "homelab_concept_old"
++++
 
 ## Introduction
 

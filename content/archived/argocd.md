@@ -1,6 +1,6 @@
----
-title: "argocd"
----
++++
+title = "Argo CD"
++++
 Chart: [https://artifacthub.io/packages/helm/argo/argo-cd](https://artifacthub.io/packages/helm/argo/argo-cd)
 
 Repo: [https://argo-cd.readthedocs.io/en/stable/getting\_started/#1-install-argo-c://github.com/argoproj/argo-helm](https://argo-cd.readthedocs.io/en/stable/getting_started/#1-install-argo-c://github.com/argoproj/argo-helm)
@@ -58,4 +58,4 @@ argocd account generate-token --account ci
 
 ## Files
 
-Custom ArgoCD values: [argocd-values.yaml](/Kubernetes/argocd-values.yaml)
+Custom ArgoCD values: [argocd-values.yaml](/posts/argocd-values.yaml)

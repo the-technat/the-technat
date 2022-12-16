@@ -1,6 +1,6 @@
----
-title: "kubeinvaders"
----
++++
+title =  "kubeinvaders"
++++
 
 ## Preparations
 
@@ -16,4 +16,4 @@ helm upgrade -i kubeinvaders -n kubeinvaders --create-namespace kubeinvaders/kub
 
 ## Files
 
-Custom Values: [kubeinvaders-values.yaml](/Kubernetes/kubeinvaders-values.yaml)
+Custom Values: [kubeinvaders-values.yaml](/posts/kubeinvaders-values.yaml)

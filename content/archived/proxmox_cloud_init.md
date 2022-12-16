@@ -1,11 +1,11 @@
----
-title: "proxmox_cloud_init"
----
++++
+title =  "proxmox_cloud_init"
++++
 This page describes how to create a cloud-init ready vm template in proxmox
 
 ## Create initial VM
 | Key | Value |
-|-----|-------|
+|+++--|++++++-|
 | ID | 9000 |
 | Name | debian-11-generic |
 | ISO | debian-11.0.0-adm64.netinst.iso |
@@ -21,7 +21,7 @@ This page describes how to create a cloud-init ready vm template in proxmox
 
 ### K8S
 | Key | Value |
-|-----|-------|
+|+++--|++++++-|
 | ID | 9008 |
 | Name | debian-11-k8s |
 | ISO | debian-11.0.0-adm64.netinst.iso |
@@ -40,7 +40,7 @@ This page describes how to create a cloud-init ready vm template in proxmox
 Values used when installing the OS for the first time:
 
 | Key | Value |
-|-----|-------|
+|+++--|++++++-|
 | Lanugage | English |
 | Location | Europe/Finland |
 | Locale | en_US-UTF-8 |
@@ -66,7 +66,7 @@ Values used when installing the OS for the first time:
 ### K8S
 Values used for the k8s template:
 | Key | Value |
-|-----|-------|
+|+++--|++++++-|
 | Lanugage | English |
 | Location | Europe/Finland |
 | Locale | en_US-UTF-8 |
@@ -223,7 +223,7 @@ chpasswd:
 ca-certs:
   trusted:
 	- |
-  	-----BEGIN CERTIFICATE-----
+  	+++--BEGIN CERTIFICATE+++--
     MIIEPzCCAyegAwIBAgIBADANBgkqhkiG9w0BAQsFADBzMRMwEQYDVQQDEwpUZWNo
     bmF0IENBMQswCQYDVQQGEwJDSDENMAsGA1UECBMEQmVybjEYMBYGA1UEBxMPSGVy
     em9nZW5idWNoc2VlMRQwEgYDVQQKEwtUZWNobmF0IExhYjEQMA4GA1UECxMHY29j
@@ -247,7 +247,7 @@ ca-certs:
   	5Cj1wv3D1klWBojXbuUw35AcALNvGJ3ORiuaIAOOQDn0RpHf+wQah7B10RIzRmQA
   	g3BZdxaK0orHjH29wrSDwKC+bPPPacT8bl7zY99zvNetoh4qrY/0HzCvAc9y6wt/
   	Hbc6Zcr+zGcgxCKkJMIIgtqkMzHIQh6rBrG5x84B+UTZEFU=
-  	-----END CERTIFICATE-----
+  	+++--END CERTIFICATE+++--
 ```
 
 ## K8S Configs

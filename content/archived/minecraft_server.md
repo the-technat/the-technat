@@ -1,6 +1,6 @@
----
-title: "minecraft_server"
----
++++
+title =  "minecraft_server"
++++
 
 ## Einleitung
 
