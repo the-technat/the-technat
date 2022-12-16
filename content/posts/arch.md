@@ -17,8 +17,8 @@ Install Arch Linux on my daily driver notebook.
 Arch Linux is flexible and there are many guides out there that show you how to install it. During my research I found it unpleasant having to read the entire article before knowing what software the article shows to configure for diferent components. Therefore here's the list of what Software I use in my Arch Linux Installation:
 
 * System Type: EFI
-* Partitioning: LVM (ext4) on LUKS partition -> all data encrypted (except boot partition)
-* Encryption: Keyfile for automatic decryption on boot
+* Partitioning: LVM (ext4) on LUKS -> all data encrypted (except boot partition)
+* Encryption: LUKS2, either using password, keyfile or FIDO2 device
 * Bootloader: systemd-boot
 * initramfs: systemd-init hooks
 * SWAP: swapfile
