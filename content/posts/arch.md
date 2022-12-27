@@ -29,11 +29,6 @@ I documented in this guide how I installed Arch Linux on my notebook to have a r
 
 So this guide is mostly for myself, but maybe someone finds it helpful too. Let me know if it was a help for you.
 
-## To Do
-
-Linux is always broken, so are some things in my system I like to mention here:
-
-- Gnome Keyring should be unlocked using the Yubikey automatically
 
 ## Boot Medium
 

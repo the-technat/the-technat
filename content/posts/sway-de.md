@@ -28,6 +28,7 @@ Linus is always broken and nothing is perfect:
 - Ranger cannot connect to sshfs, sftp, nfs, smb using my config (rarely used, but would be nice if we could do that)
 - [sway-systemd](https://github.com/alebastr/sway-systemd) or [sway-services](https://github.com/xdbob/sway-services/)? We either have to integrate sway with systemd or start sway from systemd
 - This guide is not yet fully transparent, some config files are not explained but just linked (see TODOs in text)
+- Gnome Keyring should be unlocked using the Yubikey automatically
 
 ## Prerequisites
 
