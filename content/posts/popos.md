@@ -75,3 +75,45 @@ Comment=Infomaniak Meetings
 ```
 
 The icon was downloaded from the internet somewhere.
+
+## GPaste
+
+Multi-value clipboard. Can be installed from the shop, but needs some settings to be enabled for it to show up in the status bar.
+
+## Shell
+
+As on my arch setup, the shell is configured with the same config files. I installed `kitty` and just stow my config files for the different tools. [oh-my-zsh](https://ohmyz.sh/) is installed too.
+
+### sudo usage
+
+Add the following line to `sudo visudo`:
+
+```
+technat ALL=NOPASSWD : ALL
+```
+
+### Yuibikey usage
+
+The following tools need to be installed:
+
+```bash
+sudo apt install pcscd gnupg-agent -y
+```
+
+And of course the agent's config needs to be stowed for it to work.
+
+### Kubectl
+
+Must be installed using the APT repository. See [here](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/) for detailed commands.
+
+### Tailscale
+
+Can be installed using the one-liner script:
+
+```bash
+curl -fsSL https://tailscale.com/install.sh | sh
+```
+
+### Environment variables
+
+As with arch, we link them into the correct location for the systemd user session to pick them up.
