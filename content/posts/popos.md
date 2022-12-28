@@ -97,10 +97,12 @@ technat ALL=NOPASSWD : ALL
 The following tools need to be installed:
 
 ```bash
-sudo apt install pcscd gnupg-agent -y
+sudo apt install pcscd gnupg-agent gnupg2 scdaemon -y
 ```
 
 And of course the agent's config needs to be stowed for it to work.
+
+Oh and most times this requires a reboot to work properly.
 
 ### Kubectl
 
