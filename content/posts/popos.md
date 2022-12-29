@@ -119,3 +119,7 @@ curl -fsSL https://tailscale.com/install.sh | sh
 ### Environment variables
 
 As with arch, we link them into the correct location for the systemd user session to pick them up.
+
+### Terraform
+
+Must be installed from their APT repos. See [here](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli) for instructions.
