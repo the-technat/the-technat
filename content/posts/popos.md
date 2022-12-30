@@ -120,6 +120,9 @@ curl -fsSL https://tailscale.com/install.sh | sh
 
 As with arch, we link them into the correct location for the systemd user session to pick them up.
 
-### Terraform
+### Fonts
 
-Must be installed from their APT repos. See [here](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli) for instructions.
+For different things I use some cool fonts which must be installed into the system:
+
+- [Rubik](https://www.1001freefonts.com/rubik.font)
+- [FiraCode Nerd Font](https://www.nerdfonts.com/font-downloads)
