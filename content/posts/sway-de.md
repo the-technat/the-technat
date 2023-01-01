@@ -58,7 +58,7 @@ The first thing we need from a basic arch installation is sway (the wayland comp
 Install them:
 
 ```bash
-sudo pacman -S sway foot xorg-xwayland dmenu firefox
+sudo pacman -S sway foot xorg-xwayland dmenu firefox swaybg
 ```
 
 Now after sway is installed you may ask how to start it? Well it's as simple as tipping `sway` on the command line. Well it's as simple as that, but people tend to make it more complex. There are display managers, shell files, systemd and many more that all can do this for you. I'm planning on running sway as a systemd/user service in the future, without using a display manager. So I'm fine with running `sway` from the command line after logging in. One thing I do though is making sure that sway get's all the environment variables I set in `~/.config/environment.d/*.conf`. `environment.d` is the current most simple way to set environment variables so that they are set for all your user services and with a wrapper script also for all your sway inherited processes.
