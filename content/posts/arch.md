@@ -1,7 +1,7 @@
 +++
 title = "Arch Linux"
 author = "Nathanael Liechti"
-date = "2022-12-16"
+date = "2023-01-01"
 description = "Install Arch Linux on my daily driver notebook"
 tags = [
   "linux",
