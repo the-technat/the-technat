@@ -61,7 +61,7 @@ Install them:
 sudo pacman -S sway foot xorg-xwayland dmenu firefox swaybg
 ```
 
-Now after sway is installed you may ask how to start it? Well it's as simple as tipping `sway` on the command line. Well it's as simple as that, but people tend to make it more complex. There are display managers, shell files, systemd and many more that all can do this for you. I'm planning on running sway as a systemd/user service in the future, without using a display manager. So I'm fine with running `sway` from the command line after logging in. One thing I do though is making sure that sway get's all the environment variables I set in `~/.config/environment.d/*.conf`. `environment.d` is the current most simple way to set environment variables so that they are set for all your user services and with a wrapper script also for all your sway inherited processes.
+Now after sway is installed you may ask how to start it? Well it's as simple as tipping `sway` on the command line. Well it's as simple as that, but people tend to make it more complex. There are display managers, shell files, systemd and many more that all can do this for you. I'm fine with running `sway` from the command line after logging in. One thing I do though is making sure that sway get's all the environment variables I set in `~/.config/environment.d/*.conf`. `environment.d` is the current most simple way to set environment variables so that they are set for all your user services and with a wrapper script also for all your sway inherited processes.
 
 So let's write the following wrapper script `~/.local/bin/swayrun.sh` that inherits systemd/user env vars:
 
@@ -89,6 +89,20 @@ sudo usermod -aG seat technat
 ```
 
 When sway has launched, use Super+Enter to open alacritty, Super+d to launch firefox. For a good introduction in basic navigating in sway, watch the video on sway's [homepage](https://swaywm.org/).
+
+### Autologin
+
+If you are are like me and find that unlocking your disk is enough security, you can automatically log into your systemd/user session by setting the following:
+
+```bash
+sudo mkdir -p /etc/systemd/system/getty@tty1.service.d
+sudo cat /etc/systemd/system/getty@tty1.service.d/autologin.conf <<EOF
+[Service]
+ExecStart=
+ExecStart=-/sbin/agetty -o '-p -f -- \\u' --noclear --autologin technat %I $TERM
+EOF
+sudo systemctl enable getty@tty1.service
+```
 
 ### Config
 
