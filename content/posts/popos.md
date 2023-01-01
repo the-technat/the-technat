@@ -53,6 +53,14 @@ For different things I use some cool fonts which must be installed into the syst
 
 The easiest way is to just double-click everyone of them to let gnome install them.
 
+## Default terminal
+
+To change the default terminal that is launched when using the shortcut, use the following command:
+
+```bash
+sudo update-alternatives --config x-terminal-emulator # select the existing number
+```
+
 ## Sudo
 
 The user setup with pop-os is already member of the sudo group, but we want to type password-less sudo commands.
