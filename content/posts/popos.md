@@ -23,7 +23,7 @@ Since it's my second distro and Pop OS comes with a lot of good things already p
   - Never ever manipulate the gnome shell! No custom themes or anything like that!
   - Don't modify shortcuts!
 - Use the Pop!_Shop for applications, `apt` only for command line programms (e.g `docker` or `sl`)
-- Snap or APT doesn't matter, as long as it's a click in the store
+- Snap or APT doesn't matter, as long as it's a click in the store and works.
 
 # Bootstrap
 
@@ -36,9 +36,46 @@ After the installation process is finished and we are in the OS itself, I page t
 - Dock is completely disabled
 - Hostname is changed to `axiom`
 
+## Shell
+
+As on my arch setup, the shell is configured with the same config files. I installed `kitty` and just stow my config files for the different tools. [oh-my-zsh](https://ohmyz.sh/) is installed too.
+
+## Environment variables
+
+I got my custom env vars that should be present everywhere they could be used. So I link my `systemd` folder to the correct location, so that my environment variables are picked up by systemd/User.
+
+## Fonts
+
+For different things I use some cool fonts which must be installed into the system:
+
+- [Rubik](https://www.1001freefonts.com/rubik.font)
+- [FiraCode Nerd Font](https://www.nerdfonts.com/font-downloads)
+
+The easiest way is to just double-click everyone of them to let gnome install them.
+
+## Sudo
+
+The user setup with pop-os is already member of the sudo group, but we want to type password-less sudo commands.
+
+So use `EDITOR=vim sudo visudo` to edit the suoders file and change the following line:
+
+```
+%sudo ALL=(ALL) NOPASSWD: ALL
+```
+
+## Yuibikey usage
+
+The following tools need to be installed:
+
+```bash
+sudo apt install pcscd gnupg-agent gnupg2 scdaemon -y
+```
+
+And of course the agent's config needs to be stowed for it to work and then the agent must start.
+
 # Applications
 
-Most of them can be installed from the Shop. But some need to be installed manually.
+Most of them can be installed from the Shop. But some need to be installed manually or need special configuration. They are listed below here
 
 ## kDrive
 
@@ -79,50 +116,3 @@ The icon was downloaded from the internet somewhere.
 ## GPaste
 
 Multi-value clipboard. Can be installed from the shop, but needs some settings to be enabled for it to show up in the status bar.
-
-## Shell
-
-As on my arch setup, the shell is configured with the same config files. I installed `kitty` and just stow my config files for the different tools. [oh-my-zsh](https://ohmyz.sh/) is installed too.
-
-### sudo usage
-
-Add the following line to `sudo visudo`:
-
-```
-technat ALL=NOPASSWD : ALL
-```
-
-### Yuibikey usage
-
-The following tools need to be installed:
-
-```bash
-sudo apt install pcscd gnupg-agent gnupg2 scdaemon -y
-```
-
-And of course the agent's config needs to be stowed for it to work.
-
-Oh and most times this requires a reboot to work properly.
-
-### Kubectl
-
-Must be installed using the APT repository. See [here](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/) for detailed commands.
-
-### Tailscale
-
-Can be installed using the one-liner script:
-
-```bash
-curl -fsSL https://tailscale.com/install.sh | sh
-```
-
-### Environment variables
-
-As with arch, we link them into the correct location for the systemd user session to pick them up.
-
-### Fonts
-
-For different things I use some cool fonts which must be installed into the system:
-
-- [Rubik](https://www.1001freefonts.com/rubik.font)
-- [FiraCode Nerd Font](https://www.nerdfonts.com/font-downloads)
