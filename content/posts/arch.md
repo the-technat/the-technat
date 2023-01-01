@@ -29,7 +29,6 @@ I documented in this guide how I installed Arch Linux on my notebook to have a r
 
 So this guide is mostly for myself, but maybe someone finds it helpful too. Let me know if it was a help for you.
 
-
 ## Boot Medium
 
 On a Linux Machine with a usb stick plugged in and internet access these commands will turn your usb stick `/dev/sdx` into a bootable Arch Linux medium:
@@ -95,12 +94,6 @@ NAME                          MAJ:MIN RM   SIZE RO TYPE  MOUNTPOINT
 sda                             8:0    0 476.9G  0 disk
 ├─sda1                          8:1    0   500M  0 part
 └─sda2                          8:2    0 476.5G  0 part
-sdb                             8:16   0 223.6G  0 disk
-├─sdb1                          8:17   0   500M  0 part  /boot
-└─sdb2                          8:18   0 223.1G  0 part
-  └─cryptlvm                  254:0    0 223.1G  0 crypt
-    ├─vgwall--e-vgcrypt--root 254:1    0    60G  0 lvm   /
-    └─vgwall--e-vgcrypt--home 254:2    0  98.7G  0 lvm   /home
 ```
 
 In my case it's going to be `/dev/sda`. For the rest of this installation all commands will use `/dev/sda`. If your drive is another one change that accordingly.
@@ -183,12 +176,7 @@ systemd-cryptenroll --fido2-device=auto /dev/sda2
 
 Note: Only do this if you really know what you are doing. You need to enter your FIDO2 pin which you should have setup already. If not, read some articles about that before you do that and for now continue using a password.
 
-Later on remove the password as valid auth option:
-
-```bash
-systemd-cryptenroll /dev/sda2 --wipe-slot=0
-```
-**Only do this if you have tested that your FIDO2 Key works and you have at least two fido keys configured.**
+It's a good idea to leave the password in place as the first LUKS slot. Just because encryption settings can't be changed without the password. See the yubikey as sort of a conveniance feature.
 
 ### LVM
 
@@ -336,7 +324,7 @@ On top of the base system we are going to install several system packages:
 - `networkmanager` as networking solution of choice (alternatives [here](https://wiki.archlinux.org/index.php/Network_configuration))
 - `dnsutils` for DNS debugging capability
 - `openssh` for the SSH client
-- `iptables-nft` newer iptables, for details see [here](https://www.redhat.com/en/blog/using-iptables-nft-hybrid-linux-firewall)
+- `iptables-nft` replaces iptables, for details see [here](https://www.redhat.com/en/blog/using-iptables-nft-hybrid-linux-firewall) and [here](https://wiki.archlinux.org/title/Nftables)
 - `bluez` and `bluez-utils`for bluetooth functionality
 - `xdg-utils` and `xdg-user-dirs` for some default folders and utilities to work with desktops
 - `ntfs-3g` for NTFS support
@@ -409,7 +397,7 @@ KEYMAP=us-acentos
 
 ## Sudo
 
-Add the following to `/etc/sudoers` using `EDITOR=vim visudo` to allow the wheel group to run sudo commands:
+Uncomment one of the following linens in `/etc/sudoers` using `EDITOR=vim visudo` to allow the wheel group to run sudo commands:
 
 ```bash
 %wheel ALL=(ALL) ALL #--> will prompt for password when using sudo
@@ -520,7 +508,7 @@ In addition to that, you need to tell the systemd to automatically unlock the de
 system  /dev/sda2 fido2-device=auto
 ```
 
-Note: only remove your passphrase key slot when you have multiple Yubikeys configured and made sure they all work to unlock the computer!
+Note: it's not recommended to remove your password if you haven't generated a recovery key. Either one of them is required if you want to change settings on your encryption disks anytime in the future.
 
 ## Keyfile
 
