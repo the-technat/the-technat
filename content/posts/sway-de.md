@@ -46,7 +46,7 @@ sudo pacman -S stow
 Also install the fonts now:
 
 ```bash
-yay -aS ttf-rubik nerd-fonts-fira-code
+yay -aS ttf-rubik ttf-firacode-nerd
 ```
 
 Then we can get started with a cup of ☕.
@@ -81,6 +81,12 @@ exec sway
 ```
 
 Make it executable `chmod +x ~/.local/bin/swayrun.sh` and then you can finally run `swayrun.sh` which will start sway.
+
+And finally we need to add our user to the `seat` group:
+
+```bash
+sudo usermod -aG seat technat
+```
 
 When sway has launched, use Super+Enter to open alacritty, Super+d to launch firefox. For a good introduction in basic navigating in sway, watch the video on sway's [homepage](https://swaywm.org/).
 
@@ -901,7 +907,7 @@ enable-ssh-support
 ttyname $GPG_TTY
 default-cache-ttl 60
 max-cache-ttl 120
-pinentry-program /usr/bin/pinentry-curses
+#pinentry-program /usr/bin/pinentry-curses
 #pinentry-program /usr/bin/pinentry-tty
 #pinentry-program /usr/bin/pinentry-gtk-2
 #pinentry-program /usr/bin/pinentry-x11
@@ -1007,20 +1013,15 @@ sudo pacman -S jq
 
 Now comes my editor. I use it to edit many files including the programming languages I installed above.
 
-There are a bunch of plugins set in my `.vimrc` file. All the required tools should already by installed in the languages section, so we can simply link the .vimrc file and it will install all the plugins automatically:
+There are a bunch of plugins set in my `.vimrc` file. All the required tools should already by installed in the languages section, so we can simply link the .vimrc.
 
 ```bash
 cd ~/WALL-E
-stow vim # adds .vimrc and a config for COC plugin
+stow vim
+git submodule update --init --recursive
 ```
 
-Unfortunatelly there is currently no way to install coc languageservers using the vimrc, so do this manually:
-
-```bash
-vim +CocInstall coc-go
-```
-
-Btw for plugins to be used we need [vim-plug](https://github.com/junegunn/vim-plug). It will install itself when starting vim for the first time as well as installing all the plugins listed in `.vimrc`.
+Note: the last command pulls all the vim plugins using git submodules.
 
 ### Ranger
 
@@ -1128,17 +1129,6 @@ The `dropbox-cli autostart y` command places a .desktop file in `~.config/autost
 
 Docs and further informations: [Arch Wiki Guide](https://wiki.archlinux.org/title/Dropbox)
 
-### Nextcloud sync client
-
-The nextcloud-client want's to save nextcloud credentials in gnome keyring. So this package has to be installed too. Nextcloud-Client will create a default keyring and ask for a master password when setting up the nextcloud-client.
-Then on every login you will be prompted for this master password
-
-Install it:
-
-```bash
-sudo pacman -S gnome-keyring nextcloud-client
-```
-
 ### KeePassXC
 
 ```bash
@@ -1146,6 +1136,14 @@ sudo pacman -S keepassxc
 ```
 
 Pro Tipp: Install the KeePassXC-Browser extension to directly paste passworts into login masks when linked.
+
+### gnome-keyring
+
+Some programms need the gnome-keyring. So let's install it:
+
+```bash
+yay -S gnome-keyring
+```
 
 ### mutt
 
@@ -1301,6 +1299,12 @@ Name=Kmeet
 Comment=Infomaniak video-conferencing
 ```
 
+Finally you need the following dependencies:
+
+```bash
+yay -S fuse2fs
+```
+
 ### kDrive
 
 Get the AppImage from [here](https://www.infomaniak.com/en/apps/download-kdrive), make it executable and put it somewhere in your PATH (eq /home/technat/.local/bin).
@@ -1315,6 +1319,12 @@ Type=Application
 Exec=/home/technat/.local/bin/kdrive
 Name=kDrive
 Comment=Infomaniak file sync
+```
+
+Finally you need the following dependencies:
+
+```bash
+yay -S fuse2fs
 ```
 
 ### Teams
