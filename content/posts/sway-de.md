@@ -29,6 +29,8 @@ Linus is always broken and nothing is perfect:
 - [sway-systemd](https://github.com/alebastr/sway-systemd) or [sway-services](https://github.com/xdbob/sway-services/)? We either have to integrate sway with systemd or start sway from systemd
 - This guide is not yet fully transparent, some config files are not explained but just linked (see TODOs in text)
 - Gnome Keyring should be unlocked using the Yubikey automatically
+- NFT tables firewall not setup (open to the public)
+- Local k3s setup binds 80/443 on all interfaces (should only by the docker bridge) && same for kube-api
 
 ## Prerequisites
 
