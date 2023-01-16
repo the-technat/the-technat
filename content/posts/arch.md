@@ -552,15 +552,45 @@ Before using your system I recommend you do some basic steps, some of them are o
 
 ## Enable firewall
 
-Note: chapter not yet ready to use, nftables overrides all other rules already present.
-
 No mather what you are doing with this computer it's always recommended to enable a firewall on your host to make sure you don't accidentially expose some ports externally. Since you already installed `iptables-nft` we can start it's integrated firewall deamon:
 
 ```bash
-sudo systemctl enable nftables.service --now
+sudo systemctl enable nftables.service
 ```
 
-The configuration for it is in `/etc/nftables.conf` if you need to add rules. Of course all incoming is blocked by default.
+The configuration for it is in `/etc/nftables.conf` if you need to add rules. Of course all incoming is blocked by default, but outgoing one too, so you need to add a rule for that.
+ My current file looks like that:
+
+```
+table inet filter
+delete table inet filter
+table inet filter {
+  chain input {
+    type filter hook input priority filter
+    policy drop
+
+    ct state invalid drop comment "early drop of invalid connections"
+    ct state {established, related} accept comment "allow tracked connections"
+    iifname lo accept comment "allow from loopback"
+    tcp dport 80 accept comment "allow 80"
+    tcp dport 443 accept comment "allow 443"
+    ip protocol icmp accept comment "allow icmp"
+    meta l4proto ipv6-icmp accept comment "allow icmp v6"
+    pkttype host limit rate 5/second counter reject with icmpx type admin-prohibited
+    counter
+  }
+  chain forward {
+    type filter hook forward priority filter
+    policy drop
+  }
+  ### Important to add this, otherwise outgoing traffic is blocked ###
+  chain output {
+    type filter hook output priority 0; policy accept
+  }
+}
+```
+
+Note: to take affect it's recommended to reboot your computer now, since some programms write rules into it at start.
 
 ## Personal user
 
