@@ -1343,6 +1343,22 @@ Finally you need the following dependencies:
 yay -S fuse2fs
 ```
 
+### ungoogled-chromium
+
+Can be installed directly:
+
+```bash
+yay -aS ungoogled-chromium-bin
+```
+
+To manage extensions see the instructions [here](https://github.com/NeverDecaf/chromium-web-store/tree/v1.5.3).
+
+Installed extensions:
+- KeePassXC-Browser
+- AdBlcok - best ad blocker
+
+Some sites allow all cookies to save sessions.
+
 ### Teams
 
 Sometimes used for meetings:
