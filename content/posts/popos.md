@@ -36,6 +36,17 @@ After the installation process is finished and we are in the OS itself, I page t
 - Dock is completely disabled
 - Hostname is changed to `axiom`
 
+## Custom Shortcuts
+
+- Hide window: Super + -
+
+## Tiling Features
+
+In the tiling icon I prefer the following changes:
+
+- Show window titles: false
+- Gaps: 1
+
 ## Shell
 
 As on my arch setup, the shell is configured with the same config files. I installed `kitty` and just stow my config files for the different tools. [oh-my-zsh](https://ohmyz.sh/) is installed too.
@@ -85,6 +96,21 @@ And of course the agent's config needs to be stowed for it to work and then the 
 
 Most of them can be installed from the Shop. But some need to be installed manually or need special configuration. They are listed below here
 
+## ungoogled-chromium
+
+Can be installed from the pop-os shop, however for extensions to work, you need to follow the instructions [here](https://github.com/NeverDecaf/chromium-web-store).
+
+If this is done, install and configure the following extensions:
+
+- KeePassXC-Browser
+- AdBlock - best ad blocker
+
+If you want some sites to keep you logged in, add them to the exceptions in `chrome://settings/cookies`.
+
+## KeePassXC
+
+Installed using the shop, but don't forget to turn on browser support in the app itself.
+
 ## kDrive
 
 Has to be installed as a binary using a local desktop file. First get the app [here](https://www.infomaniak.com/en/apps/download-kdrive) and place it into `~/.local/bin/kdrive`.
@@ -124,3 +150,23 @@ The icon was downloaded from the internet somewhere.
 ## GPaste
 
 Multi-value clipboard. Can be installed from the shop, but needs some settings to be enabled for it to show up in the status bar.
+
+## Telepresence
+
+Must be installed using a binary, e.g:
+
+```bash
+sudo curl -fL https://app.getambassador.io/download/tel2/linux/amd64/latest/telepresence -o /usr/local/bin/telepresence
+sudo chmod a+x /usr/local/bin/telepresence
+```
+
+## Software using custom APT repos
+
+- [helm](https://helm.sh/docs/intro/install/#from-apt-debianubuntu)
+- [docker](https://docs.docker.com/engine/install/debian/)
+- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/#install-using-native-package-management)
+- [terraform](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
+
+## Argo CD CLI
+
+Must be installed as binary from [here](https://argo-cd.readthedocs.io/en/stable/cli_installation/)
