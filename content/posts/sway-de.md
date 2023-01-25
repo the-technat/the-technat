@@ -1,7 +1,7 @@
 +++
 title =  "SwayWM"
 author = "Nathanael Liechti"
-date = "2023-01-01"
+date = "2023-01-25"
 description = "My Setup of a Wayland Compositor with all the tools needed to be productive, while only having what is really necessary (minimalistic approach)."
 +++
 

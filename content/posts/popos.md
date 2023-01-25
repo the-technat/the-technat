@@ -1,7 +1,7 @@
 +++
 title = "Pop OS"
 author = "Nathanael Liechti"
-date = "2022-12-27"
+date = "2023-01-25"
 description = "Install Pop OS on my daily driver notebook"
 tags = [
   "linux",
