@@ -21,6 +21,8 @@ Before we dive into the details on how to setup, here are some prerequisites to 
 
 ## Infrastructure
 
+> The entire infrastructure part can be automated using my [terraform-hcloud-kubernetes](https://github.com/alleaffengaffen/terraform-hcloud-kubernetes) module.
+
 Let's quickly talk about the infrastructure I'm using for this guide.
 
 You need:
