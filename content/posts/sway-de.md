@@ -1277,11 +1277,11 @@ If you notice that udiskie does not mount your thumb-driver you may want to chec
 
 ### PDF Viewer
 
-For PDFs you need a reader. There are many [options](https://wiki.archlinux.org/title/PDF,_PS_and_DjVu). I tried some of them and setteled on `apvlv`:
+For PDFs you need a reader. There are many [options](https://wiki.archlinux.org/title/PDF,_PS_and_DjVu). I tried some of them and setteled on `zathura`:
 
 ```bash
-sudo pacman -S apvlv
-xdg-mime default apvlv.desktop application/pdf
+sudo pacman -aS zathura zathura-pdf-mupdf
+xdg-mime default zathura.desktop application/pdf
 ```
 
 ### Image Viewer
