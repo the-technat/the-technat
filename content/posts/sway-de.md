@@ -1,7 +1,7 @@
 +++
 title =  "SwayWM"
 author = "Nathanael Liechti"
-date = "2023-01-25"
+date = "2023-03-08"
 description = "My Setup of a Wayland Compositor with all the tools needed to be productive, while only having what is really necessary (minimalistic approach)."
 +++
 
@@ -27,7 +27,6 @@ Linus is always broken and nothing is perfect:
 - Sway doesn't have the abbility to mirror outputs (https://github.com/swaywm/sway/issues/1666)
 - Ranger cannot connect to sshfs, sftp, nfs, smb using my config (rarely used, but would be nice if we could do that)
 - [sway-systemd](https://github.com/alebastr/sway-systemd) or [sway-services](https://github.com/xdbob/sway-services/)? We either have to integrate sway with systemd or start sway from systemd
-- This guide is not yet fully transparent, some config files are not explained but just linked (see TODOs in text)
 - Gnome Keyring should be unlocked using the Yubikey automatically
 - NFT tables firewall not setup (open to the public)
 
@@ -724,14 +723,33 @@ set $term kitty
 
 After a reload kitty is the new default terminal emulator.
 
-TODO: show how you came to your config file.
+Kitty has a config file in `~/.config/kitty/kitty.conf` that you can customize to your likings. There is a default file already there. Here are some of the things I customized:
 
-Now we can customize it to our likings, or use an already polished config:
+```kitty.conf
+copy_on_select yes
+# Writting to clipboard is allowed, reading must be asked each time
+clipboard_control write-clipboard write-primary read-clipboard-ask read-primary-ask
+# Remove trailing spaces when pasting lines, not when pastinc rectangle selections
+strip_trailing_spaces smart
 
-```bash
-cd ~/WALL-E
-stow kitty
+enabled_layouts *
+term xterm-kitty # anything else doesn't make sense
+scrollback_lines 5000 # history is always good
+enable_audio_bell no # no need for sounds
+cursor_blink_interval     0.5 # mustn't be super slow nor super fast
+
+# Custom Keybinding
+map shift+insert        paste_from_selection
+mouse_map middle release ungrabbed paste_from_clipboard
+map kitty_mod+enter new_window_with_cwd
+map kitty_mod+n new_os_window_with_cwd
+map kitty_mod+t     new_tab_with_cwd
+
+# Thememing
+include ./theme.conf # theme taken from https://github.com/dexpota/kitty-themes
 ```
+
+[The docs](https://sw.kovidgoyal.net/kitty/conf/) tell you all the options you have and how to configure them.
 
 ### Shell
 
@@ -755,15 +773,17 @@ sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.
 
 Now you can edit the `.zshrc` file to your likings, change themes, add plugins and more. See the [docs](https://github.com/ohmyzsh/ohmyzsh/wiki) for how to do things.
 
-TODO: Show what I have changed on my config file.
+I changed the following important things:
 
-I already have my own config file that I'll just link in:
+- `ZSH_THEME="agnoster"`
+- `ZSH_CUSTOM="/home/technat/.zsh-custom"`
+- `plugins=(git gpg-agent sudo helm kubectl cp extract terraform k3d argocd aws kubectx docker)`
+- `prompt_context () { }` -> redefine prompt for agnoster theme
+- `RPS1='$(kubectx_prompt_info)'` -> to see the current context on the right
+- `if [ -n "$RANGER_LEVEL" ]; then export PS1="[ranger]$PS1"; fi` used to indicated that this shell is spawned from ranger
+- `zstyle ':completion:*:*:docker:*' option-stacking yes` & `zstyle ':completion:*:*:docker-*:*' option-stacking yes` -> docker completion fixes
 
-```bash
-rm ~/.zshrc # remove the default config
-cd ~/WALL-E
-stow zsh # adds the .zshrc, .zshenv and a plugin folder with aliases
-```
+In addition I have a lot of aliases in the `~/.zsh-custom/aliases.zsh`. To see them all see [here](https://github.com/the-technat/WALL-E/blob/master/zsh/.zsh-custom/aliases.zsh)
 
 ### GPG
 
@@ -978,15 +998,13 @@ gpg-connect-agent "scd serialno" "learn --force" /bye
 
 ### Languages
 
-On a terminal you may need (programming) languages. So here I list out some languages and their tools that I need for further tooling and working and how to tweak them.
-
-TODO: explain why changes / tools are needed
+On Arch you almost always needs multiple programming languages. So this section lists common tools for different languages that are needed for IDEs, programming and yay.
 
 Go:
 
 ```bash
 sudo pacman -S go
-# add them to your .zshenv
+# add them to your .zshenv or ~/.config/environment.d/go.conf
 export GOROOT="/usr/lib/go"
 export GOPATH="/home/technat/go"
 export GOBIN=$GOPATH/"bin"
@@ -997,12 +1015,6 @@ Python:
 
 ```bash
 sudo pacman -S python python-pip
-```
-
-NodeJS:
-
-```bash
-sudo pacman -S nodejs npm
 ```
 
 Terraform:
