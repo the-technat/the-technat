@@ -26,7 +26,6 @@ Linus is always broken and nothing is perfect:
 
 - Sway doesn't have the abbility to mirror outputs (https://github.com/swaywm/sway/issues/1666)
 - Ranger cannot connect to sshfs, sftp, nfs, smb using my config (rarely used, but would be nice if we could do that)
-- [sway-systemd](https://github.com/alebastr/sway-systemd) or [sway-services](https://github.com/xdbob/sway-services/)? We either have to integrate sway with systemd or start sway from systemd
 - Gnome Keyring should be unlocked using the Yubikey automatically
 - NFT tables firewall not setup (open to the public)
 
@@ -1079,7 +1078,7 @@ Here are some modifications I did on my way:
 - `onlyoffice` needs to be replaced with `onlyoffice-desktopeditors` for documents to open correctly
 - Added `mime ^image, has vimiv,     X, flag f = vimiv -- "$@"` to the images section
 
-### Code (OSS)
+### Visual Studio Code
 
 For coding it's sometimes easier to use an editor like vs code instead of vim.
 
@@ -1093,12 +1092,17 @@ Those are the extensions I like to install:
 
 - Go (golang)
 - Docker (ms-azuretools)
-- Git Graph (mhutchie)
-- GitLens (eamodio)
 - Terraform (hashicorp)
 - Vim (vscodevim)
 - YAML (Redhat)
 - MarkdownLint (DavidAnson)
+- Gitpod & Gitpod Remote (Gitpod)
+- Helm Intellisense (Tim Koehler)
+- Makefile Tools (Microsoft)
+- Github Codespaces (Github)
+- EditorConfig for VS Code (EditorConfig)
+- Pop Theme (Nathaniel Webb)
+- WSL (Microsoft)
 
 Keybindings not default:
 
@@ -1107,6 +1111,7 @@ Keybindings not default:
 - Copy Line Up -> Shift+Alt+Up
 - Copy Line Down -> Shift+Alt+Down
 
+I use settings snyc via Github, so all settings are already synced on a new instance of vs code.
 
 ### grim & swappy
 
