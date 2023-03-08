@@ -24,7 +24,7 @@ As for all we need some concepts and principles. Mine are:
 
 Linus is always broken and nothing is perfect:
 
-- Sway doesn't have the abbility to mirror outputs (https://github.com/swaywm/sway/issues/1666)
+- Sway doesn't have the abbility to mirror outputs (https://github.com/swaywm/sway/issues/1666) -> There are workarounds
 - Ranger cannot connect to sshfs, sftp, nfs, smb using my config (rarely used, but would be nice if we could do that)
 - Gnome Keyring should be unlocked using the Yubikey automatically
 - NFT tables firewall not setup (open to the public)
@@ -1374,6 +1374,22 @@ Installed extensions:
 - AdBlcok - best ad blocker
 
 Some sites allow all cookies to save sessions.
+
+### Screen Mirroring
+
+We can workaround the lack of screen mirroring in sway by using [wl-mirror](https://github.com/Ferdi265/wl-mirror).
+
+Install the following tools:
+
+```bash
+yay -S wl-mirror pipectl slurp
+```
+
+And then configure yourself a keybinding that executes wl-mirror. I'm using a wrapper-script too that I grabbed from [here](https://github.com/Ferdi265/wl-mirror/blob/main/scripts/wl-present). My keybinding then looks like this:
+
+```bash
+bindsym $mod+p exec bash ~/.config/sway/wl-present.sh mirror
+```
 
 ### Teams
 
