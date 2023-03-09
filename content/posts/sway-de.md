@@ -1411,6 +1411,14 @@ yay -S bolt
 
 And then use it as `boltctl`.
 
+### Joplin
+
+My prefered note app
+
+```bash
+yay -S joplin joplin-appimage
+```
+
 ### Set default apps
 
 This section collects things that are opened with the wrong programm.
