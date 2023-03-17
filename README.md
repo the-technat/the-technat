@@ -1,6 +1,6 @@
 ### Nathanael Liechti
 
-Hi I'm technat. Kubernetes Engineer, minimalist, perfectionist and enthusiast for everything that looks like a container.
+Hi I'm technat. Kubernetes engineer, minimalist, perfectionist, optimist and enthusiast for everything that looks like a container. I've got zero background in classic IT and was born into the cloud-native world (does this explain my optimistic approach sometimes ?)
 
 - 🔭 I’m currently working on my private K8s [cluster](https://github.com/alleaffengaffen/banana)
 - 🌱 I’m always learning many things in parallel, I can't list them all here...
