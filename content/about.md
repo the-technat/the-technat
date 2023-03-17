@@ -6,7 +6,7 @@ author = "Nathanael Liechti"
 +++
 
 I'm Nathanael, technat or the-technat.
-Kubernetes Engineer, minimalist, perfectionist and enthusiast for everything that looks like a container.
+Kubernetes engineer, minimalist, perfectionist, optimist and enthusiast for everything that looks like a container. I've got zero background in classic IT and was born into the cloud-native world (does this explain my optimistic approach sometimes 😉?)
 
 ## Contact
 
