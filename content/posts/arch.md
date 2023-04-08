@@ -489,10 +489,10 @@ And we also change the bootloader config to use the above entry as default:
 
 ```bash
 cat <<EOF >/boot/loader/loader.conf
-default arch
-#default arch-lts
+default arch.conf
+#default arch-lts.conf
 timeout 0
-editor 0
+editor no
 EOF
 ```
 
