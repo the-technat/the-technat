@@ -20,6 +20,7 @@ packages:
 - wget
 - curl
 - dnsutils
+- net-tools
 
 users:
   - name: technat
@@ -32,7 +33,7 @@ users:
 write_files:
 - path: /etc/ssh/sshd_config
   content: |
-    Port 59245
+    Port 22
     PermitRootLogin no
     PermitEmptyPasswords no
     PasswordAuthentication no
@@ -77,6 +78,7 @@ packages:
 - wget
 - curl
 - dnsutils
+- net-tools
 - tailscale
 
 write_files:
@@ -103,7 +105,7 @@ write_files:
     Unattended-Upgrade::SyslogEnable "true";
 - path: /etc/ssh/sshd_config
   content: |
-    Port 59245
+    Port 22
     PermitRootLogin no
     PermitEmptyPasswords no
     PasswordAuthentication no
