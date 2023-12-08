@@ -1,0 +1,31 @@
+{
+  "acls": [
+    {"action": "accept", "src": ["*"], "dst": ["autogroup:internet:*",]}, // all can access the internet
+    {"action": "accept", "src": ["*"], "dst": ["tag:k8s:*",]}, // all can access k8s-exposed services
+    {"action": "accept", "src": ["tag:acl-lan"], "dst": ["tag:acl-lan:*"]}, // acl-lan can freely access each other
+    {"action": "accept", "src": ["tag:acl-dmz"], "dst": ["tag:acl-dmz:*"]}, // acl-dmz can freely access each other
+    {"action": "accept", "src": ["tag:acl-opt1"], "dst": ["tag:acl-opt1:*"]}, // acl-opt1 can freely access each other
+		{"action": "accept", "src": ["the-technat@github"],	"dst": ["*:*"]}, // me can access everything
+  ],
+  "ssh": [
+    { "action": "accept", "src": ["tag:acl-lan"], "dst": ["tag:acl-lan"], "users":  ["root", "autogroup:nonroot"]}, // from acl-lan to acl-lan is all allowed
+    { "action": "accept", "src": ["tag:acl-dmz"], "dst": ["tag:acl-dmz"], "users":  ["root", "autogroup:nonroot"]}, // from acl-dmz to acl-dmz is all allowed
+    { "action": "accept", "src": ["tag:acl-opt1"], "dst": ["tag:acl-opt1"], "users":  ["root", "autogroup:nonroot"]}, // from acl-opt1 to acl-opt1 is all allowed
+    { "action": "accept", "src": ["the-technat@github"], "dst": ["tag:acl-dmz", "tag:acl-lan", "tag:acl-opt1"], "users": ["root", "autogroup:nonroot"]}, // me can access everything
+  ],
+  "tagOwners": {
+		"tag:feature-exitNode": ["autogroup:member"], // controls autoapproval of exitNodes
+    "tag:feature-funnel": ["autogroup:member","tag:k8s-operator"], // controls the node attribute
+    "tag:acl-lan": ["autogroup:member"], 
+    "tag:acl-dmz": ["autogroup:member"], 
+    "tag:acl-opt1": ["autogroup:member"], 
+    "tag:k8s-operator": [], // k8s-operators need this tag
+    "tag:k8s": ["tag:k8s-operator"], // k8s-operator can expose services with this tag
+  },
+  "nodeAttrs": [
+    { "target": ["tag:feature-funnel"],  "attr":   ["funnel"]},
+  ],
+	"autoApprovers": {
+		"exitNode": ["tag:feature-exitNode"], // automatically accepts the advertise-exit-node flag from nodes taged like that
+	},
+}
