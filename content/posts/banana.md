@@ -25,7 +25,7 @@ banana:
 ## OS Config
 
 - disable netplan.io
-- ufw
+- [ufw](https://tailscale.com/kb/1077/secure-server-ubuntu-18-04)https://tailscale.com/kb/1077/secure-server-ubuntu-18-04
 - systemd-resolved
 - code-server
 - chezmoi
