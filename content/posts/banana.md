@@ -9,12 +9,12 @@ tags = [
 draft = true
 +++
 
-This guide show how I code.
+This guide show how I code / tinker.
 
 ## Remove Coding?
 
 Remote coding solutions like [Gitpod](https://www.gitpod.io/), [Github Codespaces](https://github.com/features/codespaces) or [Coder](https://coder.com/) have been
-increasingly popular in the last few years....
+increasingly popular in the last few years. I can understand that since they offer great 
 
 ## My setup
 
@@ -22,10 +22,25 @@ increasingly popular in the last few years....
 
 banana: 
 
+## OS Setup
+LVM for greater flexibility (make sure names are not bound to hostname)
+
 ## OS Config
 
+- install tailscale (managed by tags)
 - disable netplan.io
-- [ufw](https://tailscale.com/kb/1077/secure-server-ubuntu-18-04)https://tailscale.com/kb/1077/secure-server-ubuntu-18-04
-- systemd-resolved
+- use stub-resolver of systemd-resovled
+- use systemd-networkd using:
+  ```wired.network
+  [Match]
+  Name=enp2s0
+  
+  [Network]
+  DHCP=yes
+  ```
+- ufw is enabled according to [tailscale's guide](https://tailscale.com/kb/1077/secure-server-ubuntu-18-04)
 - code-server
-- chezmoi
+- chezmoi bootstraps the rest of my shell
+- unattended-upgrades enabled for security patches
+
+Try to use ephemeral credentails and not store any permanent data on the machine. Sometimes it makes sense to keep stuff around for some days/weeks, but if it's a project you are working on, put it in a repository.
