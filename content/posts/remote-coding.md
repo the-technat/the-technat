@@ -8,11 +8,11 @@ tags = [
 ]
 +++
 
-This guide show how I code / tinker.
+This guide shows how I code / tinker.
 
 ## Remove Coding?
 
-If you stumbeled over this post, you probably already know solutions like [Gitpod](https://www.gitpod.io/), [Github Codespaces](https://github.com/features/codespaces) or [Coder](https://coder.com/) to quickly spin up a development environment on the go.
+If you stumbeled over this post, you probably already know solutions like [Gitpod](https://www.gitpod.io/), [Github Codespaces](https://github.com/features/codespaces) or [Coder](https://coder.com/) to quickly spin up a development environments on the go.
 
 While they are great and I've tried some of them as well, I like to have my own server for that. Mainly because it's more cost-effective and gives you more performance for less cost.
 
@@ -23,10 +23,15 @@ So this post documents how my server is setup for remote coding usage.
 Well I'm not using a server, but an old desktop I had lying around. Phyiscal hardware is cumbersome to manage but for a static thing like that it should work.
 
 The specs:
+
 Desktop: HP EliteDesk 800 G1 SFF
+
 CPU: Intel(R) Core(TM) i5-4570 CPU @ 3.20GHz
+
 Memory: 32GB DDR3 (overkill, but I had it lying around)
+
 Disk: 120GB SSD for OS, 500GB SSD for Data (not formated/mounted but one day I'm glad I have it)
+
 NIC: just some dump 1Gbit/s NIC, directly attached to the modem of our provider
 
 In case you're more after a cloud-based solution, I suggest you checkout [tevbox](https://github.com/the-technat/tevbox), where I did the same as here but using ephemeral cloud servers (and some automation of course).
@@ -41,7 +46,7 @@ After the system was installed I tweaked some things.
 
 ### Networking
 
-Ubuntu comes with netplan by default, but I don't like it, especially if systemd already has a preinstalled solution. So I purged netplan and replaced it with [systemd-networkd]:
+Ubuntu comes with netplan by default, but I don't like it, especially if systemd already has a preinstalled solution. So I purged netplan and replaced it with systemd-networkd:
 
 ```console
 sudo tee /etc/systemd/network/wired.network &>/dev/null <<EOF
@@ -61,7 +66,7 @@ This works even with active VPN / SSH connections btw ;).
 
 ### Tailscale
 
-I enable [tailscale](https://tailscale.com) on all my devices as allows us to connect remotly to your machine from wherever you are. This will be helpful later.
+I enable [tailscale](https://tailscale.com) on all my devices as it allows me to connect remotely to your machine from wherever I am. This will be helpful later.
 
 For now all you need to know is: `curl -fsSL https://tailscale.com/install.sh | sh` 
 
@@ -122,7 +127,7 @@ In my experience code-server runs really well behind Funnel, and all things work
 
 But, I changed the port where my code-server is running as `8080` is a common port other apps/commands try to bind to.
 
-To change the port and also see the password for your code-server, edit `$HOME/.config/code-server/config.yaml`. This file should be self-explanitory. Just don't forget to restart the service after a code change.
+To change the port and also see the password for your code-server, edit `$HOME/.config/code-server/config.yaml`. This file should be self-explanitory. Just don't forget to restart the service after a config change.
 
 ### Coding tools
 
