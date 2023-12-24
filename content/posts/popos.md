@@ -1,7 +1,7 @@
 +++
 title = "Pop OS Setup"
 author = "Nathanael Liechti"
-date = "2023-12-14"
+date = "2023-12-24"
 description = "How I like to setup Pop OS for work"
 tags = [
   "linux",
