@@ -41,6 +41,16 @@ LVM for greater flexibility (make sure names are not bound to hostname)
 - ufw is enabled according to [tailscale's guide](https://tailscale.com/kb/1077/secure-server-ubuntu-18-04)
 - code-server
 - chezmoi bootstraps the rest of my shell
-- unattended-upgrades enabled for security patches
+- unattended-upgrades enabled for security patches:
+  ```
+  Unattended-Upgrade::MinimalSteps "true";
+  Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";
+  Unattended-Upgrade::Remove-New-Unused-Dependencies "true";
+  Unattended-Upgrade::Remove-Unused-Dependencies "true";
+  Unattended-Upgrade::Automatic-Reboot "true";
+  Unattended-Upgrade::Automatic-Reboot-WithUsers "false";
+  Unattended-Upgrade::Automatic-Reboot-Time "02:00";
+  Unattended-Upgrade::SyslogEnable "true";
+  ```
 
 Try to use ephemeral credentails and not store any permanent data on the machine. Sometimes it makes sense to keep stuff around for some days/weeks, but if it's a project you are working on, put it in a repository.
