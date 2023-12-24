@@ -113,3 +113,25 @@ Here's a list of software I install:
 - (chat apps) -> sometimes also used in the browser
 
 All other tools shall be used in the browser if possible. Coding is done [remotly](https://technat.ch/posts/remote-coding).
+
+## kDrive
+
+Get the AppImage from [here](https://www.infomaniak.com/en/apps/download-kdrive), make it executable and put it somewhere in your PATH (eq /home/technat/.local/bin). It's important that you don't rename the executable.
+
+Then add the following as `kdrive.desktop` into `~/.local/share/applications` to make it launchable by your application launcher:
+
+```
+[Desktop Entry]
+Encoding=UTF-8
+Version=1.0
+Type=Application
+Exec=/home/technat/.local/bin/Drive-3.5.5.20231213-amd64.AppImage
+Name=kDrive
+Comment=Infomaniak file sync
+```
+
+Finally you need the following dependencies:
+
+```bash
+sudo apt install fuse2fs
+```
