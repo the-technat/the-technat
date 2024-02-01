@@ -56,6 +56,11 @@ Name=enp2s0
 DHCP=yes
 EOF
 
+sudo tee /etc/systemd/resolved.conf.d/dns.conf &>/dev/null <<EOF
+[Resolve]
+DNS=1.1.1.1,9.9.9.9
+EOF
+
 sudo systemctl enable --now systemd-network
 sudo systemctl enable --now systemd-resolved
 sudo ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
@@ -118,7 +123,8 @@ To install code-server run the following:
 ```console
 curl -fsSL https://code-server.dev/install.sh | sh
 sudo systemctl enable code-server@technat
-sudo tailscale funnel --bg 8080
+sudo tailscale funnel --bg 65000
+sudo tailscale funnel --https=8443 --bg 8080 # so that this funnel forwards to locally exposed apps
 ```
 
 This last command is something I want to put special attention to. It enables Tailscale [Funnel](https://tailscale.com/blog/introducing-tailscale-funnel). Funnel is a feature that allows you to automatically expose a local running service to the internet. The tailscale agent on your machine that provides you with VPN also acts as a reverse-proxy in this scenario. If your tailnet is configured correctly, you get a memorable DNS name for your code-server and a TLS certificate out of the box.
