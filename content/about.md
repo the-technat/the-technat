@@ -6,7 +6,7 @@ author = "Nathanael Liechti"
 +++
 
 I'm Nathanael, technat or the-technat.
-system engineer for Kubernetes, minimalist, perfectionist and optimist. I've got zero background in classic IT and was born into the cloud-native world (does this explain my optimistic approach sometimes 😉?)
+System engineer for Kubernetes, minimalist, perfectionist and optimist. I've got zero background in classic IT and was born into the cloud-native world (does this explain my optimistic approach sometimes 😉?)
 
 ## Contact
 
