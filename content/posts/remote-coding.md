@@ -12,11 +12,11 @@ This guide shows how I code / tinker.
 
 ## Remove Coding?
 
-If you stumbeled over this post, you probably already know solutions like [Gitpod](https://www.gitpod.io/), [Github Codespaces](https://github.com/features/codespaces) or [Coder](https://coder.com/) to quickly spin up a development environments on the go.
+If you stumbeled over this post, you probably already know solutions like [Gitpod](https://www.gitpod.io/), [Github Codespaces](https://github.com/features/codespaces) or [Coder](https://coder.com/) to quickly spin up a development environment on the go.
 
-While they are great and I've tried some of them as well, I like to have my own server for that. Mainly because it's more cost-effective and gives you more performance for less cost.
+While they are great and I've tried some of them as well, I like to have my own server for that. Mainly because it's more controlable and gives you more performance for less cost.
 
-So this post documents how my server is setup for remote coding usage.
+So this post documents how I setup a server for remote coding usage.
 
 ## The server
 
@@ -24,15 +24,13 @@ Well I'm not using a server, but an old desktop I had lying around. Phyiscal har
 
 The specs:
 
-Desktop: HP EliteDesk 800 G1 SFF
-
-CPU: Intel(R) Core(TM) i5-4570 CPU @ 3.20GHz
-
-Memory: 32GB DDR3 (overkill, but I had it lying around)
-
-Disk: 120GB SSD for OS, 500GB SSD for Data (not formated/mounted but one day I'm glad I have it)
-
-NIC: just some dump 1Gbit/s NIC, directly attached to the modem of our provider
+| Kind | Detail |
+| ---- | ---- |
+| Desktop | HP EliteDesk 800 G1 SFF | 
+| CPU | Intel(R) Core(TM) i5-4570 CPU @ 3.20GHz |
+| Memory | 32GB DDR3 (overkill, but I had it lying around) |
+| Disk | 120GB SSD for OS, 500GB SSD for Data (not formated/mounted but one day I'm glad I have it) |
+| NIC | just some dump 1Gbit/s NIC, directly attached to the modem of our provider |
 
 In case you're more after a cloud-based solution, I suggest you checkout [tevbox](https://github.com/the-technat/tevbox), where I did the same as here but using ephemeral cloud servers (and some automation of course).
 
@@ -41,8 +39,6 @@ In case you're more after a cloud-based solution, I suggest you checkout [tevbox
 I installed Ubuntu Server 22.04.3 LTS on the main disk using LMV to partition the disk automatically.
 
 LVM gives you more flexibility in case you need to change something on the partitioning later on.
-
-After the system was installed I tweaked some things.
 
 ### Networking
 
@@ -53,49 +49,41 @@ sudo tee /etc/systemd/network/wired.network &>/dev/null <<EOF
 [Match]
 Name=enp2s0
 [Network]
-DHCP=yes
+DHCP=ipv6 
 EOF
 
 sudo tee /etc/systemd/resolved.conf.d/dns.conf &>/dev/null <<EOF
 [Resolve]
-DNS=1.1.1.1,9.9.9.9
+DNS=2620:fe::fe,2620:fe::9
 EOF
 
-sudo systemctl enable --now systemd-network
+sudo systemctl enable --now systemd-networkd
 sudo systemctl enable --now systemd-resolved
 sudo ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
 sudo apt purge netplan.io -y
 ```
 
+Note: the first command reconfigured systemd-networkd to only use IPv6 for DHCP. That's my intended behaviour!
+
 This works even with active VPN / SSH connections btw ;).
-
-### Tailscale
-
-I enable [tailscale](https://tailscale.com) on all my devices as it allows me to connect remotely to your machine from wherever I am. This will be helpful later.
-
-For now all you need to know is: `curl -fsSL https://tailscale.com/install.sh | sh` 
-
-And then hit `tailscale up --ssh`.
-
-Note: the `--ssh` enables ssh access to the machine from wherever I are, even from my browser if [Tailscale ACLs](https://tailscale.com/kb/1018/acls) are setup correctly.
 
 ### UFW
 
-My server is somewhere I'm not sure what else is running in the same network, so I always enable a host-firewall. Tailscale has [a guide](https://tailscale.com/kb/1077/secure-server-ubuntu-18-04) how to enable `ufw` while you are connected to tailscale. I've no other rules applied, but this ensures no one can connect to the server except using Tailscale or if attaching a monitor.
+My Server is directly attached to my IPSs Router and thus got an IPv6 address we can later use to expose stuff. But since this IP is public and the Router itself doesn´t have a firewall, it's a good practice to enable a host-firewall. 
 
-### SSH
+For this purpose I use `ufw` like so:
 
-Since tailscale provides it's own SSH service, I disable/mask the builtin ssh server:
-
-```
-sudo systemctl disable --now ssh
-sudo systemctl mask ssh
+```console
+sudo ufw enable
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+sudo ufw allow 2a00:d4e0:100:4500:da47:32ff:fee8:bf51:443
+sudo ufw allow 2a00:d4e0:100:4500:da47:32ff:fee8:bf51:80
 ```
 
 ### Unattended-Upgrades
 
 To be secure all the time and since the server will later be exposed to the internet I'll activate automatic security patches:
-
 
 ```console
 sudo tee /etc/apt/apt.conf.d/50unattended-upgrades &>/dev/null <<EOF
@@ -104,7 +92,7 @@ Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";
 Unattended-Upgrade::Remove-New-Unused-Dependencies "true";
 Unattended-Upgrade::Remove-Unused-Dependencies "true";
 Unattended-Upgrade::Automatic-Reboot "true";
-Unattended-Upgrade::Automatic-Reboot-WithUsers "false";
+Unattended-Upgrade::Automatic-Reboot-WithUsers "true";
 Unattended-Upgrade::Automatic-Reboot-Time "02:00";
 Unattended-Upgrade::SyslogEnable "true";
 EOF
@@ -122,18 +110,91 @@ To install code-server run the following:
 
 ```console
 curl -fsSL https://code-server.dev/install.sh | sh
-sudo systemctl enable code-server@technat
-sudo tailscale funnel --bg 65000
-sudo tailscale funnel --https=8443 --bg 8080 # so that this funnel forwards to locally exposed apps
+sudo systemctl enable --now code-server@technat
 ```
 
-This last command is something I want to put special attention to. It enables Tailscale [Funnel](https://tailscale.com/blog/introducing-tailscale-funnel). Funnel is a feature that allows you to automatically expose a local running service to the internet. The tailscale agent on your machine that provides you with VPN also acts as a reverse-proxy in this scenario. If your tailnet is configured correctly, you get a memorable DNS name for your code-server and a TLS certificate out of the box.
+Once this is done, you can tweak the config of code-server in `.config/code-server/config.yaml`. I usually change the port to something none-conflicting + change the randomly generated password in that file. Whatever you change, don´t for get to restart the service with `sudo systemctl restart code-server@technat`.
 
-In my experience code-server runs really well behind Funnel, and all things work like they should.
+### Configuring code on code-server
 
-But, I changed the port where my code-server is running as `8080` is a common port other apps/commands try to bind to.
+The VS Code part of code-server has it's config in `.local/share/code-server/User/settings.json` which looks for me like that:
 
-To change the port and also see the password for your code-server, edit `$HOME/.config/code-server/config.yaml`. This file should be self-explanitory. Just don't forget to restart the service after a config change.
+```json
+{
+    "workbench.colorTheme": "Solarized Light",
+    "redhat.telemetry.enabled": false,
+    "workbench.sideBar.location": "right",
+    "workbench.startupEditor": "none",
+    "terminal.integrated.defaultProfile.linux": "zsh",
+    "explorer.confirmDragAndDrop": false
+}
+```
+
+### Exposing code-server
+
+Code-server by default listens on `http:127.0.0.1:8080` (or `65000`) for me. To expose this now to the internet using SSL I'm using [Caddy](https://caddyserver.com/).
+
+First install it:
+```console
+sudo apt install -y debian-keyring debian-archive-keyring apt-transport-https curl
+curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | sudo gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
+curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | sudo tee /etc/apt/sources.list.d/caddy-stable.list
+sudo apt update
+sudo apt install caddy
+```
+
+Then let's define a DNS record we want to use and create corresponding DNS records. Here I'll now use the IPv6 adress of my box which I can assume it's probably static. I also set a wildcard DNS entry for my code-server box. This will help me to expose services on my box via code-server to the world. E.g if I run a development version of my code via code-server it will automatically forward the port via code-server and if caddy does the same, my local dev instance is publicly available.
+
+See [here](https://coder.com/docs/code-server/latest/guide#accessing-web-services) for more information about that feature. If you don't want it, omit the DNS record.
+
+We can then define the caddy config in `/etc/caddy/Caddyfile`:
+
+```
+technat.dev {
+  bind 2a00:d4e0:100:4500:da47:32ff:fee8:bf51
+  reverse_proxy 127.0.0.1:65000
+}
+8080.technat.dev {
+  bind 2a00:d4e0:100:4500:da47:32ff:fee8:bf51
+  reverse_proxy 127.0.0.1:65000
+}
+8081.technat.dev {
+  bind 2a00:d4e0:100:4500:da47:32ff:fee8:bf51
+  reverse_proxy 127.0.0.1:65000
+}
+9090.technat.dev {
+  bind 2a00:d4e0:100:4500:da47:32ff:fee8:bf51
+  reverse_proxy 127.0.0.1:65000
+}
+9091.technat.dev {
+  bind 2a00:d4e0:100:4500:da47:32ff:fee8:bf51
+  reverse_proxy 127.0.0.1:65000
+}
+3000.technat.dev {
+  bind 2a00:d4e0:100:4500:da47:32ff:fee8:bf51
+  reverse_proxy 127.0.0.1:65000
+}
+12000.technat.dev {
+  bind 2a00:d4e0:100:4500:da47:32ff:fee8:bf51
+  reverse_proxy 127.0.0.1:65000
+}
+http://*.technat.dev {
+  bind 2a00:d4e0:100:4500:da47:32ff:fee8:bf51
+  reverse_proxy 127.0.0.1:65000
+}
+```
+
+And restart the service: `sudo systemctl restart caddy`. This will automatically request a TLS certificate for the domain you defined and configure it. Check the logs of caddy with `sudo journalctl -xu caddy` and then browser to your code-server in browser.
+
+Please note: the first block is for code-server, the others for accessing web-services using code-server. I could also have defined a wildcard there, but since wildcard certificates require you to use DNS-01 I deciced to stick with the most common ports I would use.
+
+If you now still want to use exposing of web-services you should define the domain code-server is exposed on in `.config/code-server/config.yaml`:
+
+```
+proxy-domain: technat.dev
+```
+
+And restart the service again. But be careful: A typo and the service won't come up again.
 
 ### Coding tools
 
