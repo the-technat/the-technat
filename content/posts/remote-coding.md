@@ -199,6 +199,8 @@ Caddy will now automatically request a TLS certificate for the domain you define
 
 Of course for this to work the main and all the subdomains must resolve to the public IP.
 
+Please note: My box still has a private IPv4 address to reach IPv4 only endpoints (like Github). It's just that the exposing is done on IPv6 only to avoud the cost for a static IPv4 address that would be port-forwarded to my machine. 
+
 ##### Why subdomains?
 Because of [accessing web-services exposed via code-server](https://coder.com/docs/code-server/latest/guide#accessing-web-services). It's an easy way to reach a local development services from the internet. With the tailscale variant above that will work too, but on sub-paths which is sometimes not desired.
 
@@ -212,6 +214,16 @@ sed -ei 's/^proxy-domain:.*/proxy-domain: technat.dev/g' ~/.config/code-server/c
 
 And restart the service again. But be careful: A typo and the service won't come up again.
 
-### Coding tools
+### Authentication
+
+Let's quickly mention that: code-server generates a password that you can find in it's config file. If you change it restart the service. If you want to use authentication in caddy, disable code-server auth like so:
+
+```
+sed -ei 's/^auth:.*/auth: none/g' ~/.config/code-server/config.yaml
+```
+
+And use some authentication in Caddy like [this one](https://authp.github.io/docs/authenticate/oauth/oauth2) or switch to another solution like [oauth2-proxy](https://oauth2-proxy.github.io/oauth2-proxy/).
+
+## Coding tools
 
 Let's skip this topic for now since I'll just run: `sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply the-technat` and I'm done with it. 
