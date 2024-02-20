@@ -146,7 +146,7 @@ sudo tailscale funnel --bg 65000
 
 And read the docs about [Funnel](https://tailscale.com/kb/1223/funnel) to learn about the prerequisites.
 
-Please note that exposing local development services via Tailscale is only possible path-based this way.
+Please note that exposing local development services via Tailscale is only possible [path-based](https://coder.com/docs/code-server/latest/guide#using-a-subpath) this way.
 
 #### Caddy
 
@@ -158,7 +158,8 @@ curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | sudo 
 sudo apt update
 sudo apt install caddy
 ```
-Then define the caddy config in `/etc/caddy/Caddyfile` (update the domain to something you own):
+
+Then define the caddy config in `/etc/caddy/Caddyfile` (update the domain to something you own and create the related DNS records):
 
 ```
 technat.dev {
@@ -195,18 +196,17 @@ And restart the service: `sudo systemctl restart caddy`.
 
 ##### What will happen?
 
-Caddy will now automatically request a TLS certificate for the domain you defined and configure it. To do so caddy listens on the specified IPv6 address which is configured on my host and allowed on the firewall (ufw as well as my router in front). If you have a public-ip and do port-forwarding, just remove the bind-address to listen on all interfaces and IPs.
+Caddy will now automatically request a TLS certificate for the domain you defined and configure it. This will only work if you set DNS records, if not do so now. In my config Caddy listens on the specified IPv6 address which is configured on my host and allowed on the firewall of my router (and in ufw of course). This is because I'm lazy and didn't wanted to setup DynDNS nor port-forwarding. If you want your code-server to be IPv4 capable you probably want to port-forward from your router to the server and setup a DynDNS record for the public IP of your router. Or you might also have a public static IP assigned to your server already to use. In any way remove the `bind` directive for Caddy to listen on all interfaces. 
 
-Of course for this to work the main and all the subdomains must resolve to the public IP.
-
-Please note: My box still has a private IPv4 address to reach IPv4 only endpoints (like Github). It's just that the exposing is done on IPv6 only to avoud the cost for a static IPv4 address that would be port-forwarded to my machine. 
+Please note: My box still has a private IPv4 address to reach IPv4 only endpoints (like Github which currently doesn't support IPv6). 
 
 ##### Why subdomains?
+
 Because of [accessing web-services exposed via code-server](https://coder.com/docs/code-server/latest/guide#accessing-web-services). It's an easy way to reach a local development services from the internet. With the tailscale variant above that will work too, but on sub-paths which is sometimes not desired.
 
-You could also do this with one wildcard DNS entry, but then you have to configure a DNS-01 challenge for caddy which requires more effort and credentials.
+You could also do this with one wildcard DNS entry instead of defining all the domains seperately, but then you have to configure a DNS-01 challenge for Caddy which requires more effort and credentials (because wildcards can only be obtained using DNS-01 from Let's Encrypt).
 
-If you have configured the subdomains, also add the domain in `.config/code-server/config.yaml` (this helps code-server automatically show you the full URL with one click):
+One last thing to do in this matter is to also add the domain in `.config/code-server/config.yaml`. This is required for code-server to forward the request to your local process properly:
 
 ```
 sed -ei 's/^proxy-domain:.*/proxy-domain: technat.dev/g' ~/.config/code-server/config.yaml
@@ -216,14 +216,70 @@ And restart the service again. But be careful: A typo and the service won't come
 
 ### Authentication
 
-Let's quickly mention that: code-server generates a password that you can find in it's config file. If you change it restart the service. If you want to use authentication in caddy, disable code-server auth like so:
+Let's quickly mention that: code-server generates a password that you can find in it's config file. If you change it restart the service. But I don't like this and replaced it with an OAuth Flow to sign-in with Github. 
+
+First thing to do for this is to disable the current authentication:
 
 ```
 sed -ei 's/^auth:.*/auth: none/g' ~/.config/code-server/config.yaml
 ```
 
-And use some authentication in Caddy like [this one](https://authp.github.io/docs/authenticate/oauth/oauth2) or switch to another solution like [oauth2-proxy](https://oauth2-proxy.github.io/oauth2-proxy/).
+Then I install [oauth2-proxy](https://oauth2-proxy.github.io/oauth2-proxy) to my system:
+
+```
+ARCH=amd64
+OS=linux
+VERSION=v7.6.0
+curl -fsSL -o /tmp/oauth2-proxy.tar.gz https://github.com/oauth2-proxy/oauth2-proxy/releases/download/$VERSION/oauth2-proxy-$VERSION."$OS"-"$ARCH".tar.gz
+tar -C /tmp xzf /tmp/oauth2-proxy.tar.gz
+sudo install /tmp/oauth2-proxy-$VERSION."$OS"-"$ARCH"/oauth2-proxy /usr/local/bin/oauth2-proxy
+
+cat <<EOF | sudo tee /etc/systemd/system/oauth2-proxy.service
+[Unit]
+Description=oauth2-proxy daemon service
+After=syslog.target network.target
+
+[Service]
+User=caddy
+Group=caddy
+
+ExecStart=/usr/local/bin/oauth2-proxy --config=/etc/oauth2-proxy.cfg --github-user=the-technat
+ExecReload=/bin/kill -HUP $MAINPID
+
+KillMode=process
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+EOF
+sudo systemctl daemon-reload
+sudo systemctl enable --now oauth2-proxy
+```
+
+Be sure to replace your username in `--github-user`. It's the only directive that's currently somehow not supported in the config file.
+
+Once it's running we can create an OAuth app in Github according to [this doc](https://oauth2-proxy.github.io/oauth2-proxy/configuration/providers/github).  I'll use `https://technat.dev/oauth2/callback` as callback URL.
+
+And then create the config file for oauth2-proxy:
+
+```/etc/oauth2-proxy.cfg
+cookie_domains = ".technat.dev"
+cookie_secure = true
+cookie_expire = "2h"
+http_address = "127.0.0.1:65001"
+reverse_proxy = true # Are we running behind a reverse proxy? Will not accept headers like X-Real-Ip unless this is set.
+provider = "github"
+client_id = "REPLACE_ME"
+client_secret = "REPLACE_ME"
+cookie_secret = "$(openssl rand -base64 32 | tr -- '+/' '-_')" # generate new cookie secret with this command
+email_domains = ["*"] 
+upstreams = ["http://127.0.0.1:65000/" ]
+```
+
+Note: this config allows everyone with a Github account to sign in, somehow the `--github-user` flag can't be translated into a config directive, but as shown above this flag is set on the systemd service.
+
+Don't forget to restart the service afterwards. Once this is done, simply replace all `reverse_proxy` directives in caddy with `127.0.0.1:65001` (or omit it if you don't want authentication for an endpoint) and you're done!
 
 ## Coding tools
 
-Let's skip this topic for now since I'll just run: `sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply the-technat` and I'm done with it. 
+Now that you have your code-server you might want to active extensions and install progamming languages. I'll skip this topic as it highly depends on what you are using your code-serer for. I will just run: `sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply the-technat` and I'm done with it. 
