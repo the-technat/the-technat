@@ -144,9 +144,9 @@ Just hit:
 sudo tailscale funnel --bg 65000
 ```
 
-And read the docs about [Funnel](https://tailscale.com/kb/1223/funnel) to learn about the prerequisites.
+And read the docs about [Funnel](https://tailscale.com/kb/1223/funnel) to learn about the prerequisites. 
 
-Please note that exposing local development services via Tailscale is only possible [path-based](https://coder.com/docs/code-server/latest/guide#using-a-subpath) this way.
+Please note that exposing local development services via Tailscale is only possible [path-based](https://coder.com/docs/code-server/latest/guide#using-a-subpath).
 
 #### Caddy
 
@@ -263,7 +263,7 @@ Once it's running we can create an OAuth app in Github according to [this doc](h
 And then create the config file for oauth2-proxy:
 
 ```/etc/oauth2-proxy.cfg
-cookie_domains = ".technat.dev"
+cookie_domains = ".technat.dev" 
 cookie_secure = true
 cookie_expire = "2h"
 http_address = "127.0.0.1:65001"
@@ -278,7 +278,12 @@ upstreams = ["http://127.0.0.1:65000/" ]
 
 Note: this config allows everyone with a Github account to sign in, somehow the `--github-user` flag can't be translated into a config directive, but as shown above this flag is set on the systemd service.
 
-Don't forget to restart the service afterwards. Once this is done, simply replace all `reverse_proxy` directives in caddy with `127.0.0.1:65001` (or omit it if you don't want authentication for an endpoint) and you're done!
+Don't forget to restart the service afterwards. 
+
+Once this is done, simply replace all `reverse_proxy` directives in caddy with `127.0.0.1:65001` (or omit it if you don't want authentication for an endpoint) and you're done!
+Alternatively you can also recreate the funnel using `127.0.0.1:65001` as your backend service, to use OIDC with Tailscale funnel.
+
+If you use it with Tailscale, remember to update the `cookie_domains` directive and the redirect URL in the OAuth app.
 
 ## Coding tools
 
