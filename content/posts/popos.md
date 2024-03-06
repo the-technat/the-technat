@@ -112,7 +112,7 @@ Here's a list of software I install:
 - file sync client -> I keep my files on a cloud storage and only sync what's really necessary
 - (chat apps) -> sometimes also used in the browser
 
-All other tools shall be used in the browser if possible. Coding is done [remotly](https://technat.ch/posts/remote-coding).
+All other tools shall be used in the browser if possible. Coding is done [remotely](https://technat.ch/posts/remote-coding).
 
 ## kDrive
 
