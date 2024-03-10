@@ -1,7 +1,7 @@
 +++
 title = "Pop OS Setup"
 author = "Nathanael Liechti"
-date = "2023-12-24"
+date = "2024-03-10"
 description = "How I like to setup Pop OS for work"
 tags = [
   "linux",
@@ -23,6 +23,10 @@ To load some settings into dconf, use `dconf load / < dconf.conf`
 For reference, this is the diff I would load:
 
 ```
+[net/launchpad/diodon/clipboard]
+add-images=true
+synchronize-clipboards=false
+
 [org/gnome/desktop/calendar]
 show-weekdate=true
 
@@ -33,6 +37,14 @@ automatic-timezone=false
 current=uint32 0
 sources=[('xkb', 'us')]
 xkb-options=@as []
+
+[org/gnome/desktop/peripherals/mouse]
+accel-profile='flat'
+natural-scroll=false
+speed=0.13970588235294112
+
+[org/gnome/desktop/peripherals/touchpad]
+two-finger-scrolling-enabled=true
 
 [org/gnome/desktop/interface]
 color-scheme='prefer-dark'
@@ -65,14 +77,12 @@ command='flameshot gui'
 name='Flameshot'
 
 [org/gnome/settings-daemon/plugins/power]
+idle-dim=false
 power-button-action='suspend'
 sleep-inactive-ac-timeout=1800
-sleep-inactive-ac-type='suspend'
+sleep-inactive-ac-type='nothing'
 sleep-inactive-battery-timeout=1800
 sleep-inactive-battery-type='suspend'
-
-[org/gnome/shell]
-welcome-dialog-last-shown-version='42.5'
 
 [org/gnome/shell/extensions/dash-to-dock]
 extend-height=false
@@ -86,10 +96,10 @@ show-workspaces-button=false
 workspace-picker-left=false
 
 [org/gnome/shell/extensions/pop-shell]
-activate-launcher=['<Super>space']
-gap-inner=uint32 2
-gap-outer=uint32 2
-show-title=false
+activate-launcher=['<Super>slash', '<Super>space']
+active-hint-border-radius=uint32 5
+gap-inner=uint32 0
+gap-outer=uint32 0
 tile-by-default=true
 
 [org/gnome/system/location]
@@ -102,6 +112,7 @@ I try to install most apps using the Pop Shop, so that I don't have to care abou
 
 Here's a list of software I install:
 - ungoogled-chromium
+- onlyoffice
 - spotify
 - yubico authenticator
 - diodon
@@ -110,27 +121,16 @@ Here's a list of software I install:
 - caffeine
 - vpn client
 - file sync client -> I keep my files on a cloud storage and only sync what's really necessary
-- (chat apps) -> sometimes also used in the browser
 
-All other tools shall be used in the browser if possible. Coding is done [remotely](https://technat.ch/posts/remote-coding).
+All other tools shall be used in the browser if possible. 
 
 ## kDrive
 
-Get the AppImage from [here](https://www.infomaniak.com/en/apps/download-kdrive), make it executable and put it somewhere in your PATH (eq /home/technat/.local/bin). It's important that you don't rename the executable.
+Get the AppImage from [here](https://www.infomaniak.com/en/apps/download-kdrive), make it executable and run it in a terminal.
 
-Then add the following as `kdrive.desktop` into `~/.local/share/applications` to make it launchable by your application launcher:
+Sign in and make sure it starts automatically. The app itself will move the binary somewhere on the PATH and add a desktop file to autostart automatically. You can then close the app in the terminal and remove the AppImage, after ensuring there's desktop file in `~/.config/autostart` 
 
-```
-[Desktop Entry]
-Encoding=UTF-8
-Version=1.0
-Type=Application
-Exec=/home/technat/.local/bin/Drive-3.5.5.20231213-amd64.AppImage
-Name=kDrive
-Comment=Infomaniak file sync
-```
-
-Finally you need the following dependencies:
+You may need the following dependencies:
 
 ```bash
 sudo apt install fuse2fs
