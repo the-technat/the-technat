@@ -2,6 +2,7 @@
 title =  "Kubernetes - the kubeadm way"
 date = "2023-02-03"
 +++
+
 This is my current approach on how to setup Kubernetes for labing purposes.
 
 Here's how my cluster looks like:
@@ -21,21 +22,22 @@ Before we dive into the details on how to setup, here are some prerequisites to 
 
 ## Infrastructure
 
-> The entire infrastructure part can be automated using my [terraform-hcloud-kubernetes](https://github.com/alleaffengaffen/terraform-hcloud-kubernetes) module.
-
 Let's quickly talk about the infrastructure I'm using for this guide.
 
 You need:
-- A DNS record pointing to all of your master nodes (names sense even if you only use one)
-- Placement Groups: one for workers, one for masters
+- A DNS record pointing to all of your master nodes (even if you only use one master node that makes sense)
+- Placement Groups: one for workers, one for masters (technically not required but recommended)
 - Firewall Rules: one for masters, one for workers using the following rules:
+  - most rules are requirements of cilium, which you can checkout [here](https://docs.cilium.io/en/stable/operations/system_requirements/#firewall-rules) 
+  - `masters` referes to the list of IPs of all master nodes
+  - `workers` refers to the list of IPs of all worker nodes
   - masters:
   | Type     | Source          | Protocol  | Port    |
   | -------- | --------------- | --------- | --------|
-  | Incoming | 0.0.0.0/0, ::/0 | TCP       | 59245   |
+  | Incoming | 0.0.0.0/0, ::/0 | TCP       | 22      |
   | Incoming | 0.0.0.0/0, ::/0 | ICMP      | -       |
   | Incoming | 0.0.0.0/0, ::/0 | TCP       | 6443    |
-  | Incoming | masters         | TCP       | 2379-2380 |
+  | Incoming | masters`z         | TCP       | 2379-2380 |
   | Incoming | masters         | TCP       | 10250 |
   | Incoming | masters         | TCP       | 10259 |
   | Incoming | masters         | TCP       | 10257 |
@@ -48,7 +50,7 @@ You need:
   - workers:
   | Type     | Source          | Protocol  | Port    |
   | -------- | --------------- | ----------| --------|
-  | Incoming | 0.0.0.0/0, ::/0 | TCP       | 59245   |
+  | Incoming | 0.0.0.0/0, ::/0 | TCP       | 22      |
   | Incoming | 0.0.0.0/0, ::/0 | ICMP      | -       |
   | Incoming | 0.0.0.0/0, ::/0 | TCP       | 30000 - 32768 |
   | Incoming | 0.0.0.0/0, ::/0 | UDP       | 30000 - 32768 |
@@ -63,7 +65,7 @@ You need:
 
 ### Servers
 
-Kubernetes requires you to have an odd number of master nodes, for true HA. Also many applications you may install require three replicas that are spread accross different nodes, so at least three master and worker nodes are ideal. For lab purposes though, I usually only create one master and one worker:
+Kubernetes requires you to have an odd number of master nodes, for true HA. Also many applications you may install require three replicas that are spread accross different nodes or zones, so at least three master and worker nodes are ideal. For lab purposes though, I usually only create one master and one worker (note that this is still an odd number ;)):
 
 | Location | Image        | Type  | Networks    | Placement Group | Backups | Name       | Labels                         |
 | -------- | ------------ | ----- | ----------- | --------------- | ------- | ----------- | ------------------------ |
@@ -72,13 +74,14 @@ Kubernetes requires you to have an odd number of master nodes, for true HA. Also
 
 Some notes before creating the servers:
 - Expect the size and number of workers to change over time.
-- That's also the reason why I don't add DNS records for my nodes. They should be as ephemeral as possible.
-- However you should have a DNS record for your kubeapi where you have added all master node IPs as valid answers (e.g multiple answers for the same domain name). This is the simplest way to avoid an external load balancer in front of your control plane (of course you could do that too and just forward port 6443 to all the master nodes)
-- Only use ipv4 or ipv6 but not both. Dual-stack is really hard to deploy and since many sites are not rechable over IPV6 (Github for example) I use an IPv4 only mode to avoid any network-related issue that takes hours to investigate.
+- You should have a DNS record for your kubeapi where you have added all master node IPs as valid answers (e.g multiple answers for the same domain name). This is the simplest way to avoid an external load balancer in front of your control plane (of course you could do that too and just forward port 6443 to all the master nodes)
+- Only use ipv4 or ipv6 but not both. Dual-stack is really hard to deploy and since many sites are not rechable over IPV6 (Github for example) I use an IPv4 only mode to avoid any network-related issue that take hours to investigate.
 
 #### Cloud-init
 
-The OS configuration shown in the next chapter can be masively simplified by using a custom cloud-init file for each server:
+The OS configuration shown in the next chapter can be masively simplified by using a custom cloud-init file for each server.
+
+Note that this has to be specified **at creation time**.
 
 ```yaml
 #cloud-config <node>
@@ -93,7 +96,7 @@ users:
     gecos: "Admin user created by cloud-init"
     shell: /bin/bash
     ssh_authorized_keys:
-     - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJov21J2pGxwKIhTNPHjEkDy90U8VJBMiAodc2svmnFC cardno:000618187880"
+     - "ssh-ed25519 ...."
 
 apt:
   sources:
@@ -139,7 +142,7 @@ write_files:
     Environment="KUBELET_EXTRA_ARGS=--cloud-provider=external"
 - path: /etc/ssh/sshd_config
   content: |
-    Port 59245
+    Port 22
     PermitRootLogin no
     PermitEmptyPasswords no
     PasswordAuthentication no
@@ -160,7 +163,7 @@ runcmd:
   - sudo containerd config default | sudo tee -a /etc/containerd/config.toml
   - sudo sed -i 's/SystemdCgroup = false/SystemdCgroup = true/g' /etc/containerd/config.toml
   - sudo sed -i 's/disabled_plugins = ["cri"]/disabled_plugins = []/g' /etc/containerd/config.toml
-  - wget -O- https://github.com/cilium/cilium-cli/releases/latest/download/cilium-linux-amd64.tar.gz | tar Oxzf -  |sudo dd of=/usr/local/bin/cilium && sudo chmod +x /usr/local/bin/cilium
+  - wget -O- https://github.com/cilium/cilium-cli/releases/latest/download/cilium-linux-amd64.tar.gz | tar Oxzf - | sudo dd of=/usr/local/bin/cilium && sudo chmod +x /usr/local/bin/cilium
   - helm repo add argo https://argoproj.github.io/argo-helm
   - helm repo add cilium https://helm.cilium.io/
 
@@ -176,15 +179,11 @@ Now that the servers are up and running, we will need to prepare all nodes accor
 
 ### Swap
 
-Note: skip if using cloud-init
-
 The first of them is Swap. Swap must be completly disabled on all nodes. Ubuntu 22.04 on Hetzner does this by default, if not, make sure it's disabled using `swapoff -a` and removed from `/etc/fstab`.
 
 ### Container Runtime
 
-Note: skip if using cloud-init
-
-The [container runtime](https://kubernetes.io/docs/setup/production-environment/container-runtimes/) must be installed previous to the cluster bootstraping. There are various runtimes that fulfil the CRI. I'm using containerd as its simple and minimal.
+The [container runtime](https://kubernetes.io/docs/setup/production-environment/container-runtimes/) must be installed prior to cluster bootstraping. There are various runtimes that fulfil the CRI. I'm using containerd as its simple and minimal.
 
 The steps to install can be checked in the linked documentation or here.
 
@@ -232,7 +231,7 @@ sudo apt update
 sudo apt install containerd -y
 ```
 
-Lastly apply the default config for containerd:
+Lastly print the default config for containerd into it's config file:
 
 ```bash
 sudo mkdir -p /etc/containerd
@@ -241,11 +240,9 @@ sudo sed -i 's/^disabled_plugins \=/\#disabled_plugins \=/g' /etc/containerd/con
 sudo systemctl restart containerd
 ```
 
-Now containerd should be installed, you can check with `ctr version` to see if you can access it (some errors are fine, you just want to see a version number)
+Now containerd should be installed, you can check with `ctr version` to see if you can access it (some errors are fine, you just want to see a version number).
 
 ### Cgroups
-
-Note: skip if using cloud-init
 
 The [docs](https://kubernetes.io/docs/setup/production-environment/container-runtimes/#cgroup-drivers) tell you a lot about cgroups and cgroup drivers. Take a look there if you want to understand why it's needed and what it's doing. For the cluster setup, it's just important to agree on one variant and enforce this in all components. I'm using the `systemd` driver and cgroup v2. To enforce this on Ubuntu, we need to add a kernel parameter in the `GRUB_CMDLINE_LINUX` directive of `/etc/default/grub`:
 
@@ -271,12 +268,6 @@ EOF
 
 ```
 
-Note: it's possible that now all systems have the default configuration already in place for containerd. If you get an error saying the directory doesn't exist, try the following and repeat the above commands:
-
-```bash
-sudo mkdir -p /etc/containerd
-```
-
 And do a final restart of containerd:
 
 ```
@@ -285,8 +276,6 @@ sudo systemctl status containerd
 ```
 
 ### kubeadm, kubectl, kubelet
-
-Note: skip if using cloud-init
 
 Next step is to get [kubeadm](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#installing-kubeadm-kubelet-and-kubectl) (cluster bootstraping tool), kubectl and kubelet (cluster agent on systems) installed using package manager.
 
@@ -322,9 +311,7 @@ Make sure you set the `cgroupDriver: systemd` when bootstraping the cluster so t
 
 ### kubelet config flags
 
-Note: skip if using cloud-init
-
-If you want to use the [hcloud-cloud-controller-manager](https://github.com/hetznercloud/hcloud-cloud-controller-manager) later on to provision loadbalancers and volumes you must add the following drop-in for kubelet before initalizing the cluster:
+If you want to use the [hcloud-cloud-controller-manager](https://github.com/hetznercloud/hcloud-cloud-controller-manager) later on to provision loadbalancers and volumes in Hetzner Cloud you must add the following drop-in for kubelet before initalizing the cluster:
 
 ```bash
 cat <<EOF | sudo tee /etc/systemd/system/kubelet.service.d/20-hcloud.conf
@@ -339,7 +326,7 @@ sudo systemctl restart kubelet
 
 One last thing before we can bootstrap our cluster is to choose a CNI for kubernetes. Although we could wait with that until kubeadm init is started we may need to set some flags in the init config to work with our CNI.
 
-As said I'm using cilium. Cilium has two options for IPAM, one beeing kubernetes and one beeing cluster-scoped cilium mode. I'm using the later and also use the kube-proxy replacement of cilium which means I can completly ignore the flags for service and pod subnets in kubeadm.
+As said I'm using Cilium. Cilium has two options for IPAM, one being kubernetes and one beeing cluster-scoped cilium mode. I'm using the later and also use the kube-proxy replacement of cilium which means I can completly ignore the flags for service and pod CIDRs in kubeadm.
 
 ## Bootstraping
 
@@ -358,9 +345,7 @@ We are going to change some things in this default config. All options can be fo
 apiVersion: kubeadm.k8s.io/v1beta3
 kind: ClusterConfiguration
 clusterName: technat.k8s
-networking:
-  dnsDomain: admin.alleaffengaffen.k8s # not necessary: custom internal dns domain
-controlPlaneEndpoint: admin.alleaffengaffen.ch:6443 # DNS record pointing to your master nodes
+controlPlaneEndpoint: admin.technat.dev:6443 # DNS record pointing to your master nodes
 ---
 apiVersion: kubelet.config.k8s.io/v1beta1
 kind: KubeletConfiguration
@@ -392,11 +377,9 @@ export KUBECONFIG=/etc/kubernetes/admin.conf
 
 ### Deploy CNI
 
-By now you might see that a `kubectl get nodes` lists the first master in a `Not Ready` state. This is due to the missing CNI.
+By now you might see that a `kubectl get nodes` lists the nodes in a `Not Ready` state. This is due to the missing CNI.
 
-So to install and verify the installation of cilium, before we continue to add nodes, we need `helm` and the `cilium` cli:
-
-Note: cloud-init did this for us
+So to install and verify the installation of Cilium, before we continue to add nodes, we need `helm` and the `cilium` cli:
 
 ```bash
 curl -L --remote-name-all https://github.com/cilium/cilium-cli/releases/latest/download/cilium-linux-amd64.tar.gz{,.sha256sum}
@@ -408,7 +391,7 @@ chmod 700 get_helm.sh
 ./get_helm.sh
 ```
 
-With those tools we can install cilium as a helm chart:
+With those tools we can install Cilium as a helm chart:
 
 ```
 helm repo add cilium https://helm.cilium.io/
@@ -421,15 +404,12 @@ See that `-f cilium-values.yaml` at the end of the last command? That's the conf
 rollOutCiliumPods: true
 priorityClassName: "system-node-critical"
 annotateK8sNode: true
-containerRuntime:
-  integration: containerd
-  socketPath: /var/run/containerd/containerd.sock
 encryption:
   enabled: true
   type: wireguard
 operator:
   replicas: 1
-l7Proxy: false
+l7Proxy: false # not compatible with kube-proxy replacement (but better double-check if that's still true)
 hubble:
   enabled: true
   relay:
@@ -437,9 +417,9 @@ hubble:
   ui:
     enabled: true
     rollOutPods: true
-policyEnforcementMode: "none"
+policyEnforcementMode: "always" # you should be using that but it will get you into a lot of work ;)
 kubeProxyReplacement: "strict"
-k8sServiceHost: "admin.alleaffengaffen.ch"
+k8sServiceHost: "admin.technat.dev"
 k8sServicePort: "6443"
 ```
 
@@ -450,7 +430,7 @@ You can get the default config using `helm show values cilium/cilium` and then c
 To join the other master nodes to the cluster, copy the command from our init output and run it on the other master nodes:
 
 ```bash
-kubeadm join admin.alleaffengaffen.ch:6443 --token blfexx.ei3cp7hozu27ebpg \
+kubeadm join admin.technat.dev:6443 --token blfexx.ei3cp7hozu27ebpg \
        --discovery-token-ca-cert-hash sha256:fd3c9d6595ed7de9cd3f5c66435cbfcbbfddcc782e37c16a4824fff04c23430d \
        --control-plane --certificate-key b5c99a41b7f16ef635619c6e972d29ec4ac921dff85839815b51652ab39447b7 \
        -f kubeadm-config.yaml
@@ -461,9 +441,11 @@ kubeadm join admin.alleaffengaffen.ch:6443 --token blfexx.ei3cp7hozu27ebpg \
 Now any number of worker nodes can be joined using the command:
 
 ```
-sudo kubeadm join admin.alleaffengaffen.ch:6443 --token dt4vt3.c833o3z5fcdmbj37 \
+sudo kubeadm join admin.technat.dev:6443 --token dt4vt3.c833o3z5fcdmbj37 \
 	--discovery-token-ca-cert-hash sha256:dd3d4f4a3bee384d4ebe539d24d38bb11bcfb765a066b03fb8b79676a33cc902
 ```
+
+Note: the join-token expires after some time. If this happens you need to create a new one using `kubeadm token create --print-join-command`.
 
 ## Post-Setup
 
@@ -475,10 +457,10 @@ Very very helpful: [kubectl completion](https://kubernetes.io/docs/tasks/tools/i
 
 ### etcdctl
 
-The package `etcd-client` provides us with a `etcdctl` that can be used to interact with the etcd cluster that backes the control-plane. However the tool needs some flags to be passed into for usage. I recommend you save yourself the following as an alias:
+The package `etcd-client` provides us with an `etcdctl` that can be used to interact with the etcd cluster that backes the control-plane. However the tool needs some flags to be passed into for usage. I recommend you save yourself the following as an alias:
 
 ```
-ETCDCTL_API=3 sudo etcdctl --endpoints https://192.168.112.51:2379 --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key
+ETCDCTL_API=3 sudo etcdctl --endpoints https://localhost:2379 --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key
 ```
 
 ### Taints
@@ -486,13 +468,11 @@ ETCDCTL_API=3 sudo etcdctl --endpoints https://192.168.112.51:2379 --cacert=/etc
 Make sure the master nodes have their taint on them so that only control-plane components are scheduled on them:
 
 ```
-k taint nodes lion node-role.kubernetes.io/master:NoSchedule
+k taint nodes master-1 node-role.kubernetes.io/master:NoSchedule
 ```
 
 ### type: LoadBalancer
 
-You may have noticied that I installed my K8s cluster on Hetzner. But as you might now, the cloud controller manager of K8s does not support interacting with Hetzner to provision LoadBalancers for Services.
+You may have noticied that I installed my K8s cluster on Hetzner. To interact with Hetzner Cloud you would now need the [Hcloud CCM](https://github.com/hetznercloud/hcloud-cloud-controller-manager) in order to be able to provision LoadBalancers for Services.
 
-This is the point where the [hcloud-cloud-controller-manager](https://github.com/hetznercloud/hcloud-cloud-controller-manager) comes into play. This is a simple controller that talks to the Hetzner API and enriches your nods with some labels about the typology and provisions LBs if desired.
-
-See the repo for a quickstart how to install the manager.
+See their repo for a quickstart how to install the manager and note that the prerequisite with the cloud-provider flag in the kubelet has already been done.
