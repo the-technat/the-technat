@@ -8,3 +8,5 @@ Hi I'm technat. system engineer for Kubernetes, minimalist, perfectionist and op
 - 💬 Ask me about Go, Terraform, CI/CD and **Kubernetes** or take a look at my [Website](https://technat.ch)
 - 📫 You can reach me on [CNCF Slack](https://cloud-native.slack.com) or by [Mail](mailto:technat@technat.ch)
 - ⚡ Fun fact: Seems like someone has already taken the username "technat", so it was necessary to mention that technat isn´t the same as **the**-technat
+
+[![Kubestronaut](https://www.credly.com/badges/cfce5409-f8f1-412f-a8dc-04b6f7f0ef44/public_url)](https://www.credly.com/badges/cfce5409-f8f1-412f-a8dc-04b6f7f0ef44/public_url "Kubestronaut")
