@@ -9,4 +9,4 @@ Hi I'm technat. system engineer for Kubernetes, minimalist, perfectionist and op
 - 📫 You can reach me on [CNCF Slack](https://cloud-native.slack.com) or by [Mail](mailto:technat@technat.ch)
 - ⚡ Fun fact: Seems like someone has already taken the username "technat", so it was necessary to mention that technat isn´t the same as **the**-technat
 
-[![Kubestronaut](https://www.credly.com/badges/cfce5409-f8f1-412f-a8dc-04b6f7f0ef44/public_url)](https://www.credly.com/badges/cfce5409-f8f1-412f-a8dc-04b6f7f0ef44/public_url "Kubestronaut")
+[![Kubestronaut](https://images.credly.com/size/340x340/images/cd6c6449-6814-4613-a2d3-13cf4ac5be4f/image.png)](https://www.credly.com/badges/cfce5409-f8f1-412f-a8dc-04b6f7f0ef44 "Kubestronaut")
