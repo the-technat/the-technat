@@ -3,13 +3,6 @@ title = "technat.ch"
 theme = 'm10c'
 paginate = 8
 
-[menu]
-  [[menu.main]]
-    identifier = "about"
-    name = "About"
-    url = "/about/"
-    weight = 10
-
 [params]
   author = "Nathanael Liechti"
   description = "Hi I'm technat. system engineer for Kubernetes, minimalist, perfectionist and optimist. I've got zero background in classic IT and was born into the cloud-native world (does this explain my optimistic approach sometimes 😉?)"
