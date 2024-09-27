@@ -1,6 +1,5 @@
 baseURL = 'https://technat.ch'
 title = "technat.ch"
-avatar = "content/images/avatar.jpeg"
 theme = 'm10c'
 paginate = 8
 
@@ -14,6 +13,7 @@ paginate = 8
 [params]
   author = "Nathanael Liechti"
   description = "Hi I'm technat. system engineer for Kubernetes, minimalist, perfectionist and optimist. I've got zero background in classic IT and was born into the cloud-native world (does this explain my optimistic approach sometimes 😉?)"
+  avatar = "images/avatar.jpeg"
   menu_item_separator = " - "
    [[params.social]]
     icon = "github"
