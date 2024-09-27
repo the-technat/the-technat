@@ -1,10 +1,8 @@
-baseURL = 'https://technat.ch/'
+baseURL = 'https://technat.ch'
 title = "technat.ch"
-author = "Nathanael Liechti"
-languageCode = 'en'
-DefaultContentLanguage = "en"
-enableInLineShortcodes = true
-theme = 'holy'
+avatar = "content/images/avatar.jpeg"
+theme = 'm10c'
+paginate = 8
 
 [menu]
   [[menu.main]]
@@ -12,13 +10,19 @@ theme = 'holy'
     name = "About"
     url = "/about/"
     weight = 10
-  [[menu.main]]
-    identifier = "github"
+
+[params]
+  author = "Nathanael Liechti"
+  description = "Hi I'm technat. system engineer for Kubernetes, minimalist, perfectionist and optimist. I've got zero background in classic IT and was born into the cloud-native world (does this explain my optimistic approach sometimes 😉?)"
+  menu_item_separator = " - "
+   [[params.social]]
+    icon = "github"
     name = "Github"
     url = "https://github.com/the-technat"
-    weight = 10
-
-[taxonomies]
-category = "categories"
-tag = "tags"
-series = "series"
+     # Green theme
+  #[params.style]
+  #  darkestColor = "#315659"
+  #  darkColor = "#253031"
+  #  lightColor = "#96a879"
+  #  lightestColor = "#fff"
+  #  primaryColor = "#dad865"
