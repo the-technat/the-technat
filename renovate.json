@@ -11,6 +11,26 @@
             ],
             "matchCurrentVersion": "!/^0/",
             "automerge": true
+        },
+        {
+            "matchPackageNames": [
+                "gohugoio/hugo"
+            ],
+            "extractVersion": "^v(?<version>.*)$"
+        }
+    ],
+    "customManagers": [
+        {
+            "customType": "regex",
+            "fileMatch": [
+                "^\\.github/workflows/[^/]+\\.ya?ml$"
+            ],
+            "matchStringsStrategy": "combination",
+            "matchStrings": [
+                "HUGO_VERSION: (?<currentValue>.*?)\\s"
+            ],
+            "packageNameTemplate": "gohugoio/hugo",
+            "datasourceTemplate": "github-tags"
         }
     ]
 }
