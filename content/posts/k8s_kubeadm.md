@@ -149,7 +149,7 @@ sudo apt install containerd.io -y
 ```
 
 Once containerd is installed, we have to tweak it's configuration a bit for it to work with Kubernetes. There are two important toggles:
-- The CRI plugin inside containerd is usually disabled, since the containerd APT packages is intended to be used along with Docker desktop
+- The CRI plugin inside containerd is usually disabled, since the containerd APT package is intended to be used along with Docker desktop
 - The systemd cgroup driver must explicitly be set in the config file
 
 To achieve these changes, run the following commands:
@@ -168,7 +168,7 @@ cat <<EOF | sudo tee -a /etc/containerd/config.toml
 EOF
 ```
 
-To apply the configuration changes, restart container once:
+To apply the configuration changes, restart containerd:
 
 ```console
 sudo systemctl restart containerd
