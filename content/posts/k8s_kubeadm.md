@@ -76,6 +76,8 @@ packages: # Install some base-packages already
 - git
 - wget
 - curl
+- gnupg
+- lsb-release
 - dnsutils
 - apt-transport-https
 - ca-certificates
@@ -89,86 +91,71 @@ runcmd:
 
 ## Kubernetes OS Preparations
 
-Now that the servers are up and running, we will need to prepare all nodes according to the [install kubeadm](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/) docs.
+Now that the servers are up and running, we will need to prepare all nodes according to the [install kubeadm](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/) docs. This page links to multiple other pages for things you need to do as well, so here's the summary with all the steps in linear order.
 
-### Swap
+### [Swap](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#swap-configuration)
 
-The first of them is Swap. Swap must be completly disabled on all nodes. Ubuntu 22.04 on Hetzner does this by default, if not, make sure it's disabled using `swapoff -a` and removed from `/etc/fstab`.
+The first of them is Swap. While you can nowadays use Swap on your nodes, it's still protected with a feature flag and I'm not confident to use it yet. So it must be completely disabled on all nodes. Ubuntu 24.04 on Hetzner does this by default. You can check this with `free -h` where you should see `0B` for total swap listed. 
 
-### Container Runtime
+### [Container Runtime](https://kubernetes.io/docs/setup/production-environment/container-runtimes/)
 
-The [container runtime](https://kubernetes.io/docs/setup/production-environment/container-runtimes/) must be installed prior to cluster bootstraping. There are various runtimes that fulfil the CRI. I'm using containerd as its simple and minimal.
+The container runtime must be installed prior to cluster bootstraping. There are various runtimes that fulfil the [CRI](https://kubernetes.io/docs/concepts/architecture/cri/). I'm using [containerd](https://containerd.io) for obvious reasons.
 
-The steps to install can be checked in the linked documentation or here.
+The steps to install containerd are more or less included in the Kubernetes documentation about container runtimes.
 
-Frist let's load the br_netfilter module and set some forwarding settings:
+First let's enable IP forwarding in the kernel:
 
-```bash
-cat <<EOF | sudo tee /etc/modules-load.d/containerd.conf
-overlay
-br_netfilter
-EOF
-
-sudo modprobe overlay
-sudo modprobe br_netfilter
-
-# Setup required sysctl params, these persist across reboots.
-cat <<EOF | sudo tee /etc/sysctl.d/99-kubernetes-cri.conf
-net.bridge.bridge-nf-call-iptables  = 1
-net.ipv4.ip_forward                 = 1
-net.bridge.bridge-nf-call-ip6tables = 1
+```console
+# sysctl params required by setup, params persist across reboots
+cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
+net.ipv4.ip_forward = 1
+net.ipv6.conf.all.forwarding = 1
 EOF
 
 # Apply sysctl params without reboot
 sudo sysctl --system
 ```
 
-then we need to add the docker repository in order to install containerd in the latest version:
+Next we need to define which cgroup driver to use. I'm using cgroupv2 with systemd as the driver. Recent Ubuntu versions have cgroupv2 enabled by default and since they all boot using systemd, it's the best to stick with that for the rest as well. For other options and more explanations, take a look [here](https://kubernetes.io/docs/setup/production-environment/container-runtimes/#cgroup-drivers).
+
+To check whether cgroupv2 is enabeld on the host, do the following
+
+```console
+grep cgroup /proc/filesystems
+# it should list multiple results, one beeing cgroup2
+```
+
+We will tell our Kubernetes components later to use systemd as the cgroup driver.
+
+Next we install containerd using it's APT package from the [docker repository](https://docs.docker.com/engine/install/ubuntu/):
 
 ```bash
+# Add Docker's official GPG key:
 sudo apt-get update
-sudo apt-get install \
-  ca-certificates \
-  curl \
-  gnupg \
-  lsb-release -y
+sudo apt-get install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
 
-sudo mkdir -p /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-
+# Add the repository to Apt sources:
 echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
 
-
-sudo apt update
-sudo apt install containerd -y
+sudo apt-get update
+sudo apt install containerd.io -y
 ```
 
-Lastly print the default config for containerd into it's config file:
+Once containerd is installed, we have to tweak it's configuration a bit for it to work with Kubernetes. There are two important toggles:
+- The CRI plugin inside containerd is usually disabled, since the containerd APT packages is intended to be used along with Docker desktop
+- The systemd cgroup driver must explicitly be set in the config file
 
-```bash
-sudo mkdir -p /etc/containerd
-sudo containerd config default | sudo tee -a /etc/containerd/config.toml
-sudo sed -i 's/^disabled_plugins \=/\#disabled_plugins \=/g' /etc/containerd/config.toml # containerd should enable the CRI
-sudo systemctl restart containerd
-```
+To achieve these changes, run the following commands:
 
-Now containerd should be installed, you can check with `ctr version` to see if you can access it (some errors are fine, you just want to see a version number).
-
-### Cgroups
-
-The [docs](https://kubernetes.io/docs/setup/production-environment/container-runtimes/#cgroup-drivers) tell you a lot about cgroups and cgroup drivers. Take a look there if you want to understand why it's needed and what it's doing. For the cluster setup, it's just important to agree on one variant and enforce this in all components. I'm using the `systemd` driver and cgroup v2. To enforce this on Ubuntu, we need to add a kernel parameter in the `GRUB_CMDLINE_LINUX` directive of `/etc/default/grub`:
-
-```bash
-GRUB_CMDLINE_LINUX="systemd.unified_cgroup_hierarchy=1"
-```
-
-And run a `sudo update-grub` followed by a reboot. Then we are sure, the system uses the correct cgroup driver and version.
-
-We repeat the procedure and tell containerd to use systemd's cgroup as well by modifiying `/etc/containerd/config.toml`:
-
-```bash
+```console
+sudo sed -i 's/^disabled_plugins \=/\#disabled_plugins \=/g' /etc/containerd/config.toml # comments the line that disables the CRI plugin
 cat <<EOF | sudo tee -a /etc/containerd/config.toml
 [plugins]
   [plugins."io.containerd.grpc.v1.cri"]
@@ -179,12 +166,11 @@ cat <<EOF | sudo tee -a /etc/containerd/config.toml
           [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
             SystemdCgroup = true
 EOF
-
 ```
 
-And do a final restart of containerd:
+To apply the configuration changes, restart container once:
 
-```
+```console
 sudo systemctl restart containerd
 sudo systemctl status containerd
 ```
