@@ -1,87 +1,54 @@
 +++
 title =  "Kubernetes - the kubeadm way"
-date = "2023-02-03"
+date = "2024-09-30"
 +++
 
-This is my current approach on how to setup Kubernetes for labing purposes.
+This is my guide / doc how to setup Kubernetes for educational purposes (including CKA/CKS exams) using plain kubeadm.
 
-Here's how my cluster looks like:
+Here's how the cluster will look like:
 
-- My Cloud Provider of choice is [Hetzner](https://www.hetzner.com/de/)
-- Public facing K8s - no traffic going over private networks
-- My CNI of choice is currently Cilium with pod to pod encryption using wireguard
-- Setup using plain kubeadm - might not be that intuitive but gives you the most flexible approach and choice of what you are using
+- cloud provider of choice is [Hetzner](https://www.hetzner.com/de/)
+- all traffic flows throuth the internet, no private networks
+- plain ubuntu nodes as base OS
+- Cilium as CNI of choice
+- manual kubeadm to setup 
 
 ## Prerequisites
 
 Before we dive into the details on how to setup, here are some prerequisites to met when you want to follow allong:
 
-- [Create](https://accounts.hetzner.com/login) an Account on Hetzner Cloud
-- Create a Project - call it something meaningful, I called mine `cucumber` (got the irony?)
-- Add a ssh-key to the project and mark it as the default key
+- [Create](https://accounts.hetzner.com/login) an account on Hetzner Cloud
+- Create a project - call it something meaningful, I called mine `cucumber` (got the irony?)
+- Add a cost alert limit to the project
 
 ## Infrastructure
 
-Let's quickly talk about the infrastructure I'm using for this guide.
+Let's quickly talk about the infrastructure I'm using for this cluster.
 
-You need:
-- A DNS record pointing to all of your master nodes (even if you only use one master node that makes sense)
-- Placement Groups: one for workers, one for masters (technically not required but recommended)
-- Firewall Rules: one for masters, one for workers using the following rules:
-  - most rules are requirements of cilium, which you can checkout [here](https://docs.cilium.io/en/stable/operations/system_requirements/#firewall-rules) 
-  - `masters` referes to the list of IPs of all master nodes
-  - `workers` refers to the list of IPs of all worker nodes
-  - masters:
-  | Type     | Source          | Protocol  | Port    |
-  | -------- | --------------- | --------- | --------|
-  | Incoming | 0.0.0.0/0, ::/0 | TCP       | 22      |
-  | Incoming | 0.0.0.0/0, ::/0 | ICMP      | -       |
-  | Incoming | 0.0.0.0/0, ::/0 | TCP       | 6443    |
-  | Incoming | masters`z         | TCP       | 2379-2380 |
-  | Incoming | masters         | TCP       | 10250 |
-  | Incoming | masters         | TCP       | 10259 |
-  | Incoming | masters         | TCP       | 10257 |
-  | Incoming | masters         | TCP       | 4240 |
-  | Incoming | workers         | TCP       | 4240 |
-  | Incoming | workers         | UDP       | 8472 |
-  | Incoming | masters         | UDP       | 8472 |
-  | Incoming | workers         | UDP       | 51871 |
-  | Incoming | masters         | UDP       | 51871 |
-  - workers:
-  | Type     | Source          | Protocol  | Port    |
-  | -------- | --------------- | ----------| --------|
-  | Incoming | 0.0.0.0/0, ::/0 | TCP       | 22      |
-  | Incoming | 0.0.0.0/0, ::/0 | ICMP      | -       |
-  | Incoming | 0.0.0.0/0, ::/0 | TCP       | 30000 - 32768 |
-  | Incoming | 0.0.0.0/0, ::/0 | UDP       | 30000 - 32768 |
-  | Incoming | masters         | TCP       | 10250 |
-  | Incoming | workers         | TCP       | 10250 |
-  | Incoming | workers         | TCP       | 4240 |
-  | Incoming | masters         | TCP       | 4240 |
-  | Incoming | masters         | UDP       | 8472 |
-  | Incoming | workers         | UDP       | 8472 |
-  | Incoming | workers         | UDP       | 51871 |
-  | Incoming | masters         | UDP       | 51871 |
+### Kubernetes API endpoint
+
+For the kubernetes api endpoint, you're often told to create a classic load balancer that will balance the traffic between your nodes. While this is certainly a good idea, it's usually cost-expensive and not required at all for a multi-master setup. There are good alternatives using virtual IPs or even simpler: multiple DNS records.
+
+I'm always bootstraping the cluster with a DNS record as official API endpoint, even if I only have one master node. This allows me to add more master nodes later on and simply create another entry for the same DNS record for HA.
+
+For this guide my endpoint will be `cucumber.technat.dev`
 
 ### Servers
 
-Kubernetes requires you to have an odd number of master nodes, for true HA. Also many applications you may install require three replicas that are spread accross different nodes or zones, so at least three master and worker nodes are ideal. For lab purposes though, I usually only create one master and one worker (note that this is still an odd number ;)):
+Here are the servers I create:
 
-| Location | Image        | Type  | Networks    | Placement Group | Backups | Name       | Labels                         |
-| -------- | ------------ | ----- | ----------- | --------------- | ------- | ----------- | ------------------------ |
-| Falkenstein | Ubuntu 22.04 | CPX11 | ipv4 | masters         | false    | hawk       | cluster=cucumber,role=master |
-| Helsinki | Ubuntu 22.04 | CPX31 | ipv4 | workers         | false    | minion-01    | cluster=cucumber,role=worker |
+| Location | Image        | Type  | Networks    | Backups | Name       | Labels                         |
+| -------- | ------------ | ----- | ----------- | ------- | ----------- | ------------------------ |
+| Helsinki | Ubuntu 24.04 | CPX11 | ipv4,ipv6 | false    | hawk       | cluster=cucumber,role=master |
+| Helsinki | Ubuntu 24.04 | CPX31 | ipv4,ipv6 | false    | minion-01    | cluster=cucumber,role=worker |
 
 Some notes before creating the servers:
-- Expect the size and number of workers to change over time.
-- You should have a DNS record for your kubeapi where you have added all master node IPs as valid answers (e.g multiple answers for the same domain name). This is the simplest way to avoid an external load balancer in front of your control plane (of course you could do that too and just forward port 6443 to all the master nodes)
-- Only use ipv4 or ipv6 but not both. Dual-stack is really hard to deploy and since many sites are not rechable over IPV6 (Github for example) I use an IPv4 only mode to avoid any network-related issue that take hours to investigate.
+- Kubernetes requires you to have an odd number of master nodes, for true HA. Also many applications you may install require three replicas that are spread accross different nodes or zones, so at least three master and worker nodes are ideal. For lab purposes though, I usually only create one master and one worker to save cost (one is also an odd number ).
+- As defined in the intro, I don't add the servers to any private network, but only have a public IPv4 and IPv6 address for a dual-stack cluster. Note that dual-stack will bring some complexity along that you can easily skip if you don't provision the servers with an IPv6 address.
 
 #### Cloud-init
 
-The OS configuration shown in the next chapter can be masively simplified by using a custom cloud-init file for each server.
-
-Note that this has to be specified **at creation time**.
+The servers are all created using the following cloud-init config, to speed up the configuration that is the same for both servers:
 
 ```yaml
 #cloud-config <node>
@@ -95,82 +62,26 @@ users:
     lock_passwd: True # disable password login
     gecos: "Admin user created by cloud-init"
     shell: /bin/bash
-    ssh_authorized_keys:
-     - "ssh-ed25519 ...."
+    # use the following lines if you want to add an ssh-key for later use
+    # ssh_authorized_keys:
+    #  - "ssh-ed25519 ...."
 
-apt:
-  sources:
-    kubernetes:
-      source: "deb [signed-by=$KEY_FILE] https://apt.kubernetes.io/ kubernetes-xenial main"
-      keyid: B53DC80D13EDEF05
-    helm:
-      source: "deb [arch=amd64 signed-by=$KEY_FILE] https://baltocdn.com/helm/stable/debian/ all main"
-      keyid: 294AC4827C1A168A
-    # containerd from ubuntu repo is much older so use docker repo
-    docker:
-      keyid: 8D81803C0EBFCD88
-      source: "deb [arch=amd64 signed-by=$KEY_FILE] https://download.docker.com/linux/ubuntu jammy stable"
-package_update: true
-package_upgrade: true
-packages:
+package_update: true # Do a "apt update"
+package_upgrade: true # Do a "apt upgrade"
+packages: # Install some base-packages already
 - vim
 - git
 - wget
 - curl
 - dnsutils
-- containerd.io
 - apt-transport-https
 - ca-certificates
-- kubeadm
-- kubectl
-- kubelet
-- helm
 
-write_files:
-- path: /etc/modules-load.d/containerd.conf
-  content: |
-    overlay
-    br_netfilter
-- path: /etc/sysctl.d/99-kubernetes-cri.conf
-  content: |
-    net.bridge.bridge-nf-call-iptables  = 1
-    net.ipv4.ip_forward                 = 1
-    net.bridge.bridge-nf-call-ip6tables = 1
-- path: /etc/systemd/system/kubelet.service.d/20-hcloud.conf
-  content: |
-    [Service]
-    Environment="KUBELET_EXTRA_ARGS=--cloud-provider=external"
-- path: /etc/ssh/sshd_config
-  content: |
-    Port 22
-    PermitRootLogin no
-    PermitEmptyPasswords no
-    PasswordAuthentication no
-    PubkeyAuthentication yes
-    Include /etc/ssh/sshd_config.d/*.conf
-    ChallengeResponseAuthentication no
-    UsePAM yes
-    # Allow client to pass locale environment variables
-    AcceptEnv LANG LC_*
-    X11Forwarding no
-    PrintMotd no
-    Subsystem    sftp    /usr/lib/openssh/sftp-server
 runcmd:
-  - sudo apt-mark hold kubelet kubeadm kubectl
-  - sed -i 's/GRUB_CMDLINE_LINUX=""/GRUB_CMDLINE_LINUX="systemd.unified.cgroup_hierarchy=1"/g' /etc/default/grub
-  - sudo update-grub
-  - sudo mkdir -p /etc/containerd
-  - sudo containerd config default | sudo tee -a /etc/containerd/config.toml
-  - sudo sed -i 's/SystemdCgroup = false/SystemdCgroup = true/g' /etc/containerd/config.toml
-  - sudo sed -i 's/disabled_plugins = ["cri"]/disabled_plugins = []/g' /etc/containerd/config.toml
-  - wget -O- https://github.com/cilium/cilium-cli/releases/latest/download/cilium-linux-amd64.tar.gz | tar Oxzf - | sudo dd of=/usr/local/bin/cilium && sudo chmod +x /usr/local/bin/cilium
-  - helm repo add argo https://argoproj.github.io/argo-helm
-  - helm repo add cilium https://helm.cilium.io/
-
-power_state:
-  mode: reboot
-  timeout: 30
-  condition: true
+  # use the following lines to join the server to a tailnet, instead of using plain ssh
+  # - systemctl mask ssh
+  # - curl -fsSL https://tailscale.com/install.sh | sh
+  # - tailscale up --ssh --auth-key "<single-use-pre-approved-key>"
 ```
 
 ## OS Preparations
