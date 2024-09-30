@@ -8,7 +8,8 @@ This is my guide / doc how to setup Kubernetes for educational purposes (includi
 Here's how the cluster will look like:
 
 - cloud provider of choice is [Hetzner](https://www.hetzner.com/de/)
-- all traffic flows throuth the internet, no private networks
+- all traffic flows through the internet, no private networks
+- Dual-stack IPv4/IPv6 networking
 - plain ubuntu nodes as base OS
 - Cilium as CNI of choice
 - manual kubeadm to setup 
@@ -20,6 +21,7 @@ Before we dive into the details on how to setup, here are some prerequisites to 
 - [Create](https://accounts.hetzner.com/login) an account on Hetzner Cloud
 - Create a project - call it something meaningful, I called mine `cucumber` (got the irony?)
 - Add a cost alert limit to the project
+- Optionally: register and create a tailnet at [Tailscale](https://tailscale.com) if you want to use this to connect to your servers instead of ssh
 
 ## Infrastructure
 
@@ -27,9 +29,9 @@ Let's quickly talk about the infrastructure I'm using for this cluster.
 
 ### Kubernetes API endpoint
 
-For the kubernetes api endpoint, you're often told to create a classic load balancer that will balance the traffic between your nodes. While this is certainly a good idea, it's usually cost-expensive and not required at all for a multi-master setup. There are good alternatives using virtual IPs or even simpler: multiple DNS records.
+For the Kubernetes API endpoint, you're often told to create a classic load balancer that will balance the traffic between your master nodes. While this is certainly a good idea, it's usually cost-expensive and not required at all for a multi-master setup. There are good alternatives using virtual IPs or even simpler: multiple DNS records.
 
-I'm always bootstraping the cluster with a DNS record as official API endpoint, even if I only have one master node. This allows me to add more master nodes later on and simply create another entry for the same DNS record for HA.
+I'm always bootstraping the cluster with a DNS record as official API endpoint, even if I only have one master node. This allows me to add more master nodes later on and simply create another entry for the same DNS record. 
 
 For this guide my endpoint will be `cucumber.technat.dev`
 
@@ -39,16 +41,17 @@ Here are the servers I create:
 
 | Location | Image        | Type  | Networks    | Backups | Name       | Labels                         |
 | -------- | ------------ | ----- | ----------- | ------- | ----------- | ------------------------ |
-| Helsinki | Ubuntu 24.04 | CPX11 | ipv4,ipv6 | false    | hawk       | cluster=cucumber,role=master |
-| Helsinki | Ubuntu 24.04 | CPX31 | ipv4,ipv6 | false    | minion-01    | cluster=cucumber,role=worker |
+| Helsinki | Ubuntu 24.04 | CAX11 | ipv4,ipv6 | false    | hawk       | cluster=cucumber,role=master |
+| Helsinki | Ubuntu 24.04 | CAX31 | ipv4,ipv6 | false    | minion-01    | cluster=cucumber,role=worker |
 
 Some notes before creating the servers:
-- Kubernetes requires you to have an odd number of master nodes, for true HA. Also many applications you may install require three replicas that are spread accross different nodes or zones, so at least three master and worker nodes are ideal. For lab purposes though, I usually only create one master and one worker to save cost (one is also an odd number ).
+- CAX type stands for Ampere (`arm64`) servers. In experience, K8s and most containerized applications run fine on ARM, but you might want to change the type to something that has `amd64` arch.
+- Kubernetes requires you to have an odd number of master nodes, for true HA. Also many applications you may install require three replicas that are spread accross different nodes or zones, so at least three master and worker nodes are ideal. For lab purposes though, I usually only create one master and one worker to save cost (one is also an odd number).
 - As defined in the intro, I don't add the servers to any private network, but only have a public IPv4 and IPv6 address for a dual-stack cluster. Note that dual-stack will bring some complexity along that you can easily skip if you don't provision the servers with an IPv6 address.
 
 #### Cloud-init
 
-The servers are all created using the following cloud-init config, to speed up the configuration that is the same for both servers:
+The servers are all created using the following cloud-init config, to speed up the configuration that is the same for all servers:
 
 ```yaml
 #cloud-config <node>
@@ -84,7 +87,7 @@ runcmd:
   # - tailscale up --ssh --auth-key "<single-use-pre-approved-key>"
 ```
 
-## OS Preparations
+## Kubernetes OS Preparations
 
 Now that the servers are up and running, we will need to prepare all nodes according to the [install kubeadm](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/) docs.
 
