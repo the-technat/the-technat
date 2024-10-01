@@ -310,7 +310,7 @@ The `token` and `caCertHashes` are the required credentials to join this worker 
 kubeadm token create --print-join-command
 ```
 
-This will give you the information you need to join the node. Add the information to the join-config and join the node using:
+This will give you some new join-credentials. Add the credentials to the join-config and join the node using:
 
 ```console
 sudo kubeadm join --config join-config.yaml
@@ -318,81 +318,48 @@ sudo kubeadm join --config join-config.yaml
 
 ## Installing a CNI-plugin
 
-By now you might see that a `kubectl get nodes` lists the nodes in a `Not Ready` state. This is due to the missing CNI.
+By now you should be able to run `kubectl get nodes` on the master-node and see that it lists the nodes as `NotReady`. This is expected and indicates we are missing a CNI-plugin.
 
-So to install and verify the installation of Cilium, before we continue to add nodes, we need `helm` and the `cilium` cli:
+Read [this](https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/network-plugins/) to get familiar with CNI-plugins.
 
-```bash
-curl -L --remote-name-all https://github.com/cilium/cilium-cli/releases/latest/download/cilium-linux-amd64.tar.gz{,.sha256sum}
-sha256sum --check cilium-linux-amd64.tar.gz.sha256sum
-sudo tar xzvfC cilium-linux-amd64.tar.gz /usr/local/bin
-rm cilium-linux-amd64.tar.gz{,.sha256sum}
-curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
-chmod 700 get_helm.sh
-./get_helm.sh
+My favourite CNI-plugin is [Cilium](https://cilium.io). 
 
-cilium install —set “ipam.mode=kubernetes” —set “ipv6.enabled=true”
-```
+To install a CNI-plugin, I recommend using [helm](https://helm.io). For Cilium, there's also a [cilium-cli](https://github.com/cilium/cilium-cli) that uses Helm in the background to install, but can figure out the proper values for you.
 
-With those tools we can install Cilium as a helm chart:
+So I just hit: `cilium install --set "ipam.mode=kubernetes" --set "ipv6.enabled=true"`.
 
-```
-helm repo add cilium https://helm.cilium.io/
-helm upgrade -i cilium cilium/cilium -n kube-system -f cilium-values.yaml
-```
-
-See that `-f cilium-values.yaml` at the end of the last command? That's the config for cilium. It looks like that for me:
+The values that the cilium-cli used are as follows:
 
 ```yaml
-rollOutCiliumPods: true
-priorityClassName: "system-node-critical"
-annotateK8sNode: true
-encryption:
-  enabled: true
-  type: wireguard
+cluster:
+  name: kubernetes
+k8sServiceHost: cucumber.technat.dev
+k8sServicePort: 6443
+kubeProxyReplacement: true
 operator:
   replicas: 1
-l7Proxy: false # not compatible with kube-proxy replacement (but better double-check if that's still true)
-hubble:
-  enabled: true
-  relay:
-    enabled: true
-  ui:
-    enabled: true
-    rollOutPods: true
-policyEnforcementMode: "always" # you should be using that but it will get you into a lot of work ;)
-kubeProxyReplacement: "strict"
-k8sServiceHost: "admin.technat.dev"
-k8sServicePort: "6443"
+routingMode: tunnel
+tunnelProtocol: vxlan
 ```
 
-You can get the default config using `helm show values cilium/cilium` and then customize this to your needs.
+As you can see, the cilium-cli automatically detected that I don't have kube-proxy running and thus enabled the replacement for it. As mentioned earlier, Cilium can fully replace kube-proxy.
 
-### Join master nodes
+## Installing the Hetzner CCM
 
-To join the other master nodes to the cluster, copy the command from our init output and run it on the other master nodes:
+Once we have a CNI-plugin, we can also install the Hetzner CCM. Again using helm is recommended.
 
-```bash
-kubeadm join admin.technat.dev:6443 --token blfexx.ei3cp7hozu27ebpg \
-       --discovery-token-ca-cert-hash sha256:fd3c9d6595ed7de9cd3f5c66435cbfcbbfddcc782e37c16a4824fff04c23430d \
-       --control-plane --certificate-key b5c99a41b7f16ef635619c6e972d29ec4ac921dff85839815b51652ab39447b7 \
-       -f kubeadm-config.yaml
+The Hetzner CCM needs an API token for Hcloud, so get one and paste it into the first command:
+
+```console
+kubectl -n kube-system create secret generic hcloud --from-literal=token=<hcloud API token>
+helm repo add hcloud https://charts.hetzner.cloud
+helm repo update hcloud
+helm upgrade -i hccm hcloud/hcloud-cloud-controller-manager -n kube-system
 ```
-
-### Join Workers
-
-Now any number of worker nodes can be joined using the command:
-
-```
-sudo kubeadm join admin.technat.dev:6443 --token dt4vt3.c833o3z5fcdmbj37 \
-	--discovery-token-ca-cert-hash sha256:dd3d4f4a3bee384d4ebe539d24d38bb11bcfb765a066b03fb8b79676a33cc902
-```
-
-Note: the join-token expires after some time. If this happens you need to create a new one using `kubeadm token create --print-join-command`.
 
 ## Post-Setup
 
-Bootstraped and now? There are a few things we should think about now.
+Bootstraped and now? There are a few things you should think about now.
 
 ### kubectl completion
 
@@ -400,22 +367,8 @@ Very very helpful: [kubectl completion](https://kubernetes.io/docs/tasks/tools/i
 
 ### etcdctl
 
-The package `etcd-client` provides us with an `etcdctl` that can be used to interact with the etcd cluster that backes the control-plane. However the tool needs some flags to be passed into for usage. I recommend you save yourself the following as an alias:
+The package `etcd-client` provides us with an `etcdctl` that can be used to interact with the etcd cluster that backes the control-plane. However the tool needs some flags to be passed into for usage. I recommend you save yourself the following command as an alias:
 
 ```
 ETCDCTL_API=3 sudo etcdctl --endpoints https://localhost:2379 --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key
 ```
-
-### Taints
-
-Make sure the master nodes have their taint on them so that only control-plane components are scheduled on them:
-
-```
-k taint nodes master-1 node-role.kubernetes.io/master:NoSchedule
-```
-
-### type: LoadBalancer
-
-You may have noticied that I installed my K8s cluster on Hetzner. To interact with Hetzner Cloud you would now need the [Hcloud CCM](https://github.com/hetznercloud/hcloud-cloud-controller-manager) in order to be able to provision LoadBalancers for Services.
-
-See their repo for a quickstart how to install the manager and note that the prerequisite with the cloud-provider flag in the kubelet has already been done.
