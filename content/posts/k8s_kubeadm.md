@@ -266,7 +266,10 @@ Once we are happy with our config, we can initalize the cluster using this comma
 sudo kubeadm init --upload-certs --config kubeadm-config.yaml 
 ```
 
-The output will clearly show when you had success initializing your control-plane and when not. If it worked, you will see some instructions how to join additionall master nodes and worker nodes, as well as some commands to get the kubeconfig from the master-node to start using kubectl:
+
+The output will clearly show when you had success initializing your control-plane and when not. Note that it might fail for the first time almost at the end, trying to reach the Kubernetes API using your DNS record and IPv6. That is most linux distros prefer v6 entries over v4 and the kube-apiserver seems to need a bit more time to be fully reachable on IPv6. If this happens to you, just delete the AAAA record, initalize and then readd the AAAA record again.
+
+Once it worked, you will see some instructions how to join additionall master nodes and worker nodes, as well as some commands to get the kubeconfig from the master-node to start using kubectl:
 
 ```console
 mkdir -p $HOME/.kube
@@ -284,18 +287,31 @@ On your worker-nodes, create a file with the following content:
 ---
 apiVersion: kubelet.config.k8s.io/v1beta1
 kind: KubeletConfiguration
-cgroupDriver: systemd 
+cgroupDriver: systemd  # as defined earlier, the kubelet shall use systemd as cgroupv2 driver
 ---
-apiVersion: kubeadm.k8s.io/v1beta3
+apiVersion: kubeadm.k8s.io/v1beta4
 kind: JoinConfiguration
 nodeRegistration:
   kubeletExtraArgs:
-    node-ip: "<ipv4 of machine>,<ipv6 of machine>"
+    - name: "node-ip"
+      value: "<ipv4 of machine>,<ipv6 of machine>"
 discovery:
   bootstrapToken: 
-    apiServerEndpoint: cucumber.technat.dev:6443
-    token: j1d3i2.ji36qbzjw7gc0t0f
-    caCertHashes: ["sha256:5856a582eac876282373afb0eeb07f862e4bcb2d2ffe108c70ffcc48d97d1356"]
+    apiServerEndpoint: cucumber.technat.dev:6443 # the defined DNS endpoint clients shall use for the Kubernetes API
+    token: j1d3i2.ji36qbzjw7gc0t0f # read below
+    caCertHashes: ["sha256:5856a582eac876282373afb0eeb07f862e4bcb2d2ffe108c70ffcc48d97d1356"] # read below
+```
+
+The `token` and `caCertHashes` are the required credentials to join this worker node to the control-plane. To get these informations, you can run the following on the **first master-node**:
+
+```console
+kubeadm token create --print-join-command
+```
+
+This will give you the information you need to join the node. Once the join-config is created, you can join the node using:
+
+```console
+sudo kubeadm join --config join-config.yaml
 ```
 
 ### Installing a CNI-plugin
