@@ -177,14 +177,13 @@ sudo systemctl status containerd
 
 ### [kubeadm, kubectl, kubelet](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#installing-kubeadm-kubelet-and-kubectl)
 
-Next step is to get kubeadm, kubelet and kubectl onto the nodes. Now here it's important to think twice which version we are going to install. According to the [version skew-policy](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/#version-skew-policy) it's the best to install the same version as the version of Kubernetes we are going to install later. In my case this is `v1.31.0`.  I'm later going to hold the APT packages on this specific version so that they don't get accidentially updated when we do a system upgrade.
+Next step is to get kubeadm, kubelet and kubectl onto the nodes. Now here it's important to think twice which version we are going to install. According to the [version skew-policy](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/#version-skew-policy) it's the best to install the same version as the version of Kubernetes we are going to install later. In my case this is `v1.31.1`.  I'm later going to hold the APT packages on this specific version so that they don't get accidentially updated when we do a system upgrade.
 
 Installing the tools using APT works as follows:
 
 ```console
 # If the directory `/etc/apt/keyrings` does not exist, it should be created before the curl command, read the note below.
 # sudo mkdir -p -m 755 /etc/apt/keyrings
-# note the key is pinned to a minor version of kubernetes
 curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.31/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 # This overwrites any existing configuration in /etc/apt/sources.list.d/kubernetes.list
 echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.31/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
@@ -194,13 +193,15 @@ sudo apt-get install -y kubelet=1.31.1-1.1 kubeadm=1.31.1-1.1 kubectl=1.31.1-1.1
 sudo apt-mark hold kubelet kubeadm kubectl
 ```
 
-You may have noticed that the GPG key and repository is specific for Kubernetes 1.31. That means for upgrading Kubernetes, we would first have to get a new GPG key / repo added to APT.
+You may have noticed that the GPG key and repository is specific for Kubernetes 1.31. That means for upgrading Kubernetes, we would first have to get a new GPG key / repo added to APT before we can update kubeadm which in turn can upgrade the cluster for us.
 
-### kubelet config flags
+### kubelet config
 
-If you want to use the [hcloud-cloud-controller-manager](https://github.com/hetznercloud/hcloud-cloud-controller-manager) later on to provision loadbalancers and volumes in Hetzner Cloud you must add the following drop-in for kubelet before initalizing the cluster:
+Our cluster runs on Hetzner. For cloud-functionalities such as volumes and loadbalancers to be provisioned, we would later need to install a cloud-controller-manager (CCM). This is a component unique to each cloud. But in order for this manager to know which nodes have been created in which cloud, we have to add a flag to the kubelet, that tells it, which cloud-provider it's node is running on.
 
-```bash
+In case of Hetzner the CCM is called [hcloud-cloud-controller-manager](https://github.com/hetznercloud/hcloud-cloud-controller-manager) and the following drop-in config file for kubelet, instructs it, that it's from a cloud-provider called `external`: 
+
+```console
 cat <<EOF | sudo tee /etc/systemd/system/kubelet.service.d/20-hcloud.conf
 [Service]
 Environment="KUBELET_EXTRA_ARGS=--cloud-provider=external"
@@ -209,60 +210,69 @@ sudo systemctl daemon-reload
 sudo systemctl restart kubelet
 ```
 
-### CNI considerations
+If you are wondering why the cloud-provider is `external` and not something like `hcloud`, you should read [this blogpost](https://www.cncf.io/blog/2024/09/27/why-kubernetes-is-removing-in-tree-cloud-provider-integration-support-in-v1-31-and-how-it-can-affect-you/). It gives some details on the history of CCMs.
 
-One last thing before we can bootstrap our cluster is to choose a CNI for kubernetes. Although we could wait with that until kubeadm init is started we may need to set some flags in the init config to work with our CNI.
+## [Kubernetes control-plane bootstrapping](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/)
 
-As said I'm using Cilium. Cilium has two options for IPAM, one being kubernetes and one beeing cluster-scoped cilium mode. I'm using the later and also use the kube-proxy replacement of cilium which means I can completly ignore the flags for service and pod CIDRs in kubeadm.
+Finally we can bootstrap the control-plane with kubeadm. For this we will create a kubeadm config that tells kubeadm how to bootstarp the cluster. It's important to remember that the control-plane is initalized on the first master node only. So this section is only executed on the first master node!
 
-## Bootstraping
-
-Finally we can [bootstrap](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/) our cluster with kubeadm. For this we will create a kubeadm config to customize our installation:
-
-Let's get the default config with:
+A default kubeadm config to work with can be generated using this command:
 
 ```bash
 kubeadm config print init-defaults > kubeadm-config.yaml
 ```
 
-We are going to change some things in this default config. All options can be found in the [reference docs](https://kubernetes.io/docs/reference/config-api/kubeadm-config.v1beta3/#kubeadm-k8s-io-v1beta3). My file usually looks like that:
+We are going to change some things in this default config and delete most of the default options. All options can be found in the [reference docs](https://kubernetes.io/docs/reference/config-api/kubeadm-config.v1beta4/).
+
+Here's the config for this guide:
+
 
 ```yaml
 ---
-apiVersion: kubeadm.k8s.io/v1beta3
-kind: ClusterConfiguration
-clusterName: technat.k8s
-controlPlaneEndpoint: admin.technat.dev:6443 # DNS record pointing to your master nodes
----
 apiVersion: kubelet.config.k8s.io/v1beta1
 kind: KubeletConfiguration
-cgroupDriver: systemd # must match the value you set for containerd
+cgroupDriver: systemd  # as defined earlier, the kubelet shall use systemd as cgroupv2 driver
+---
+apiVersion: kubeadm.k8s.io/v1beta3
+kind: InitConfiguration
+skipPhases:
+  - addon/kube-proxy # I'm skipping the installation of kube-proxy addon, more explanations later
+localAPIEndpoint: 
+  advertiseAddress: <ip of machine>,<ipv6 of machine> # the public IPv4,IPv6 address of the first master node
+nodeRegistration:
+  kubeletExtraArgs:
+    node-ip: "<ip of machine>,<ipv6 of machine>" # the public IPv4,IPv6 address of the first master node
+---
+apiVersion: kubeadm.k8s.io/v1beta3
+clusterName: cucumber # cosmetic, no real-world use
+kind: ClusterConfiguration
+networking:
+  serviceSubnet: 10.111.0.0/16,2001:db8::10:0/108 # read below
+  podSubnet: 10.222.0.0/16,2001:db8::20:0/108 # read below
+controlPlaneEndpoint: cucumber.technat.dev # the api-endpoint to advertise, as discussed in the intro
 ```
 
-Some of the options are reasonable, some are only cosmetics and some are performance tweacks.
-If you think the config looks good for you, you can start the initial bootstrap using the following command (remove the `--skip-phase=addon/kube-proxy` argument if you're not using cilium):
+Some explanations to the config:
+- `addon/kube-proxy`: [kube-proxy](https://kubernetes.io/docs/reference/command-line-tools-reference/kube-proxy/) is the default tool to implement `type:Service`, usually using iptables. I'm skipping the step that installs this tool, as I have a replacement for it that I personally preffer (more in the next section).
+- `serviceSubnet`: the CIDR range (v4 and v6) used to assign IPs to Kubernetes Services, must be some private range
+- `podSubnet`: the CIDR range (v4 and v6) used to assign IPs to Pods, must be some private range
+- `controlPlaneEndpoint`: as discussed earlier, the endpoint where clients can reach the Kubernetes API, in our case, just a DNS record that keeps the topology flexible (could also be the IP of the only master-node we have, or a load-balancer IP)
+- `node-ip` & `advertise-address`: kubelet and the kube-apiserver on this particualar node need to know which interface to use for binding to. In our case we only have a public NIC which we can specify. You could also specify another IP (from a private network or tailscale for example), and let Kubernetes use this network for communication.
 
-```bash
-sudo kubeadm init --upload-certs --config kubeadm-config.yaml --skip-phases=addon/kube-proxy
+Once we are happy with our config, we can initalize the cluster using this command on our first master-node:
+
+```console
+sudo kubeadm init --upload-certs --config kubeadm-config.yaml 
 ```
 
-The output will clearly show when you had success initializing your control-plane and when not. Expect this to fail the first time. In my experience custom configs always lead to an error in the first place. But fortunately the commands shows you where to start debugging.
+The output will clearly show when you had success initializing your control-plane and when not. If it worked, you will see some instructions how to join additionall master nodes and worker nodes, as well as some commands to get the kubeconfig from the master-node to start using kubectl:
 
-If it worked, you can then get the kubeconfig from the kubernetes directory to your regular user and start kubeing:
-
-```bash
+```console
 mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ```
-
-For the root user, you can also just export the location of the kubeconfig:
-
-```bash
-export KUBECONFIG=/etc/kubernetes/admin.conf
-```
-
-### Deploy CNI
+### Installing a CNI-plugin
 
 By now you might see that a `kubectl get nodes` lists the nodes in a `Not Ready` state. This is due to the missing CNI.
 
