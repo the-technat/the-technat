@@ -33,6 +33,8 @@ For the Kubernetes API endpoint, you're often told to create a classic load bala
 
 I'm always bootstraping the cluster with a DNS record as official API endpoint, even if I only have one master node. This allows me to add more master nodes later on and simply create another entry for the same DNS record. This is actually a recommendation from the Kubernetes docs, to not use an IP as control-plane endpoint.
 
+For dual-stack users: please note that the Kubernetes API endpoint currently can only be IPv4 **or** IPv6, the related field in the kubeadm config doesn't allow both addresses to be specified. In my experience the cluster also doesn't behave well if the DNS record resolves both A and AAAA.
+
 For this guide my endpoint will be `cucumber.technat.dev`
 
 ### Servers
@@ -240,7 +242,7 @@ cgroupDriver: systemd  # as defined earlier, the kubelet shall use systemd as cg
 apiVersion: kubeadm.k8s.io/v1beta4
 kind: InitConfiguration
 localAPIEndpoint:
-  advertiseAddress: "65.109.160.197" # the public IPv4 address of the first master-node
+  advertiseAddress: "65.109.160.197" # the public IPv4 or IPv6 address of the first master-node
 nodeRegistration:
   kubeletExtraArgs:
     - name: "node-ip"
@@ -258,6 +260,7 @@ controlPlaneEndpoint: cucumber.technat.dev # the api-endpoint to advertise, as d
 ```
 
 Some explanations to the config:
+- `advertiseAddress`: as mentioned in the beginning, this field only accepts either an IPv4 **or** IPv6 address, but not both
 - `proxy.disabled`: [kube-proxy](https://kubernetes.io/docs/reference/command-line-tools-reference/kube-proxy/) is the default tool to implement Kubernetes services, usually using iptables. I'm skipping the step that installs this tool, as I have a replacement for it that I personally preffer (more when we install our cni-plugin).
 - `serviceSubnet`: the CIDR range (v4 and v6) used to assign IPs to Kubernetes Services, must be some private range
 - `podSubnet`: the CIDR range (v4 and v6) used to assign IPs to Pods, must be some private range and for the v6 version at least `/64` or bigger.
