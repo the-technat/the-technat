@@ -233,29 +233,30 @@ apiVersion: kubelet.config.k8s.io/v1beta1
 kind: KubeletConfiguration
 cgroupDriver: systemd  # as defined earlier, the kubelet shall use systemd as cgroupv2 driver
 ---
-apiVersion: kubeadm.k8s.io/v1beta3
+apiVersion: kubeadm.k8s.io/v1beta4
 kind: InitConfiguration
-skipPhases:
-  - addon/kube-proxy # I'm skipping the installation of kube-proxy addon, more explanations later
-localAPIEndpoint: 
-  advertiseAddress: <ip of machine>,<ipv6 of machine> # the public IPv4,IPv6 address of the first master node
+localAPIEndpoint:
+  advertiseAddress: "65.109.160.197" # the public IPv4 address of the first master-node
 nodeRegistration:
   kubeletExtraArgs:
-    node-ip: "<ip of machine>,<ipv6 of machine>" # the public IPv4,IPv6 address of the first master node
+    - name: "node-ip"
+      value: "65.109.160.197,2a01:4f9:c012:b87a::1" # the public IPv4,IPv6 address of the first master node
 ---
-apiVersion: kubeadm.k8s.io/v1beta3
-clusterName: cucumber # cosmetic, no real-world use
+apiVersion: kubeadm.k8s.io/v1beta4
 kind: ClusterConfiguration
+proxy:
+  disabled: true # read below
 networking:
   serviceSubnet: 10.111.0.0/16,2001:db8::10:0/108 # read below
-  podSubnet: 10.222.0.0/16,2001:db8::20:0/108 # read below
+  podSubnet: 10.222.0.0/16,2001:db8:42:0::/56 # read below
+kubernetesVersion: "v1.31.1" # the exact version to initialize as defined before
 controlPlaneEndpoint: cucumber.technat.dev # the api-endpoint to advertise, as discussed in the intro
 ```
 
 Some explanations to the config:
-- `addon/kube-proxy`: [kube-proxy](https://kubernetes.io/docs/reference/command-line-tools-reference/kube-proxy/) is the default tool to implement `type:Service`, usually using iptables. I'm skipping the step that installs this tool, as I have a replacement for it that I personally preffer (more in the next section).
+- `proxy.disabled`: [kube-proxy](https://kubernetes.io/docs/reference/command-line-tools-reference/kube-proxy/) is the default tool to implement Kubernetes services, usually using iptables. I'm skipping the step that installs this tool, as I have a replacement for it that I personally preffer (more in the next section).
 - `serviceSubnet`: the CIDR range (v4 and v6) used to assign IPs to Kubernetes Services, must be some private range
-- `podSubnet`: the CIDR range (v4 and v6) used to assign IPs to Pods, must be some private range
+- `podSubnet`: the CIDR range (v4 and v6) used to assign IPs to Pods, must be some private range and for the v6 version at least `/64` or bigger.
 - `controlPlaneEndpoint`: as discussed earlier, the endpoint where clients can reach the Kubernetes API, in our case, just a DNS record that keeps the topology flexible (could also be the IP of the only master-node we have, or a load-balancer IP)
 - `node-ip` & `advertise-address`: kubelet and the kube-apiserver on this particualar node need to know which interface to use for binding to. In our case we only have a public NIC which we can specify. You could also specify another IP (from a private network or tailscale for example), and let Kubernetes use this network for communication.
 
@@ -272,6 +273,31 @@ mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ```
+
+### Joining worker-nodes
+
+Since I don't have any additional master nodes, I proceed with joining the worker nodes to my cluster. The instructions for this are almost the same as kubeadm's output. But we have to tweak the join-config a bit.
+
+On your worker-nodes, create a file with the following content:
+
+```yaml
+---
+apiVersion: kubelet.config.k8s.io/v1beta1
+kind: KubeletConfiguration
+cgroupDriver: systemd 
+---
+apiVersion: kubeadm.k8s.io/v1beta3
+kind: JoinConfiguration
+nodeRegistration:
+  kubeletExtraArgs:
+    node-ip: "<ipv4 of machine>,<ipv6 of machine>"
+discovery:
+  bootstrapToken: 
+    apiServerEndpoint: cucumber.technat.dev:6443
+    token: j1d3i2.ji36qbzjw7gc0t0f
+    caCertHashes: ["sha256:5856a582eac876282373afb0eeb07f862e4bcb2d2ffe108c70ffcc48d97d1356"]
+```
+
 ### Installing a CNI-plugin
 
 By now you might see that a `kubectl get nodes` lists the nodes in a `Not Ready` state. This is due to the missing CNI.
@@ -286,6 +312,8 @@ rm cilium-linux-amd64.tar.gz{,.sha256sum}
 curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
 chmod 700 get_helm.sh
 ./get_helm.sh
+
+cilium install —set “ipam.mode=kubernetes” —set “ipv6.enabled=true”
 ```
 
 With those tools we can install Cilium as a helm chart:
