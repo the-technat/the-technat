@@ -11,7 +11,7 @@ Here's how the cluster will look like:
 - all traffic flows through the internet, no private networks
 - Dual-stack IPv4/IPv6 networking
 - plain ubuntu nodes as base OS
-- Cilium as CNI of choice
+- Cilium as CNI of choice (with kube-proxy replacement)
 - manual kubeadm to setup 
 
 ## Prerequisites
@@ -20,8 +20,8 @@ Before we dive into the details on how to setup, here are some prerequisites to 
 
 - [Create](https://accounts.hetzner.com/login) an account on Hetzner Cloud
 - Create a project - call it something meaningful, I called mine `cucumber` (got the irony?)
-- Add a cost alert limit to the project
-- Optionally: register and create a tailnet at [Tailscale](https://tailscale.com) if you want to use this to connect to your servers instead of ssh
+- Add a cost alert to the project
+- Some knowledge about Kubernetes (I'm not going to explain every basic thing in detail)
 
 ## Infrastructure
 
@@ -31,7 +31,7 @@ Let's quickly talk about the infrastructure I'm using for this cluster.
 
 For the Kubernetes API endpoint, you're often told to create a classic load balancer that will balance the traffic between your master nodes. While this is certainly a good idea, it's usually cost-expensive and not required at all for a multi-master setup. There are good alternatives using virtual IPs or even simpler: multiple DNS records.
 
-I'm always bootstraping the cluster with a DNS record as official API endpoint, even if I only have one master node. This allows me to add more master nodes later on and simply create another entry for the same DNS record. 
+I'm always bootstraping the cluster with a DNS record as official API endpoint, even if I only have one master node. This allows me to add more master nodes later on and simply create another entry for the same DNS record. This is actually a recommendation from the Kubernetes docs, to not use an IP as control-plane endpoint.
 
 For this guide my endpoint will be `cucumber.technat.dev`
 
@@ -39,15 +39,18 @@ For this guide my endpoint will be `cucumber.technat.dev`
 
 Here are the servers I create:
 
-| Location | Image        | Type  | Networks    | Backups | Name       | Labels                         |
-| -------- | ------------ | ----- | ----------- | ------- | ----------- | ------------------------ |
-| Helsinki | Ubuntu 24.04 | CAX11 | ipv4,ipv6 | false    | hawk       | cluster=cucumber,role=master |
-| Helsinki | Ubuntu 24.04 | CAX31 | ipv4,ipv6 | false    | minion-01    | cluster=cucumber,role=worker |
+| Location | Image        | Type  | Networks    | Name       | Labels                         |
+| -------- | ------------ | ----- | ----------- | ----------- | ------------------------ |
+| Helsinki | Ubuntu 24.04 | CAX11 | ipv4,ipv6 | hawk       | cluster=cucumber,role=master |
+| Helsinki | Ubuntu 24.04 | CAX31 | ipv4,ipv6 | minion-01    | cluster=cucumber,role=worker |
 
-Some notes before creating the servers:
-- CAX type stands for Ampere (`arm64`) servers. In experience, K8s and most containerized applications run fine on ARM, but you might want to change the type to something that has `amd64` arch.
-- Kubernetes requires you to have an odd number of master nodes, for true HA. Also many applications you may install require three replicas that are spread accross different nodes or zones, so at least three master and worker nodes are ideal. For lab purposes though, I usually only create one master and one worker to save cost (one is also an odd number).
-- As defined in the intro, I don't add the servers to any private network, but only have a public IPv4 and IPv6 address for a dual-stack cluster. Note that dual-stack will bring some complexity along that you can easily skip if you don't provision the servers with an IPv6 address.
+Some notes **before** creating the servers:
+- CAX type stands for Ampere (`arm64`) servers. In my experience, K8s and most containerized applications run fine on ARM, but you might want to change the type to something that uses `amd64`.
+- Kubernetes requires you to have an odd number of master nodes. The golden number for most production setups is to have three master nodes. For lab purposes though, I usually only create one master to save cost (one is also an odd number).
+- I don't add the servers to any private network, but only have a public IPv4 and IPv6 address for to use. 
+- Dual-stack clusters will bring some complexity along that you can easily skip if you don't provision the servers with an IPv6 address.
+- Use cloud-init to configure some common things faster (see next section).
+
 
 #### Cloud-init
 
@@ -71,7 +74,7 @@ users:
 
 package_update: true # Do a "apt update"
 package_upgrade: true # Do a "apt upgrade"
-packages: # Install some base-packages already
+packages: # Install some base-packages 
 - vim
 - git
 - wget
@@ -83,7 +86,7 @@ packages: # Install some base-packages already
 - ca-certificates
 
 runcmd:
-  # use the following lines to join the server to a tailnet, instead of using plain ssh
+  # use the following lines to join the server to a tailnet, instead of using plain ssh 
   # - systemctl mask ssh
   # - curl -fsSL https://tailscale.com/install.sh | sh
   # - tailscale up --ssh --auth-key "<single-use-pre-approved-key>"
@@ -99,7 +102,7 @@ The first of them is Swap. While you can nowadays use Swap on your nodes, it's s
 
 ### [Container Runtime](https://kubernetes.io/docs/setup/production-environment/container-runtimes/)
 
-The container runtime must be installed prior to cluster bootstraping. There are various runtimes that fulfil the [CRI](https://kubernetes.io/docs/concepts/architecture/cri/). I'm using [containerd](https://containerd.io) for obvious reasons.
+The container runtime must be installed prior to cluster bootstrapping. There are various runtimes that fulfil the [CRI](https://kubernetes.io/docs/concepts/architecture/cri/). I'm using [containerd](https://containerd.io) for obvious reasons.
 
 The steps to install containerd are more or less included in the Kubernetes documentation about container runtimes.
 
@@ -125,9 +128,9 @@ grep cgroup /proc/filesystems
 # it should list multiple results, one beeing cgroup2
 ```
 
-We will tell our Kubernetes components later to use systemd as the cgroup driver.
+We will tell our Kubernetes components to use systemd as the cgroup driver when we get to the actually bootstrapping.
 
-Next we install containerd using it's APT package from the [docker repository](https://docs.docker.com/engine/install/ubuntu/):
+Now we install containerd using it's APT package from the [docker repository](https://docs.docker.com/engine/install/ubuntu/):
 
 ```bash
 # Add Docker's official GPG key:
@@ -146,10 +149,11 @@ sudo apt-get update
 
 sudo apt-get update
 sudo apt install containerd.io -y
+sudo apt-mark hold containerd.io # consider pinning the containerd version until you want to explicitly upgrade
 ```
 
 Once containerd is installed, we have to tweak it's configuration a bit for it to work with Kubernetes. There are two important toggles:
-- The CRI plugin inside containerd is usually disabled, since the containerd APT package is intended to be used along with Docker desktop
+- The CRI plugin inside containerd is usually disabled, since the containerd APT package is generic
 - The systemd cgroup driver must explicitly be set in the config file
 
 To achieve these changes, run the following commands:
@@ -177,7 +181,7 @@ sudo systemctl status containerd
 
 ### [kubeadm, kubectl, kubelet](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#installing-kubeadm-kubelet-and-kubectl)
 
-Next step is to get kubeadm, kubelet and kubectl onto the nodes. Now here it's important to think twice which version we are going to install. According to the [version skew-policy](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/#version-skew-policy) it's the best to install the same version as the version of Kubernetes we are going to install later. In my case this is `v1.31.1`.  I'm later going to hold the APT packages on this specific version so that they don't get accidentially updated when we do a system upgrade.
+Next step is to get kubeadm, kubelet and kubectl onto the nodes. Here it's important to think twice which version we are going to install. According to the [version skew-policy](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/#version-skew-policy) it's the best to install the same version as the version of Kubernetes we are going to install later. In my case this is `v1.31.1`. 
 
 Installing the tools using APT works as follows:
 
@@ -193,11 +197,11 @@ sudo apt-get install -y kubelet=1.31.1-1.1 kubeadm=1.31.1-1.1 kubectl=1.31.1-1.1
 sudo apt-mark hold kubelet kubeadm kubectl
 ```
 
-You may have noticed that the GPG key and repository is specific for Kubernetes 1.31. That means for upgrading Kubernetes, we would first have to get a new GPG key / repo added to APT before we can update kubeadm which in turn can upgrade the cluster for us.
+You may have noticed that the GPG key and repository is specific for Kubernetes 1.31. That means for upgrading Kubernetes, we would first have to get a new GPG key / repo added to APT before we can upgrade kubeadm which in turn can upgrade the cluster for us. I also set the APT packages on hold so that they don't get accidentially patched when we do a system upgrade.
 
-### kubelet config
+### [kubelet config](https://github.com/hetznercloud/hcloud-cloud-controller-manager?tab=readme-ov-file#deployment)
 
-Our cluster runs on Hetzner. For cloud-functionalities such as volumes and loadbalancers to be provisioned, we would later need to install a cloud-controller-manager (CCM). This is a component unique to each cloud. But in order for this manager to know which nodes have been created in which cloud, we have to add a flag to the kubelet, that tells it, which cloud-provider it's node is running on.
+Our cluster runs on Hetzner. For cloud-functionalities such as volumes and loadbalancers to be provisioned, we would later need to install a [cloud-controller-manager](https://kubernetes.io/docs/concepts/architecture/cloud-controller/) (CCM). This is a component unique to each cloud. But in order for this manager to know which nodes have been created in which cloud, we have to add a flag to the kubelet, that tells it, which cloud-provider it's node is running on.
 
 In case of Hetzner the CCM is called [hcloud-cloud-controller-manager](https://github.com/hetznercloud/hcloud-cloud-controller-manager) and the following drop-in config file for kubelet, instructs it, that it's from a cloud-provider called `external`: 
 
@@ -254,7 +258,7 @@ controlPlaneEndpoint: cucumber.technat.dev # the api-endpoint to advertise, as d
 ```
 
 Some explanations to the config:
-- `proxy.disabled`: [kube-proxy](https://kubernetes.io/docs/reference/command-line-tools-reference/kube-proxy/) is the default tool to implement Kubernetes services, usually using iptables. I'm skipping the step that installs this tool, as I have a replacement for it that I personally preffer (more in the next section).
+- `proxy.disabled`: [kube-proxy](https://kubernetes.io/docs/reference/command-line-tools-reference/kube-proxy/) is the default tool to implement Kubernetes services, usually using iptables. I'm skipping the step that installs this tool, as I have a replacement for it that I personally preffer (more when we install our cni-plugin).
 - `serviceSubnet`: the CIDR range (v4 and v6) used to assign IPs to Kubernetes Services, must be some private range
 - `podSubnet`: the CIDR range (v4 and v6) used to assign IPs to Pods, must be some private range and for the v6 version at least `/64` or bigger.
 - `controlPlaneEndpoint`: as discussed earlier, the endpoint where clients can reach the Kubernetes API, in our case, just a DNS record that keeps the topology flexible (could also be the IP of the only master-node we have, or a load-balancer IP)
@@ -267,9 +271,9 @@ sudo kubeadm init --upload-certs --config kubeadm-config.yaml
 ```
 
 
-The output will clearly show when you had success initializing your control-plane and when not. Note that it might fail for the first time almost at the end, trying to reach the Kubernetes API using your DNS record and IPv6. That is most linux distros prefer v6 entries over v4 and the kube-apiserver seems to need a bit more time to be fully reachable on IPv6. If this happens to you, just delete the AAAA record, initalize and then readd the AAAA record again.
+The output will clearly show when you had success initializing your control-plane and when not. Note that it might fail for the first time almost at the end, trying to reach the Kubernetes API using your DNS record and IPv6. That is most linux distros prefer AAAA records over A and the kube-apiserver seems to need a bit more time to be fully reachable on IPv6. If this happens to you, just delete the AAAA record, run `sudo kubeadm reset`, reinitialize and then readd the AAAA record again.
 
-Once it worked, you will see some instructions how to join additionall master nodes and worker nodes, as well as some commands to get the kubeconfig from the master-node to start using kubectl:
+Once it worked, you will see a bunch of instructions how to join additional master and worker nodes, as well as some commands to get the kubeconfig from the master-node to start using kubectl:
 
 ```console
 mkdir -p $HOME/.kube
@@ -279,9 +283,7 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
 ### Joining worker-nodes
 
-Since I don't have any additional master nodes, I proceed with joining the worker nodes to my cluster. The instructions for this are almost the same as kubeadm's output. But we have to tweak the join-config a bit.
-
-On your worker-nodes, create a file with the following content:
+Since I don't have any additional master nodes, I proceed with joining the worker nodes to my cluster. The instructions for this are almost what kubeadm's output tells you. But we have to tweak some things a bit and thus create a join-config for our worker-node:
 
 ```yaml
 ---
@@ -294,27 +296,27 @@ kind: JoinConfiguration
 nodeRegistration:
   kubeletExtraArgs:
     - name: "node-ip"
-      value: "<ipv4 of machine>,<ipv6 of machine>"
+      value: "<ipv4 of machine>,<ipv6 of machine>" # the public IPv4,IPv6 address of our worker node
 discovery:
   bootstrapToken: 
-    apiServerEndpoint: cucumber.technat.dev:6443 # the defined DNS endpoint clients shall use for the Kubernetes API
+    apiServerEndpoint: cucumber.technat.dev:6443 # the defined DNS endpoint clients shall use for the Kubernetes API, port 6443 is the implicit default 
     token: j1d3i2.ji36qbzjw7gc0t0f # read below
     caCertHashes: ["sha256:5856a582eac876282373afb0eeb07f862e4bcb2d2ffe108c70ffcc48d97d1356"] # read below
 ```
 
-The `token` and `caCertHashes` are the required credentials to join this worker node to the control-plane. To get these informations, you can run the following on the **first master-node**:
+The `token` and `caCertHashes` are the required credentials to join this worker node to the control-plane. To get these informations, you can either look at kubeadm's output on your master-node or if you lost that already, run the following command on the first master-node to get some new credentials:
 
 ```console
 kubeadm token create --print-join-command
 ```
 
-This will give you the information you need to join the node. Once the join-config is created, you can join the node using:
+This will give you the information you need to join the node. Add the information to the join-config and join the node using:
 
 ```console
 sudo kubeadm join --config join-config.yaml
 ```
 
-### Installing a CNI-plugin
+## Installing a CNI-plugin
 
 By now you might see that a `kubectl get nodes` lists the nodes in a `Not Ready` state. This is due to the missing CNI.
 
