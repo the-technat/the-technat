@@ -2,7 +2,7 @@
 
 Hi I'm technat. system engineer for Kubernetes, minimalist, perfectionist and optimist. I've got zero background in classic IT and was born into the cloud-native world (does this explain my optimistic approach sometimes 😉?)
 
-- 🔭 I’m currently working on my homelab [technat.dev](https://github.com/the-technat/technat.dev)
+- 🔭 I’m currently getting familiar with Terraform providers, specifically [terraform-provider-argocd](https://github.com/argoproj-labs/terraform-provider-argocd)
 - 🌱 I’m always learning many things in parallel
 - 💞️ I’m looking to collaborate on Terraform Modules, Go applications and other K8s / CNCF projects
 - 💬 Ask me about Go, Terraform, CI/CD and **Kubernetes** or take a look at my [Website](https://technat.ch)
