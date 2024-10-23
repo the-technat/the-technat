@@ -1,6 +1,6 @@
 ### Nathanael Liechti
 
-Hi I'm technat. system engineer for Kubernetes, minimalist, perfectionist and optimist. I've got zero background in classic IT and was born into the cloud-native world (does this explain my optimistic approach sometimes 😉?)
+Hi I'm technat. Kubernetes Platform Engineer, minimalist, perfectionist and optimist. I've got zero background in classic IT and was born into the cloud-native world (does this explain my optimistic approach sometimes 😉?)
 
 - 🔭 I’m currently getting familiar with Terraform providers, specifically [terraform-provider-argocd](https://github.com/argoproj-labs/terraform-provider-argocd)
 - 🌱 I’m always learning many things in parallel
