@@ -1,7 +1,6 @@
 baseURL = 'https://technat.ch'
 title = "Nathanael Liechti"
 theme = 'm10c'
-paginate = 8
 
 [params]
   author = "Nathanael Liechti"
