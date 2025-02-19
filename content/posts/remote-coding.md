@@ -8,17 +8,17 @@ tags = [
 ]
 +++
 
-This guide shows how I code / tinker.
+This guide shows how I code / tinker on the go.
 
 ## Background
 
 If you stumbeled over this post, you probably already heard of know solutions like [Gitpod](https://www.gitpod.io/), [Github Codespaces](https://github.com/features/codespaces) or [Coder](https://coder.com/) to quickly spin up a development environment on the go. While I was using them I got fascinated about their capabilites and wished that I could use them for everything I do. Unfortunately some of these solutions are tied to a specific platform and or repository or they don´t offer you the performance or control that you would like. That was when I stumbeled over [code-server](https://code-server.dev), a web-based build of [Code OSS](https://github.com/code-oss-dev/code). That was the missing piece I needed to finally build my own codespace-like solution, but that time with full control.
 
-So this post documents how I setup a server for remote coding usage. In case you're more after a cloud-based solution with ephemeral reproducable machines (that are otherwise setup more or less the same as here), I suggest you checkout [tevbox](https://github.com/the-technat/tevbox), where I did exactly this with a lot of automation. 
+So this post documents how I setup a server for remote coding usage. 
 
 ## The server
 
-Well I'm not using a server, but an old desktop I had lying around. Phyiscal hardware is cumbersome to manage but for a static thing like a code-server it works fairly well I think. 
+Well I'm not using a server, but an old desktop I had lying around. Phyiscal hardware is cumbersome to manage but for a static thing like a code-server it works fairly well I think.
 
 The specs:
 
@@ -32,7 +32,7 @@ The specs:
 
 ## The Operating System
 
-I installed Ubuntu Server 22.04.3 LTS on the main disk using LMV to partition the disk automatically. Ubuntu Server is simple, widely adopted, fairly minimal and thus perfect for that kind of server. The manual install has to be done only once and LVM gives you the flexibility to tweak the disk-partitioning later on in case you want that.
+I installed Ubuntu Server 24.04.1 LTS on the main disk using LVM to partition the disk automatically. Ubuntu Server is simple, widely adopted, fairly minimal and thus perfect for that kind of server. The manual install has to be done only once and LVM gives you the flexibility to tweak the disk-partitioning later on in case you want that.
 
 ### Networking
 
@@ -103,28 +103,13 @@ curl -fsSL https://code-server.dev/install.sh | sh
 sudo systemctl enable --now code-server@technat
 ```
 
-This installs the code-server as systemd-service and enables it for your current user. The default for code-server is to listen on `127.0.0.1:8080`, but I'll change that to something less common (to avoid conflicts):
+This installs the code-server as systemd-service and enables it for your current user. The default for code-server is to listen on `127.0.0.1:8080`, but I'll change that to something less common (to avoid conflicts with other local apps):
 
 ```
 sed -ei 's/^bind-addr.*/bind-addr: 127.0.0.1:65000/g' ~/.config/code-server/config.yaml
 ```
 
 Don´t forget to restart the service with `sudo systemctl restart code-server@technat` after that change.
-
-### Configuring code on code-server
-
-The Code OSS part of code-server has it's config in `.local/share/code-server/User/settings.json`. That's what you will automatically configured if you change settings in the web UI of code-server. I usually put some defaults in there:
-
-```json
-{
-    "workbench.colorTheme": "Solarized Light",
-    "redhat.telemetry.enabled": false,
-    "workbench.sideBar.location": "right",
-    "workbench.startupEditor": "none",
-    "terminal.integrated.defaultProfile.linux": "zsh",
-    "explorer.confirmDragAndDrop": false
-}
-```
 
 ### Exposing code-server
 
@@ -156,25 +141,42 @@ Then I install [oauth2-proxy](https://oauth2-proxy.github.io/oauth2-proxy) to my
 ```
 ARCH=amd64
 OS=linux
-VERSION=v7.6.0
+VERSION=v7.8.1
 curl -fsSL -o /tmp/oauth2-proxy.tar.gz https://github.com/oauth2-proxy/oauth2-proxy/releases/download/$VERSION/oauth2-proxy-$VERSION."$OS"-"$ARCH".tar.gz
-tar -C /tmp xzf /tmp/oauth2-proxy.tar.gz
+tar -C /tmp -xzf /tmp/oauth2-proxy.tar.gz
 sudo install /tmp/oauth2-proxy-$VERSION."$OS"-"$ARCH"/oauth2-proxy /usr/local/bin/oauth2-proxy
 
 cat <<EOF | sudo tee /etc/systemd/system/oauth2-proxy.service
 [Unit]
 Description=oauth2-proxy daemon service
-After=syslog.target network.target
+After=network.target network-online.target nss-lookup.target basic.target
+Wants=network-online.target nss-lookup.target
+StartLimitIntervalSec=30
+StartLimitBurst=3
 
 [Service]
-User=caddy
-Group=caddy
-
-ExecStart=/usr/local/bin/oauth2-proxy --config=/etc/oauth2-proxy.cfg --github-user=the-technat
+User=technat
+Group=technat
+Restart=on-failure
+RestartSec=30
+WorkingDirectory=/etc/oauth2-proxy
+ExecStart=/usr/local/bin/oauth2-proxy --config=/etc/oauth2-proxy.cfg
 ExecReload=/bin/kill -HUP $MAINPID
-
-KillMode=process
-Restart=always
+LimitNOFILE=65535
+NoNewPrivileges=true
+ProtectHome=true
+ProtectSystem=full
+ProtectHostname=true
+ProtectControlGroups=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+LockPersonality=true
+RestrictRealtime=yes
+RestrictNamespaces=yes
+MemoryDenyWriteExecute=yes
+PrivateDevices=yes
+PrivateTmp=true
+CapabilityBoundingSet=
 
 [Install]
 WantedBy=multi-user.target
@@ -191,7 +193,8 @@ And then we create the config file for oauth2-proxy:
 
 ```/etc/oauth2-proxy.cfg
 footer         = "-" 
-cookie_domains = ".ts.net" 
+cookie_domains = [".ts.net"]
+whitelist_domains = [".ts.net"]
 cookie_secure = true
 cookie_expire = "2h"
 http_address = "127.0.0.1:65001"
@@ -202,12 +205,13 @@ client_secret = "REPLACE_ME"
 cookie_secret = "$(openssl rand -base64 32 | tr -- '+/' '-_')" # generate new cookie secret with this command
 email_domains = ["*"] 
 upstreams = ["http://127.0.0.1:65000/" ]
+github_users = ["the-technat"]
 ```
 
 Some notes:
 - `footer` disables the version to be shown on the sign-in page
 - `cookie_secret` run the command to generate your unique cookie secret
-- `--github-user` the config allows everyone with a Github account to sign in, somehow the `--github-user` flag can't be translated into a config directive, but as shown and mentioned before this flag is set on the systemd service.
+- `github_users` the config allows everyone in that list to sign in, 
 
 Restart the service after you created the config file. Finally we can recreate our funnel to point to auth2-proxy instead of code-server:
 
