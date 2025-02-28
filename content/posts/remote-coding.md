@@ -159,7 +159,6 @@ User=technat
 Group=technat
 Restart=on-failure
 RestartSec=30
-WorkingDirectory=/etc/oauth2-proxy
 ExecStart=/usr/local/bin/oauth2-proxy --config=/etc/oauth2-proxy.cfg
 ExecReload=/bin/kill -HUP $MAINPID
 LimitNOFILE=65535
@@ -185,24 +184,22 @@ sudo systemctl daemon-reload
 sudo systemctl enable --now oauth2-proxy
 ```
 
-Be sure to replace your username in `--github-user`. It's the only directive that's currently somehow not supported in the config file.
-
-Once it's running we can create an OAuth app in Github according to [this doc](https://oauth2-proxy.github.io/oauth2-proxy/configuration/providers/github).  I'll use `https://my-machine.blabla.ts.net/oauth2/callback` as callback URL.
+Once it's installed we can create an OAuth app in Github according to [this doc](https://oauth2-proxy.github.io/oauth2-proxy/configuration/providers/github).  I'll use `https://my-machine.blabla.ts.net/oauth2/callback` as callback URL.
 
 And then we create the config file for oauth2-proxy:
 
 ```/etc/oauth2-proxy.cfg
 footer         = "-" 
-cookie_domains = [".ts.net"]
-whitelist_domains = [".ts.net"]
+cookie_domains = ["my-machine.blabla.ts.net"]
+whitelist_domains = ["my-machine.blabla.ts.net"]
 cookie_secure = true
 cookie_expire = "2h"
 http_address = "127.0.0.1:65001"
-reverse_proxy = true # Are we running behind a reverse proxy? Will not accept headers like X-Real-Ip unless this is set.
+reverse_proxy = true 
 provider = "github"
 client_id = "REPLACE_ME"
 client_secret = "REPLACE_ME"
-cookie_secret = "$(openssl rand -base64 32 | tr -- '+/' '-_')" # generate new cookie secret with this command
+cookie_secret = "$(openssl rand -base64 32 | tr -- '+/' '-_')"
 email_domains = ["*"] 
 upstreams = ["http://127.0.0.1:65000/" ]
 github_users = ["the-technat"]
@@ -210,7 +207,7 @@ github_users = ["the-technat"]
 
 Some notes:
 - `footer` disables the version to be shown on the sign-in page
-- `cookie_secret` run the command to generate your unique cookie secret
+- `cookie_secret` run the command to generate your unique cookie secret and paste the exact output
 - `github_users` the config allows everyone in that list to sign in, 
 
 Restart the service after you created the config file. Finally we can recreate our funnel to point to auth2-proxy instead of code-server:
