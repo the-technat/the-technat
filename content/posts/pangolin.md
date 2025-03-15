@@ -37,7 +37,7 @@ The Installation on a VPS is documented [here](https://docs.fossorial.io/Getting
 
 This was my interactive setup:
 
-![pangolin installer walkthrough](../../static/images/pangolin-installer.png)
+![pangolin installer walkthrough](/images/pangolin-installer.png)
 
 Once the installer has completed you get the following files in the directoy you run the installer:
 
@@ -98,7 +98,7 @@ sudo systemctl enable --now newt.service
 
 Once it's running we can go back to the dashboard and see that it's listed as `online`:
 
-![first site marked online](../../static/images/first-site-online.png)
+![first site marked online](/images/first-site-online.png)
 
 That means we are ready to expose something!
 
