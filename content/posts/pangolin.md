@@ -14,7 +14,7 @@ On the look for a VPS that would serve me for trying this thing out I choose [VP
 A couple of things I noticed regarding VPS Lite:
 - there's no way to specifiy a cloud-init file or enter your own SSH key while bootstraping the server
 - When adding a public key later in the management console they don't accept ssh keys with eliptic curves (e.g `ed25519`)
-- the bandwith is limited to 500Mb/s but the traffic is unlimited
+- the bandwith is limited to 500Mbit/s but the traffic is unlimited
 - the default username for an Ubuntu 24.04 LTS instance happens to be `ubuntu` (no customization possible)
 - you don't have the ability to snapshot the server
 - there is a web-based VNC console in case you need that
@@ -121,8 +121,8 @@ Don't forget to hit save after you added a target! If you now reload your page y
 
 ## Summary
 
-So far we have installed Pangolin on a VPS and connected a site (e.g a linux box) to it using a user-space Wireguard agent called "Newt" and then expose a resource (`code.technat.dev`) to the internet adding the respective target to the resource so that Newt knows where to route the trafic. And all of this without forwarding ports or similar, nice!
+So far we have installed Pangolin on a VPS and connected a site (e.g a linux box) to it using a user-space Wireguard agent called "Newt" and then exposed a resource (`code.technat.dev`) to the internet adding the respective target to the resource so that Newt knows where to route the trafic. And all of this without forwarding ports or similar, nice!
 
-I'm now going to explore the different configuration options there are in Pangolin and might add one or two chapters to this post when I find something particularly interesting.
+Looking a the project it seems like it's mainly driven by two brothers that released the first version of it in January 2025, indicating that the project is relatively young. After spending some more minutes in the docs I think I've seen all that there is on features and configuration options. I'd highly love to see more of that, especially an integration with OIDC would be awesome! (Or reverse: Pangolin being an IDP provider that you could hook into the targets you are forwarding to). 
 
-But even so I can highly recommend trying out Pangolin. It looks and feels awesome and the fact that Newt is a statically compiled binary requring zero privileges is fantastic. I can see this working in almost every environment including containers hosted on something like fly.io or Heroku. Speaking of security If you read their [Security Overview page](https://docs.fossorial.io/Newt/security) you immeditely see that they take security serious, just by they way this page is written.
+But even with the feature set it has right now I can highly recommend trying out Pangolin. It looks and feels awesome and the fact that Newt is a statically compiled binary requring zero privileges is fantastic. I can see this working in almost every environment including containers hosted on something like fly.io or Heroku. And what isn't yet there will eventually come in the future. At least reading some issues/discussions on Github gives me the impression that the projet is under active development and there is much to come soon.
