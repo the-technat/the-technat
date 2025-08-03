@@ -1,0 +1,19 @@
+#cloud-config <hostname>
+
+locale: en_US.UTF-8
+timezone: UTC
+package_update: true
+package_upgrade: true
+packages:
+- curl
+- git
+
+users:
+  - name: technat
+    groups: sudo
+    sudo: ALL=(ALL) NOPASSWD:ALL # Allow any operations using sudo
+    gecos: "Admin user created by cloud-init"
+
+runcmd:
+  - sh -c "$(curl -fsLS get.chezmoi.io)" -- -b /usr/local/bin
+  - su -c '/usr/local/bin/chezmoi init --apply the-technat' - technat
