@@ -5,6 +5,32 @@ date = "2022-11-15"
 
 You **want** to use cloud-init, for sure! Here are my configs I usually use for bootstraping new servers quickly.
 
+## Orbstack Box
+
+In orbstack SSH access is done automatically, so we don't specify anything in that regards.
+
+```yaml
+#cloud-config <hostname>
+
+locale: en_US.UTF-8
+timezone: UTC
+package_update: true
+package_upgrade: true
+packages:
+- curl
+- git
+
+users:
+  - name: technat
+    groups: sudo
+    sudo: ALL=(ALL) NOPASSWD:ALL # Allow any operations using sudo
+    gecos: "Admin user created by cloud-init"
+
+runcmd:
+  - sh -c "$(curl -fsLS get.chezmoi.io)" -- -b /usr/local/bin
+  - su -c '/usr/local/bin/chezmoi init --apply the-technat' - technat
+```
+
 ## Ubuntu 24.04
 
 Delete the content you don't need. Otherwise it joins the server to my tailnet, installs some packages, does a system upgrade and enables automatic updates.
