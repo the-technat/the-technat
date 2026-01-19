@@ -10,6 +10,5 @@ Hi I'm technat. Kubernetes Platform Engineer, CS Student, minimalist, perfection
 - ⚡ Fun fact: Seems like someone has already taken the username "technat", so it was necessary to mention that technat isn´t the same as **the**-technat
 
 
-Currently holding the "Kubestronaut" title:
 
-[![Kubestronaut](https://images.credly.com/size/340x340/images/cd6c6449-6814-4613-a2d3-13cf4ac5be4f/image.png)](https://www.credly.com/badges/cfce5409-f8f1-412f-a8dc-04b6f7f0ef44 "Kubestronaut")
+[![Golden Kubestronaut](https://images.credly.com/size/340x340/images/1dba0197-1013-4f23-8918-9479f77172d6/blob)](https://www.credly.com/badges/950c6958-92df-4648-9eb3-223590c0d956/public_url)
